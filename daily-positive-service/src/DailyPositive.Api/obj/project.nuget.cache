@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rMzVlcdLNyg=",
+  "dgSpecHash": "Ni2U9pP/ZNk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+  "projectFilePath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\esdra\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\esdra\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.0\\microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",

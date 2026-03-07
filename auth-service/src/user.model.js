@@ -37,7 +37,7 @@ const userSchema = new Schema({
     role: {
         type: String,
         enum: {
-            values: ['ADMIN_ROLE', 'ADMIN_USERS_ROLE', 'ADMIN_MOODTRACKING_ROLE', 'USER_ROLE'],
+            values: ['ADMIN_ROLE', 'ADMIN_USERS_ROLE', 'ADMIN_MOODTRACKING_ROLE', 'USER_ROLE', 'ADMIN_HEALTHY_ROLE'],
             message: 'Rol no permitido. Ingrese un rol válido.'
         },
         default: 'USER_ROLE'
