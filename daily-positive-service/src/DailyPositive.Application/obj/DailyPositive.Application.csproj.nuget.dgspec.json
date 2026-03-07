@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {}
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
         "projectName": "DailyPositive.Application",
-        "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
-        "packagesPath": "C:\\Users\\rgome\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\obj\\",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\rgome\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -26,8 +26,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
-                "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
+              "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+                "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
               }
             }
           }
@@ -66,17 +66,17 @@
         }
       }
     },
-    "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
         "projectName": "DailyPositive.Domain",
-        "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
-        "packagesPath": "C:\\Users\\rgome\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\rgome\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
