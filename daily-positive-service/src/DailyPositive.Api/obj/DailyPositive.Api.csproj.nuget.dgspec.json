@@ -1,0 +1,304 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+        "projectName": "DailyPositive.Api",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
+                "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj"
+              },
+              "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj": {
+                "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.23, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[10.0.3, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Console": {
+              "target": "Package",
+              "version": "[6.1.1, )"
+            },
+            "Serilog.Sinks.File": {
+              "target": "Package",
+              "version": "[7.0.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
+        "projectName": "DailyPositive.Application",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+                "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "projectName": "DailyPositive.Domain",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
+        "projectName": "DailyPositive.Persistence",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+                "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[10.0.3, )"
+            },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[3.7.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
