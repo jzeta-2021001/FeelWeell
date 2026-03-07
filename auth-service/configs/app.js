@@ -104,6 +104,24 @@ const seederAdmin = async () => {
             console.log('Usuario admin-mood creado exitosamente');
         }
 
+        const adminHealthyExists = await User.findOne({ username: 'admin-healthy' });
+        if (adminHealthyExists) {
+            console.log('Administrador de healthy ya existe')
+        } else {
+            const hashedPassword = await hash('AdminHealthy123!FeelWell', 10);
+            const adminHealthy = new User({
+                firstName: 'Administrador',
+                surname: 'Healthy',
+                email: 'admin.healthy@feelwell.com',
+                phone: '42459702',
+                username: 'admin-healthy',
+                password: hashedPassword,
+                role: 'ADMIN_HEALTHY_ROLE',
+                isActive: true
+            });
+            await adminHealthy.save();
+            console.log('Usuario admin-healthy creado exitosamente.')
+        }
     } catch (e) {
         console.error('Error al crear administradores:', e.message);
     }
