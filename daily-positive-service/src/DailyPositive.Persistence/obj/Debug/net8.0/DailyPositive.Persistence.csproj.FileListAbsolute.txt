@@ -1,0 +1,15 @@
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\bin\Debug\net8.0\DailyPositive.Persistence.deps.json
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\bin\Debug\net8.0\DailyPositive.Persistence.dll
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\bin\Debug\net8.0\DailyPositive.Persistence.pdb
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.AssemblyInfoInputs.cache
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.AssemblyInfo.cs
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.csproj.CoreCompileInputs.cache
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.dll
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\refint\DailyPositive.Persistence.dll
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.pdb
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\ref\DailyPositive.Persistence.dll
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPositive.Persistence.csproj.AssemblyReference.cache
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\bin\Debug\net8.0\DailyPositive.Domain.dll
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\bin\Debug\net8.0\DailyPositive.Domain.pdb
+C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Persistence\obj\Debug\net8.0\DailyPos.0521BD98.Up2Date
