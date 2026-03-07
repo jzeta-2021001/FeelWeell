@@ -782,11 +782,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
+      "projectUniqueName": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
       "projectName": "DailyPositive.Persistence",
-      "projectPath": "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
+      "projectPath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
       "packagesPath": "C:\\Users\\esdra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\obj\\",
+      "outputPath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\esdra\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -801,8 +801,8 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
-              "projectPath": "C:\\Users\\esdra\\Desktop\\Tres\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
+            "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+              "projectPath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj"
             }
           }
         }
