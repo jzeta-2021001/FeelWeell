@@ -2718,19 +2718,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rgome\\.nuget\\packages\\": {}
+    "C:\\Users\\esdra\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+      "projectUniqueName": "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
       "projectName": "DailyPositive.Api",
-      "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
-      "packagesPath": "C:\\Users\\rgome\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Api\\obj\\",
+      "projectPath": "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+      "packagesPath": "C:\\Users\\esdra\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\rgome\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\esdra\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -2742,11 +2742,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
-              "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj"
+            "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj": {
+              "projectPath": "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Application\\DailyPositive.Application.csproj"
             },
-            "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj": {
-              "projectPath": "C:\\Users\\rgome\\Documents\\IN6AM\\FeelWell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj"
+            "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj": {
+              "projectPath": "C:\\Users\\esdra\\Desktop\\RepoUwU\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj"
             }
           }
         }
