@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = DailyPositive.Domain
-build_property.ProjectDir = C:\Users\rgome\Documents\IN6AM\FeelWell\daily-positive-service\src\DailyPositive.Domain\
+build_property.ProjectDir = C:\Users\mzaba\OneDrive\Documentos\FeelWeell\daily-positive-service\src\DailyPositive.Domain\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
