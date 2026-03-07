@@ -41,7 +41,7 @@ router.get(
 router.post(
     '/',
     validateJWT,
-    validateRole('ADMIN_ROLE'),
+    validateRole('ADMIN_HEALTHY_ROLE'),
     uploadExercisePhotoMiddleware.single('photo'),
     validateCreateExercise,
     createExercise
@@ -50,7 +50,7 @@ router.post(
 router.put(
     '/:id',
     validateJWT,
-    validateRole('ADMIN_ROLE'),
+    validateRole('ADMIN_HEALTHY_ROLE'),
     validateUpdateExercise,
     updateExercise
 );
@@ -58,7 +58,7 @@ router.put(
 router.delete(
     '/:id',
     validateJWT,
-    validateRole('ADMIN_ROLE'),
+    validateRole('ADMIN_HEALTHY_ROLE'),
     validateExerciseId,
     deleteExercise
 );
@@ -67,7 +67,7 @@ router.delete(
 router.post(
     '/:id/photo',
     validateJWT,
-    validateRole('ADMIN_ROLE'),
+    validateRole('ADMIN_HEALTHY_ROLE'),
     uploadExercisePhotoMiddleware.single('photo'),
     uploadExercisePhoto
 );
@@ -76,7 +76,7 @@ router.post(
 router.delete(
     '/:id/photo',
     validateJWT,
-    validateRole('ADMIN_ROLE'),
+    validateRole('ADMIN_HEALTHY_ROLE'),
     deleteExercisePhoto
 );
 
