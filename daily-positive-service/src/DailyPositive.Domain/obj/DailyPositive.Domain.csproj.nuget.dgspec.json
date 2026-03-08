@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {}
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
         "projectName": "DailyPositive.Domain",
-        "projectPath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
-        "packagesPath": "C:\\Users\\esdra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\esdra\\Desktop\\Cinco\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\esdra\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

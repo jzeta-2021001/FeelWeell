@@ -1,2 +1,744 @@
-# FeelWeell
-Repository for the creation of FeelWeell for the development of the application on people's mental health
+# FeelWell – Plataforma de Apoyo Emocional
+
+> **Nota**: Este proyecto está basado en un trabajo con nombre "Kinal Sports" desarrollado por Braulio Echeverría para el curso IN6AM - Kinal Guatemala. Se realizaron modificaciones con fines académicos, forma parte de una arquitectura de microservicios diseñada para brindar acompañamiento emocional y seguimiento del bienestar personal mediante tecnologías modernas como Node.js, MongoDB y C# con .NET.
+
+**Nota**:
+Link de Tablero de Trello:
+(https://trello.com/invite/b/699c57c38a10fa0ded5e8712/ATTI5d93119ee8c5088bcf8bcdc41dff845c2111CB8C/problema-social)
+
+Link de documento de Evidencia del Trabajo y Participación del Grupo:
+https://cetkinal-my.sharepoint.com/:b:/g/personal/jzeta-2021001_kinal_edu_gt/IQDjC6HJ2556SY93PWHW03-FAVN2D3dlON7cL8fN5hUA3PI?e=UGWghK
+
+Link de Reunión de Retrospectiva SCRUM:
+https://teams.microsoft.com/l/meetingrecap?driveId=b%21nc5gst8WakC5wzP0JwvKZyc_9EavZQFElLhzdE3PDT6n0YIvVgZtR6m70X5RBf5h&driveItemId=01FF42JWJIFHHEU6SV7NAKEBJUIYZMNYX3&sitePath=https%3A%2F%2Fcetkinal-my.sharepoint.com%2F%3Av%3A%2Fg%2Fpersonal%2Fjzeta-2021001_kinal_edu_gt%2FIQAoKc5KelX7QKIFNEYyxuL7AYrHgfyh5X540Ti4TzH_gL4&fileUrl=https%3A%2F%2Fcetkinal-my.sharepoint.com%2Fpersonal%2Fjzeta-2021001_kinal_edu_gt%2FDocuments%2FRecordings%2FReuni%C3%B3n+en+DebuggersIN6AM-20260306_213951-Grabaci%C3%B3n+de+la+reuni%C3%B3n.mp4%3Fweb%3D1&threadId=19%3A470e8b5d06164b0d9ea0931c8784b3db%40thread.v2&organizerId=268cc993-5c26-4bd0-9c7b-267e2243c1a7&tenantId=5545b48f-b22f-4bbb-bba5-7f5040667180&callId=e9f8adaf-6683-445d-ab13-620bcb7cb600&threadType=GroupChat&meetingType=Adhoc&subType=RecapSharingLink_RecapCore
+
+---
+
+# Descripción
+
+**FeelWell** es una plataforma de apoyo emocional diseñada para acompañar a los usuarios en su bienestar psicológico y mental. La aplicación proporciona consejos, ejercicios y recursos que ayudan a fortalecer el cuidado emocional, promoviendo hábitos saludables sin reemplazar a los especialistas, sino siendo una herramienta de seguimiento constante.
+
+La plataforma está orientada a jóvenes y personas que enfrentan situaciones de estrés académico, laboral o personal, y necesitan un espacio accesible para el cuidado de su salud mental.
+
+El sistema está basado en una arquitectura de microservicios, donde cada servicio es responsable de una funcionalidad específica, permitiendo mayor escalabilidad, mantenibilidad y seguridad.
+
+Actualmente, el sistema cuenta con los siguientes servicios principales:
+
+- Auth Service
+- Healthy Service (Ejercicios, contenido y notificaciones)
+- Daily Positive Service (.NET)
+- Mood Tracking Service (Seguimiento del estado de ánimo y rachas)
+
+---
+
+# Arquitectura General
+
+El sistema implementa una arquitectura basada en microservicios, donde cada servicio se organiza en las siguientes capas:
+
+- **API**: Maneja las solicitudes HTTP, rutas y controladores
+- **Application**: Contiene los casos de uso y lógica de negocio
+- **Domain**: Define las entidades, reglas y contratos del sistema
+- **Persistence / Infrastructure**: Gestiona el acceso a bases de datos
+
+Esta arquitectura permite mantener una separación clara de responsabilidades, facilitando el mantenimiento y crecimiento del sistema.
+
+---
+
+# Auth Service
+
+## Descripción
+
+El Auth Service es el encargado de gestionar la autenticación, autorización y administración de usuarios dentro de la plataforma FeelWell.
+
+Este servicio permite registrar usuarios, iniciar sesión de forma segura y gestionar los roles del sistema, asegurando que cada usuario tenga acceso únicamente a las funcionalidades que le corresponden.
+
+También actúa como el núcleo de seguridad del sistema, validando la identidad de los usuarios y protegiendo los endpoints de los demás microservicios.
+
+## Funcionalidades Principales
+
+### Autenticación
+
+- Registro de nuevos usuarios en la plataforma
+- Inicio de sesión mediante correo y contraseña
+- Generación de tokens JWT para autenticación segura
+- Validación de credenciales del usuario
+- Identificación del usuario autenticado
+
+### Autorización
+
+El sistema maneja los siguientes roles:
+
+- **Administrador** (`ADMIN_ROLE`)
+- **Usuario** (`USER_ROLE`)
+
+Funcionalidades relacionadas:
+
+- Asignación automática del rol Usuario al registrarse
+- Creación de usuarios con roles específicos por el administrador
+- Control de acceso basado en roles
+- Protección de endpoints mediante JWT Bearer
+- Restricción de acceso según permisos
+
+### Seguridad
+
+- Encriptación de contraseñas utilizando hash seguro (bcrypt)
+- Generación de tokens JWT firmados
+- Validación de tokens en cada solicitud protegida
+- Protección contra accesos no autorizados
+- Validación de datos de entrada
+
+### Arquitectura del Servicio
+
+El servicio está organizado en:
+
+- **configs**: Configuración del servidor, base de datos y CORS
+- **helpers**: Utilidades del servicio (email helper)
+- **middlewares**: JWT, roles y validadores
+- **src**: Controladores, rutas y lógica de usuarios
+
+---
+
+# Healthy Service
+
+## Descripción
+
+El Healthy Service gestiona los ejercicios de bienestar, el contenido educativo y el sistema de notificaciones y recordatorios de la plataforma FeelWell.
+
+Este servicio funciona en conjunto con el Auth Service para validar la identidad y permisos de los usuarios.
+
+## Funcionalidades Principales
+
+### Ejercicios y Contenido de Bienestar
+
+- Catálogo de ejercicios de relajación y motivación
+- Material educativo (videos, artículos, recursos informativos)
+- Contenido relacionado con manejo de estrés, depresión y desarrollo personal
+- Hábitos saludables que favorezcan el bienestar emocional
+- Subida de imágenes mediante Cloudinary
+
+### Notificaciones y Recordatorios
+
+- Alertas cuando la racha del usuario está en riesgo de perderse
+- Recordatorios de ejercicios de bienestar pendientes
+- Notificaciones para fomentar el registro diario del estado de ánimo
+- Motivación mediante recordatorios oportunos
+
+### Seguridad
+
+- Protección de endpoints mediante JWT
+- Validación de identidad del usuario autenticado
+- Restricción de acceso según rol
+- Integración con Auth Service
+
+### Arquitectura del Servicio
+
+El servicio está organizado en:
+
+- **configs**: Configuración del servidor, base de datos y CORS
+- **helpers**: Utilidades del servicio (Cloudinary)
+- **middlewares**: JWT, roles, validadores y manejo de archivos
+- **src/contents**: Gestión de contenido educativo y recursos
+- **src/exercises**: Ejercicios y actividades de bienestar
+- **src/notifications**: Notificaciones y recordatorios
+
+---
+
+# Daily Positive Service
+
+## Descripción
+
+El Daily Positive Service es un microservicio construido en **.NET 8** encargado de gestionar el módulo de refuerzo positivo diario de la plataforma FeelWell.
+
+Este servicio implementa un módulo de acompañamiento activo que recibe al usuario con un mensaje motivador en su primer acceso del día, compuesto estratégicamente por afirmaciones positivas o citas de resiliencia.
+
+## Funcionalidades Principales
+
+- Generación de mensajes motivadores diarios por usuario
+- Afirmaciones positivas y citas de resiliencia
+- Registro del primer acceso diario del usuario
+- Anclaje emocional saludable al inicio del día
+- Fomento del ingreso constante a la aplicación
+
+### Arquitectura del Servicio
+
+El servicio sigue una arquitectura limpia en capas:
+
+- **DailyPositive.Api**: Controladores, middlewares, `appsettings.json` y `Program.cs`
+- **DailyPositive.Application**: DTOs, interfaces y servicios de aplicación
+- **DailyPositive.Domain**: Entidades e interfaces del dominio
+- **DailyPositive.Persistence**: Repositorios, contexto de MongoDB y seeders de datos
+- **global.json**: Versión fijada del SDK de .NET
+- **DailyPositiveService.sln**: Solución de Visual Studio
+
+---
+
+# Mood Tracking Service
+
+## Descripción
+
+El Mood Tracking Service es el microservicio dedicado al registro, análisis y seguimiento del estado de ánimo del usuario. Gestiona el historial emocional, las rachas de uso continuo y el cuestionario de evaluación inicial, con integración a RabbitMQ para comunicación entre servicios.
+
+## Funcionalidades Principales
+
+### Seguimiento del Estado de Ánimo
+
+- Registro diario de emociones con nivel de intensidad y notas
+- Consulta del registro del día y del historial completo
+- Cuestionario inicial de evaluación psicológica
+- Perfil emocional del usuario
+- Publicación de eventos via RabbitMQ
+
+### Rachas (Streaks)
+
+- Consulta de la racha actual del usuario
+- Actualización automática de la racha tras cada registro
+- Verificación si la racha está en riesgo de perderse
+
+### Administración
+
+- Listado y eliminación de entradas de mood (rol `admin-MoodTracking`)
+- Gestión y reseteo de rachas de usuarios
+- Consulta de perfiles de usuarios
+- Estadísticas generales del sistema
+
+### Seguridad
+
+- Protección de endpoints mediante JWT
+- Validación de identidad del usuario autenticado
+- Rol específico `admin-MoodTracking` para rutas administrativas
+
+### Arquitectura del Servicio
+
+El servicio está organizado en:
+
+- **configs**: `app.js`, `db.configuration.js`, `cors.configuration.js`, `helmet.configuration.js`, `rateLimit.configuration.js`
+- **middlewares**: `validate-JWT.js`, `validate-role.js`, `mood-validator.js`, `tracking-validator.js`, `check-validator.js`, `handle-errors.js`
+- **src/mood-tracking**: Controladores, servicios, rutas y modelos de mood, streak y administración; `rabbitmq.service.js`
+
+---
+
+# Tecnologías Utilizadas
+
+## Backend
+
+- Node.js
+- Express.js
+- JavaScript
+- C# con .NET 8
+- Arquitectura de Microservicios
+- RabbitMQ (mensajería entre servicios en Mood Tracking)
+
+## Base de Datos
+
+### MongoDB
+
+Utilizado en:
+
+- Usuarios y autenticación (Auth Service)
+- Ejercicios, contenido y notificaciones (Healthy Service)
+- Mensajes motivadores diarios (Daily Positive Service)
+- Registros emocionales y rachas (Mood Tracking Service)
+
+Tecnología: Mongoose ODM (Node.js) / MongoDB.Driver (C# .NET)
+
+## Almacenamiento de Archivos
+
+- Cloudinary — para imágenes de ejercicios y contenido (Healthy Service)
+
+## Seguridad
+
+- JWT Authentication (jsonwebtoken / Microsoft.AspNetCore.Authentication.JwtBearer)
+- Hash de contraseñas con bcrypt
+- Validación de datos con express-validator
+- Helmet y Rate Limiting en todos los servicios Node.js
+
+## Herramientas de Gestión
+
+- Trello — gestión de tareas por sprint
+- GitHub — control de versiones y colaboración
+- Notion — documentación y planificación del equipo
+- Visual Studio Code — desarrollo de la aplicación
+- Postman — pruebas de endpoints durante el desarrollo
+
+---
+
+# Seguridad
+
+El sistema implementa:
+
+- JWT Authentication con expiración configurable
+- Hash de contraseñas con bcrypt
+- Protección de rutas privadas por rol
+- Validación de datos de entrada
+- Manejo de errores centralizado
+- Middlewares de autenticación y autorización
+- Rate limiting en todos los servicios Node.js
+- Headers de seguridad con Helmet
+
+---
+
+# Endpoints Principales
+
+## Base URLs
+
+| Servicio | URL Base |
+|---|---|
+| Auth Service | `http://localhost:3006/feelWell/v1` |
+| Healthy Service | `http://localhost:3008/feelWell/v1` |
+| Daily Positive Service | `http://localhost:5000/api` |
+| Mood Tracking Service | `http://localhost:3001/feelweell/v1` |
+
+---
+
+## Auth Service
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| POST | `/auth/register` | Registro de nuevo usuario | No |
+| POST | `/auth/login` | Inicio de sesión | No |
+| GET | `/auth/profile` | Obtener perfil del usuario autenticado | Token |
+| PUT | `/auth/update` | Actualizar datos del usuario | Token |
+| DELETE | `/auth/delete/:id` | Eliminar cuenta | ADMIN_ROLE |
+| GET | `/users/` | Listar todos los usuarios | ADMIN_ROLE |
+| PATCH | `/users/role/:id` | Cambiar rol de usuario | ADMIN_ROLE |
+
+```json
+// Registro
+{
+  "name": "Juan García",
+  "email": "juan@example.com",
+  "password": "miContraseña123",
+  "username": "juangarcia"
+}
+
+// Login
+{
+  "email": "juan@example.com",
+  "password": "miContraseña123"
+}
+```
+
+---
+
+## Mood Tracking Service
+
+### Mood Entries
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| POST | `/moodTracking/mood` | Registrar emoción del día | Token |
+| GET | `/moodTracking/mood/today` | Obtener registro de hoy | Token |
+| GET | `/moodTracking/mood/history` | Obtener historial emocional | Token |
+| GET | `/moodTracking/questionnaire` | Obtener cuestionario inicial | Token |
+| POST | `/moodTracking/questionnaire` | Enviar respuestas del cuestionario | Token |
+| GET | `/moodTracking/profile` | Obtener perfil emocional del usuario | Token |
+| POST | `/moodTracking/events/publish` | Publicar eventos de ánimo (RabbitMQ) | Token |
+
+### Streaks
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/streak` | Obtener racha actual del usuario | Token |
+| PUT | `/streak` | Actualizar racha | Token |
+| GET | `/streak/at-risk` | Verificar si la racha está en riesgo | Token |
+
+### Administración (rol `admin-MoodTracking`)
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/admin/mood-entries` | Listar todas las entradas de mood | admin-MoodTracking |
+| DELETE | `/admin/mood-entries/:id` | Eliminar una entrada de mood | admin-MoodTracking |
+| GET | `/admin/streaks` | Listar rachas de todos los usuarios | admin-MoodTracking |
+| PUT | `/admin/streaks/:userId/reset` | Resetear racha de un usuario | admin-MoodTracking |
+| GET | `/admin/profiles` | Listar todos los perfiles | admin-MoodTracking |
+| DELETE | `/admin/profiles/:userId` | Eliminar perfil de un usuario | admin-MoodTracking |
+| GET | `/admin/stats` | Obtener estadísticas del sistema | admin-MoodTracking |
+
+```json
+// Registrar emoción
+{
+  "emotion": "feliz",
+  "intensity": 4,
+  "note": "Tuve un buen día en clase",
+  "date": "2026-03-06"
+}
+```
+
+Estados de emoción disponibles:
+```
+feliz | tranquilo | triste | ansioso | enojado | estresado | motivado
+```
+
+---
+
+## Exercises (Healthy Service)
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/exercises/` | Listar todos los ejercicios disponibles | Token |
+| GET | `/exercises/:id` | Ver detalle de un ejercicio | Token |
+| GET | `/exercises/category/:category` | Filtrar ejercicios por categoría | Token |
+| POST | `/exercises/` | Crear nuevo ejercicio | ADMIN_ROLE |
+| PUT | `/exercises/:id` | Actualizar ejercicio | ADMIN_ROLE |
+| DELETE | `/exercises/:id` | Eliminar ejercicio | ADMIN_ROLE |
+| POST | `/exercises/:id/complete` | Marcar ejercicio como completado | Token |
+
+```json
+// Crear ejercicio
+{
+  "title": "Respiración 4-7-8",
+  "description": "Técnica de respiración para reducir la ansiedad",
+  "category": "relajación",
+  "duration": 5,
+  "steps": [
+    "Inhala durante 4 segundos",
+    "Mantén la respiración 7 segundos",
+    "Exhala lentamente durante 8 segundos"
+  ],
+  "difficulty": "fácil"
+}
+```
+
+Categorías disponibles:
+```
+relajación | respiración | meditación | motivación | movimiento
+```
+
+---
+
+## Contents (Healthy Service)
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/contents/` | Listar todo el contenido educativo | Token |
+| GET | `/contents/:id` | Ver detalle de un recurso | Token |
+| GET | `/contents/type/:type` | Filtrar contenido por tipo | Token |
+| POST | `/contents/` | Crear nuevo recurso | ADMIN_ROLE |
+| PUT | `/contents/:id` | Actualizar recurso | ADMIN_ROLE |
+| DELETE | `/contents/:id` | Eliminar recurso | ADMIN_ROLE |
+
+```json
+// Crear contenido
+{
+  "title": "Cómo manejar el estrés académico",
+  "type": "articulo",
+  "description": "Guía práctica para estudiantes",
+  "url": "https://ejemplo.com/articulo",
+  "tags": ["estrés", "académico", "jóvenes"]
+}
+```
+
+Tipos de contenido:
+```
+articulo | video | recurso
+```
+
+---
+
+## Notifications (Healthy Service)
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/notifications/` | Obtener todas las notificaciones del usuario | Token |
+| PUT | `/notifications/:id` | Ver detalle de una notificación | Token |
+| POST | `/notifications/` | Crear una nueva notificación | ADMIN_ROLE |
+| GET | `/notifications/:id/read` | Marcar notificación como leída | Token |
+| PATCH | `/notifications/read-all` | Marcar todas las notificaciones como leídas | Token |
+| PATCH | `/notifications/:id` | Eliminar una notificación | Token |
+| PATCH | `/notifications/unread/count` | Obtener cantidad de notificaciones no leídas | Token |
+| POST | `/notifications/streak-alert` | Enviar alerta de racha en riesgo | Token |
+| POST | `/notifications/exercise-reminder` | Enviar recordatorio de ejercicio pendiente | Token |
+
+```json
+// Crear notificación
+{
+  "userId": "id_del_usuario",
+  "title": "¡Tu racha está en riesgo!",
+  "message": "No olvides registrar tu estado de ánimo hoy para mantener tu racha de 5 días.",
+  "type": "streak_alert",
+  "isRead": false
+}
+
+// Alerta de racha en riesgo
+{
+  "userId": "id_del_usuario",
+  "currentStreak": 5
+}
+
+// Recordatorio de ejercicio
+{
+  "userId": "id_del_usuario",
+  "exerciseId": "id_del_ejercicio",
+  "exerciseTitle": "Respiración 4-7-8"
+}
+```
+
+Tipos de notificación:
+```
+streak_alert | exercise_reminder | mood_reminder | motivational | general
+```
+
+---
+
+## Daily Positive Service (.NET)
+
+| Método | Endpoint | Descripción | Auth |
+|---|---|---|---|
+| GET | `/daily/message` | Obtener mensaje motivador del día | Token |
+| GET | `/daily/history/:userId` | Ver historial de mensajes del usuario | Token |
+| POST | `/daily/message` | Crear nuevo mensaje motivador | ADMIN_ROLE |
+| PUT | `/daily/message/:id` | Actualizar mensaje motivador | ADMIN_ROLE |
+| DELETE | `/daily/message/:id` | Eliminar mensaje motivador | ADMIN_ROLE |
+
+```json
+// Respuesta de mensaje del día
+{
+  "message": "Cada pequeño paso que das hoy es un gran avance hacia tu bienestar.",
+  "type": "afirmacion",
+  "date": "2026-03-06",
+  "alreadySeen": false
+}
+```
+
+---
+
+# Estructura del Proyecto
+
+```
+FEELWELL/
+├── auth-service/                  # Servicio de autenticación (Node.js)
+│   ├── configs/                   # Configuración del servidor, DB, CORS, Helmet y rate limit
+│   ├── helpers/                   # email.helper.js
+│   ├── middlewares/               # JWT, roles, validadores y manejo de errores
+│   ├── src/                       # user.model.js, user.controller.js, user.services.js, user.routes.js
+│   ├── .env
+│   ├── index.js
+│   ├── package.json
+│   └── pnpm-lock.yaml
+│
+├── healthy-service/               # Servicio de bienestar (Node.js)
+│   ├── configs/                   # Configuración del servidor, DB, CORS, Helmet y rate limit
+│   ├── helpers/                   # cloudinary-service.js
+│   ├── middlewares/               # JWT, roles, validadores, file-uploader y manejo de errores
+│   ├── src/
+│   │   ├── contents/              # content.model.js, content.controller.js, content.services.js, content.routes.js
+│   │   ├── exercises/             # exercise.model.js, exercise.controller.js, exercise.services.js, exercise.routes.js, userProgress.model.js
+│   │   └── notifications/         # notification.model.js, notification.controller.js, notification.service.js, notification.route.js, notificationPreferences.model.js
+│   ├── .env
+│   ├── index.js
+│   ├── package.json
+│   └── pnpm-lock.yaml
+│
+├── daily-positive-service/        # Servicio de refuerzo positivo (.NET 8)
+│   ├── src/
+│   │   ├── DailyPositive.Api/          # Controllers/, Middlewares/, Properties/
+│   │   │   ├── appsettings.json        # Configuración de MongoDB, JWT y Serilog
+│   │   │   ├── appsettings.Development.json
+│   │   │   └── Program.cs
+│   │   ├── DailyPositive.Application/  # DTOs/, Interfaces/, Services/
+│   │   ├── DailyPositive.Domain/       # Entities/, Interfaces/
+│   │   └── DailyPositive.Persistence/  # Config/, Data/, Repositories/
+│   ├── DailyPositiveService.sln
+│   └── global.json
+│
+└── mood-tracking/                 # Servicio de seguimiento del estado de ánimo (Node.js)
+    ├── configs/                   # app.js, db.configuration.js, cors.configuration.js,
+    │                              # helmet.configuration.js, rateLimit.configuration.js
+    ├── middlewares/               # validate-JWT.js, validate-role.js, mood-validator.js,
+    │                              # tracking-validator.js, check-validator.js, handle-errors.js
+    ├── src/
+    │   └── mood-tracking/
+    │       ├── mood.controller.js
+    │       ├── mood.service.js
+    │       ├── mood.route.js
+    │       ├── moodEntry.model.js
+    │       ├── questionnaireResponse.model.js
+    │       ├── streak.controller.js
+    │       ├── streak.service.js
+    │       ├── streak.route.js
+    │       ├── streak.model.js
+    │       ├── admin.controller.js
+    │       ├── admin.service.js
+    │       ├── admin.router.js
+    │       └── rabbitmq.service.js
+    ├── .env
+    ├── generate-token.js
+    ├── index.js
+    ├── package.json
+    └── pnpm-lock.yaml
+```
+
+---
+
+# Instalación
+
+## Requisitos
+
+- Node.js 18+
+- pnpm
+- MongoDB
+- RabbitMQ (para Mood Tracking Service)
+- .NET 8 SDK
+
+---
+
+## 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/tu-usuario/FeelWell.git
+cd FeelWell
+```
+
+## 2. Instalar dependencias de los servicios Node.js
+
+```bash
+# Auth Service
+cd auth-service
+pnpm install
+
+# Healthy Service
+cd ../healthy-service
+pnpm install
+
+# Mood Tracking Service
+cd ../mood-tracking
+pnpm install
+```
+
+## 3. Configurar variables de entorno
+
+Crear el archivo `.env` en cada servicio Node.js con las variables indicadas.
+
+### auth-service/.env
+```env
+PORT=3006
+
+URI_MONGODB=mongodb://localhost:27017/feel-well
+
+JWT_SECRET=tu_secreto_aqui
+JWT_ISSUER=feelWell
+JWT_AUDIENCE=feelWell
+JWT_EXPIRES_IN=1h
+
+EMAIL_PROVIDER=gmail
+EMAIL_USER=tu_correo@gmail.com
+EMAIL_PASS=tu_app_password
+FRONTEND_URL=http://localhost:3006/feelWell/v1/auth
+NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+### healthy-service/.env
+```env
+PORT=3008
+
+URI_MONGODB=mongodb://localhost:27017/feel-well
+
+JWT_SECRET=tu_secreto_aqui
+JWT_ISSUER=feelWell
+JWT_AUDIENCE=feelWell
+JWT_EXPIRES_IN=1h
+
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+CLOUDINARY_BASE_FOLDER=https://res.cloudinary.com/tu_cloud_name/image/upload/feel_well
+CLOUDINARY_DEFAULT_AVATAR_NAME=nombre_avatar_default
+
+NODE_TLS_REJECT_UNAUTHORIZED=0
+```
+
+### mood-tracking/.env
+```env
+PORT=3001
+
+URI_MONGODB=mongodb://localhost:27017/feel-well
+
+JWT_SECRET=tu_secreto_aqui
+JWT_ISSUER=feelWell
+JWT_AUDIENCE=feelWell
+JWT_EXPIRES_IN=1h
+
+RABBITMQ_URL=amqp://localhost
+```
+
+### daily-positive-service — appsettings.json
+
+El archivo se encuentra en `daily-positive-service/src/DailyPositive.Api/appsettings.json`:
+
+```json
+{
+  "MongoDbSettings": {
+    "ConnectionString": "mongodb://localhost:27017",
+    "DatabaseName": "feel-well"
+  },
+  "JwtSettings": {
+    "Secret": "tu_secreto_aqui",
+    "Issuer": "feelWell",
+    "Audience": "feelWell"
+  },
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "WriteTo": [
+      { "Name": "Console" }
+    ]
+  },
+  "AllowedHosts": "*"
+}
+```
+
+> **Importante**: El `JWT_SECRET` / `JwtSettings.Secret` debe ser el mismo en todos los servicios para que la validación de tokens funcione correctamente entre microservicios.
+
+## 4. Iniciar los servicios
+
+```bash
+# Terminal 1 — Auth Service
+cd auth-service
+pnpm run dev
+
+# Terminal 2 — Healthy Service
+cd healthy-service
+pnpm run dev
+
+# Terminal 3 — Mood Tracking Service
+cd mood-tracking
+pnpm run dev
+
+# Terminal 4 — Daily Positive Service (.NET)
+cd daily-positive-service
+dotnet restore
+dotnet run --project src/DailyPositive.Api
+```
+
+---
+
+# Créditos
+
+Proyecto base desarrollado por:
+**Braulio Echeverría**
+Curso IN6AM – Kinal Guatemala 2026
+
+Repositorio Original:
+https://github.com/IN6AMProm33/auth-service-dotnet.git
+
+**NOTA** 
+Este proyecto fue utilizado como referencia académica y posteriormente adaptado y modificado. También se tomó como referencia información que viene de las siguientes fuentes:
+
+- Auth0. (2024). **node-jsonwebtoken**.  
+  https://github.com/auth0/node-jsonwebtoken
+
+- express-validator. (2024). **express-validator documentation**.  
+  https://express-validator.github.io/docs/
+
+- Auth0. (2024). [node-jsonwebtoken](https://github.com/auth0/node-jsonwebtoken)
+
+- express-validator. (2024). [express-validator documentation](https://express-validator.github.io/docs/)
+
+- Axios. (2024). [Axios Documentation](https://axios-http.com/docs/intro)
+
+---
