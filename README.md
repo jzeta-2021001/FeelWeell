@@ -291,34 +291,121 @@ El sistema implementa:
 ---
 
 ## Auth Service
-
 | Método | Endpoint | Descripción | Auth |
-|---|---|---|---|
-| POST | `/auth/register` | Registro de nuevo usuario | No |
-| POST | `/auth/login` | Inicio de sesión | No |
-| GET | `/auth/profile` | Obtener perfil del usuario autenticado | Token |
-| PUT | `/auth/update` | Actualizar datos del usuario | Token |
-| DELETE | `/auth/delete/:id` | Eliminar cuenta | ADMIN_ROLE |
-| GET | `/users/` | Listar todos los usuarios | ADMIN_ROLE |
-| PATCH | `/users/role/:id` | Cambiar rol de usuario | ADMIN_ROLE |
+|--------|----------|-------------|------|
+| POST | `/auth/` | Registrar nuevo usuario | — |
+| GET | `/auth/activate/:token` | Activar cuenta por email | — |
+| POST | `/auth/login` | Iniciar sesión | — |
+| PUT | `/auth/change-password` | Cambiar contraseña | Token |
+| POST | `/auth/forgot-password` | Solicitar recuperación de contraseña | — |
+| POST | `/auth/reset-password/:token` | Restablecer contraseña | — |
+
+### Health
+
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | `/feelWell/v1/health` | Estado del servicio |
+
+---
+
+## Ejemplos de request
+
+**Registrar usuario** — `POST /auth/`
 
 ```json
-// Registro
 {
-  "name": "Juan García",
-  "email": "juan@example.com",
-  "password": "miContraseña123",
-  "username": "juangarcia"
+  "firstName": "Ana",
+  "surname": "García",
+  "email": "ana@ejemplo.com",
+  "phone": "50212345678",
+  "username": "anagarcia",
+  "password": "MiPassword123"
 }
+```
 
-// Login
+Tras el registro se envía un correo de activación. La cuenta no puede iniciar sesión hasta ser activada.
+
+**Login** — `POST /auth/login`
+
+```json
 {
-  "email": "juan@example.com",
-  "password": "miContraseña123"
+  "username": "anagarcia",
+  "password": "MiPassword123"
+}
+```
+
+Respuesta exitosa incluye el objeto `user`, el `token` JWT y un `dailyMessage` proveniente del daily-service (si está disponible).
+
+**Cambiar contraseña** — `PUT /auth/change-password`
+
+```json
+{
+  "currentPassword": "MiPassword123",
+  "newPassword": "NuevoPassword456"
+}
+```
+
+**Recuperar contraseña** — `POST /auth/forgot-password`
+
+```json
+{
+  "email": "ana@ejemplo.com"
+}
+```
+
+**Restablecer contraseña** — `POST /auth/reset-password/:token`
+
+```json
+{
+  "newPassword": "NuevoPassword456"
 }
 ```
 
 ---
+
+## Autenticación
+
+El token JWT se envía en el header de los endpoints protegidos:
+
+```
+x-token: <token>
+// o bien
+Authorization: Bearer <token>
+```
+
+El token expira en `1h` por defecto (configurable con `JWT_EXPIRES_IN`).
+
+---
+
+## Roles
+
+| Rol | Descripción |
+|-----|-------------|
+| `USER_ROLE` | Usuario estándar de la plataforma |
+| `ADMIN_ROLE` | Administrador principal |
+| `ADMIN_USERS_ROLE` | Administrador de usuarios |
+| `ADMIN_MOODTRACKING_ROLE` | Administrador de seguimiento de estado de ánimo |
+| `ADMIN_HEALTHY_ROLE` | Administrador del módulo de ejercicios y contenidos |
+
+---
+
+## Seeder de administradores
+
+Al iniciar el servidor se crean automáticamente los siguientes usuarios si no existen:
+
+| Username | Email | Rol |
+|----------|-------|-----|
+| `admin` | admin@feelwell.com | `ADMIN_ROLE` |
+| `admin-users` | admin.users@feelwell.com | `ADMIN_USERS_ROLE` |
+| `admin-mood` | admin.mood@feelwell.com | `ADMIN_MOODTRACKING_ROLE` |
+| `admin-healthy` | admin.healthy@feelwell.com | `ADMIN_HEALTHY_ROLE` |
+
+---
+
+## Notas
+
+- Las cuentas nuevas se crean con `isActive: false` y requieren activación por correo antes de poder hacer login.
+- El login intenta obtener un mensaje diario del `daily-service` en `localhost:5001`. Si ese servicio no está disponible, el login igual responde con éxito.
 
 ## Mood Tracking Service
 
@@ -373,67 +460,83 @@ feliz | tranquilo | triste | ansioso | enojado | estresado | motivado
 
 ## Exercises (Healthy Service)
 
+## Endpoints
+
+### Exercises `/exercises`
+
 | Método | Endpoint | Descripción | Auth |
-|---|---|---|---|
-| GET | `/exercises/` | Listar todos los ejercicios disponibles | Token |
+|--------|----------|-------------|------|
+| GET | `/exercises/` | Listar todos los ejercicios | Token |
+| GET | `/exercises/recommended` | Ejercicios recomendados según perfil | Token |
+| GET | `/exercises/user/progress` | Ver progreso del usuario | USER_ROLE |
 | GET | `/exercises/:id` | Ver detalle de un ejercicio | Token |
-| GET | `/exercises/category/:category` | Filtrar ejercicios por categoría | Token |
-| POST | `/exercises/` | Crear nuevo ejercicio | ADMIN_ROLE |
-| PUT | `/exercises/:id` | Actualizar ejercicio | ADMIN_ROLE |
-| DELETE | `/exercises/:id` | Eliminar ejercicio | ADMIN_ROLE |
-| POST | `/exercises/:id/complete` | Marcar ejercicio como completado | Token |
+| POST | `/exercises/` | Crear nuevo ejercicio (con foto) | ADMIN_HEALTHY_ROLE |
+| PUT | `/exercises/:id` | Actualizar ejercicio | ADMIN_HEALTHY_ROLE |
+| DELETE | `/exercises/:id` | Eliminar ejercicio | ADMIN_HEALTHY_ROLE |
+| POST | `/exercises/:id/photo` | Subir o reemplazar foto | ADMIN_HEALTHY_ROLE |
+| DELETE | `/exercises/:id/photo` | Eliminar foto del ejercicio | ADMIN_HEALTHY_ROLE |
+| POST | `/exercises/:exerciseId/complete` | Marcar ejercicio como completado | USER_ROLE |
+| POST | `/exercises/:exerciseId/save` | Guardar ejercicio para después | USER_ROLE |
+
+**Crear ejercicio** — `POST /exercises/`
 
 ```json
-// Crear ejercicio
 {
   "title": "Respiración 4-7-8",
   "description": "Técnica de respiración para reducir la ansiedad",
-  "category": "relajación",
+  "type": "RESPIRACIÓN",
+  "targetProfile": "ANSIOSO",
   "duration": 5,
-  "steps": [
-    "Inhala durante 4 segundos",
-    "Mantén la respiración 7 segundos",
-    "Exhala lentamente durante 8 segundos"
-  ],
-  "difficulty": "fácil"
+  "instructions": "Inhala 4 seg, mantén 7 seg, exhala 8 seg"
 }
 ```
 
-Categorías disponibles:
-```
-relajación | respiración | meditación | motivación | movimiento
-```
+Tipos de ejercicio: `RESPIRACIÓN | MEDITACIÓN | YOGA | RELAJACIÓN | MINDFULNESS | ESTIRAMIENTO`
+
+Perfiles objetivo: `EQUILIBRADO | RESILIENTE | ANSIOSO | DEPRESIVO`
+
+La foto se envía como `multipart/form-data` con el campo `photo`.
 
 ---
 
-## Contents (Healthy Service)
+### Contents `/contents`
 
 | Método | Endpoint | Descripción | Auth |
-|---|---|---|---|
+|--------|----------|-------------|------|
 | GET | `/contents/` | Listar todo el contenido educativo | Token |
+| GET | `/contents/category/:category` | Filtrar por categoría | Token |
 | GET | `/contents/:id` | Ver detalle de un recurso | Token |
-| GET | `/contents/type/:type` | Filtrar contenido por tipo | Token |
-| POST | `/contents/` | Crear nuevo recurso | ADMIN_ROLE |
-| PUT | `/contents/:id` | Actualizar recurso | ADMIN_ROLE |
-| DELETE | `/contents/:id` | Eliminar recurso | ADMIN_ROLE |
+| POST | `/contents/` | Crear nuevo recurso (con foto) | ADMIN_HEALTHY_ROLE |
+| PUT | `/contents/:id` | Actualizar recurso | ADMIN_HEALTHY_ROLE |
+| DELETE | `/contents/:id` | Eliminar recurso | ADMIN_HEALTHY_ROLE |
+
+**Crear contenido** — `POST /contents/`
 
 ```json
-// Crear contenido
 {
   "title": "Cómo manejar el estrés académico",
-  "type": "articulo",
   "description": "Guía práctica para estudiantes",
+  "type": "ARTÍCULO",
+  "category": "ESTRÉS",
   "url": "https://ejemplo.com/articulo",
-  "tags": ["estrés", "académico", "jóvenes"]
+  "body": "Contenido completo del artículo..."
 }
 ```
 
-Tipos de contenido:
-```
-articulo | video | recurso
-```
+Tipos: `VIDEO | ARTÍCULO | RECURSO`
+
+Categorías: `ESTRÉS | DEPRESIÓN | DESARROLLO PERSONAL | ANSIEDAD | BIENESTAR GENERAL`
+
+La foto se envía como `multipart/form-data` con el campo `photo`.
 
 ---
+
+## Notas
+
+- El borrado de ejercicios y contenidos es lógico (`isDeleted: true`). Las consultas de contenido excluyen automáticamente los registros eliminados.
+- Las imágenes se almacenan en Cloudinary. Al crear ejercicios o contenidos con foto, el request debe enviarse como `multipart/form-data`.
+- El token JWT se acepta tanto en el header `x-token` como en `Authorization: Bearer <token>`.
+
 
 ## Notifications (Healthy Service)
 
