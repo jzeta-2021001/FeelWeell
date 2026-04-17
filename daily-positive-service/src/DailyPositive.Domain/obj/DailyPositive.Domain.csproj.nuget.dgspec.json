@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {}
+    "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
+    "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
         "projectName": "DailyPositive.Domain",
-        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
+        "projectPath": "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\DailyPositive.Domain.csproj",
         "packagesPath": "C:\\Users\\mzaba\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
+        "outputPath": "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\mzaba\\AppData\\Roaming\\NuGet\\NuGet.Config"

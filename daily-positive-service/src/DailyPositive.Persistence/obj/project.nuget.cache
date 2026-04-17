@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YIyyvlwwXfQ=",
+  "dgSpecHash": "n7KjpyTFo5E=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
+  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Persistence\\DailyPositive.Persistence.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mzaba\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\mzaba\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.3\\microsoft.extensions.dependencyinjection.abstractions.10.0.3.nupkg.sha512",

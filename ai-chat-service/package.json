@@ -1,0 +1,30 @@
+{
+  "name": "ai-chat-service",
+  "version": "1.0.0",
+  "description": "Servicio de implementación de conversaciones con IA en el proyecto FeelWell",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "Daniel Marroquín & Los Debuggers",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "latest",
+    "express": "4.21.2",
+    "express-rate-limit": "^8.3.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.0",
+    "morgan": "^1.10.1",
+    "openai": "^6.27.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}
