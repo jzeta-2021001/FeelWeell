@@ -7,7 +7,7 @@ const router = Router();
 
 // Solo admin-MoodTracking puede acceder
 router.use(validateJWT);
-router.use(requireRole('admin-MoodTracking'));
+router.use(requireRole('ADMIN_MOODTRACKING_ROLE'));
 
 // Mood entries
 router.get('/mood-entries', adminController.getAllMoodEntries);

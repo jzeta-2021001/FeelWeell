@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Wb/pOEdMrmA=",
+  "dgSpecHash": "zZExSpNqmI0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Documentos\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
+  "projectFilePath": "C:\\Users\\mzaba\\OneDrive\\Escritorio\\Repositorios(Subir cosas)\\FeelWeell\\daily-positive-service\\src\\DailyPositive.Api\\DailyPositive.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\mzaba\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",
     "C:\\Users\\mzaba\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.0\\microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
