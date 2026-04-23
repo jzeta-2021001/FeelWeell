@@ -9,7 +9,7 @@ export const createUserRecord = async ({ userData }) => {
 
     const user = new User({
         ...userData,
-        role: 'USER_ROLE',
+        role: userData.role || 'USER_ROLE',
         password: hashedPassword,
         activationToken,
         isActive: false

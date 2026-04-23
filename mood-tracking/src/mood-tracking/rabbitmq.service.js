@@ -1,4 +1,4 @@
-/*import amqp from 'amqplib';
+import amqp from 'amqplib';
 
 let channel = null;
 
@@ -35,7 +35,7 @@ export const publishMoodEvent = async (routingKey, payload) => {
     const message = Buffer.from(JSON.stringify(payload));
     channel.publish('mood_exchange', routingKey, message, { persistent: true });
     console.log(`Evento publicado: ${routingKey}`, payload);
-};*/
+};
 
 
 //Esto se utilizará mas adelante cuando se implemente la integración con RabbitMQ para publicar eventos de estado de ánimo. Por ahora, el código está comentado para evitar errores si RabbitMQ no está configurado o disponible durante el desarrollo inicial.

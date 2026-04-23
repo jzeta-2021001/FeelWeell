@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import * as adminController from './admin.controller.js';
 import validateJWT from '../../../middlewares/validate-JWT.js';
-import { requireRole } from '../../../middlewares/validate-role.js';
+import { validateRole } from '../../../middlewares/validate-role.js';
+
 
 const router = Router();
 
 // Solo admin-MoodTracking puede acceder
 router.use(validateJWT);
-router.use(requireRole('ADMIN_MOODTRACKING_ROLE'));
+router.use(validateRole('ADMIN_MOODTRACKING_ROLE'));
 
 // Mood entries
 router.get('/mood-entries', adminController.getAllMoodEntries);

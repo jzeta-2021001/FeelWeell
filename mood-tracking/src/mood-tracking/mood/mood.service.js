@@ -3,6 +3,7 @@ import MoodEntry from './moodEntry.model.js';
 import QuestionnaireResponse from '../questionnaireResponse.model.js';
 import { updateStreak } from '../streak/streak.service.js';
 
+
 export const registerMoodEntry = async (userId, {emotion, intensity, note}) => {
     const existing = await getTodayEntry(userId);
     if (existing) throw new Error('Ya se ha registrado el estado de ánimo para hoy');
@@ -123,5 +124,7 @@ export const publishMoodEvents = async (userId, eventType) => {
   }
 
   // RabbitMQ pendiente de integración
-  throw new Error('RabbitMQ aún no está integrado. Pendiente de implementación.');
+  const { publishMoodEvent } = await import('../rabbitmq.service.js');
+  await publishMoodEvent(eventType, { userId, timestamp: new Date().toISOString() });
+  return { success: true, eventType, userId };
 };

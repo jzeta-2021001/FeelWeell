@@ -36,10 +36,18 @@ builder.Services.AddScoped<IMotivationMgService, MotivationalMgService>();
 builder.Services.AddScoped<DataSeeder>();
 
 
-//jwt authentication
-var jwtSecret = builder.Configuration["JwtSettings:Secret"]!;
-var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]!;
-var jwtAudience = builder.Configuration["JwtSettings:Audience"]!;
+//jwt authentication - modificado para que no harcodee el secret, issuer y audience, sino que los lea de la configuración (appsettings.Development.json)
+var jwtSecret = builder.Configuration["JwtSettings:Secret"]
+    ?? throw new InvalidOperationException(
+        "JWT Secret no configurado. Agrega JwtSettings:Secret en appsettings.Development.json");
+
+var jwtIssuer = builder.Configuration["JwtSettings:Issuer"]
+    ?? throw new InvalidOperationException(
+        "JWT Issuer no configurado.");
+
+var jwtAudience = builder.Configuration["JwtSettings:Audience"]
+    ?? throw new InvalidOperationException(
+        "JWT Audience no configurado.");
 
 builder.Services.AddAuthentication(options =>
 {

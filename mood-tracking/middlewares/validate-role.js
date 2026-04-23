@@ -4,7 +4,7 @@
  * Middleware para validar que el usuario tenga un rol específico
  * Debe ejecutarse después de validateJWT
  */
-export const requireRole = (...allowedRoles) => {
+export const validateRole = (...allowedRoles) => {
     return (req, res, next) => {
         if (!req.user) {
             return res.status(401).json({

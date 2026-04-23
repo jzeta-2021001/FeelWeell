@@ -12,7 +12,7 @@ import { errorHandler } from '../middlewares/handle-errors.js';
 import moodRoute from '../src/mood-tracking/mood/mood.route.js';      
 import streakRoutes from '../src/mood-tracking/streak/streak.route.js'; 
 import adminRoutes from '../src/mood-tracking/admin/admin.router.js';
-//import { connect as connectRabbit } from '../src/mood-tracking/rabbitmq.service.js'; // ← nuevo
+import { connect as connectRabbit } from '../src/mood-tracking/rabbitmq.service.js'; // ← nuevo
 
 const BASE_PATH = '/feelweell/v1';
 
@@ -54,7 +54,7 @@ export const initServer = async () => {
     try {
         middlewares(app);
         await dbConnection();
-        //await connectRabbit(); // ← nuevo
+        await connectRabbit(); 
         routes(app);
         app.use(errorHandler);
 
