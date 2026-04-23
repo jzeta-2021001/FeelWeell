@@ -5,18 +5,17 @@ export const createContent = async (req, res) => {
         const content = await createContentRecord({
             contentData: req.body,
             file: req.file
-        })
-
-        res.status(201).json({
+        });
+        return res.status(201).json({
             success: true,
             message: 'Contenido creado exitosamente',
             data: content
         });
     } catch (e) {
-        res.status(500).json({
+        console.error('[createContent]', e);
+        return res.status(500).json({
             success: false,
-            message: 'Error al crear el contenido',
-            error: e.message
+            message: 'Error interno del servidor'
         });
     }
 };
@@ -25,18 +24,17 @@ export const updateContent = async (req, res) => {
     try {
         const { id } = req.params;
         const content = await updateContentRecord(id, req.body, req.file);
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Contenido actualizado exitosamente',
             data: content
         });
     } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al actualizar el contenido',
-            error: e.message
-        });
+        if (e.message.includes('no encontrado') || e.message.includes('not found')) {
+            return res.status(404).json({ success: false, message: 'Contenido no encontrado' });
+        }
+        console.error('[updateContent]', e);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
@@ -44,36 +42,31 @@ export const deleteContent = async (req, res) => {
     try {
         const { id } = req.params;
         const result = await softDeleteContent(id);
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: result.message
         });
     } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al eliminar el contenido',
-            error: e.message
-        });
+        if (e.message.includes('no encontrado') || e.message.includes('not found')) {
+            return res.status(404).json({ success: false, message: 'Contenido no encontrado' });
+        }
+        console.error('[deleteContent]', e);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
 export const listEducationalContent = async (req, res) => {
     try {
         const contents = await listEducationalContentRecord();
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Contenido educativo obtenido exitosamente',
             total: contents.length,
             data: contents
         });
     } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al obtener el contenido educativo',
-            error: e.message
-        });
+        console.error('[listEducationalContent]', e);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
@@ -81,21 +74,17 @@ export const getContentById = async (req, res) => {
     try {
         const { id } = req.params;
         const content = await getContentByIdRecord(id);
-
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             message: 'Contenido obtenido exitosamente',
             data: content
         });
     } catch (e) {
         if (e.message === 'Contenido no encontrado') {
-            return res.status(404).json({ 
-                success: false, 
-                message: e.message });
+            return res.status(404).json({ success: false, message: e.message });
         }
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error interno del servidor' });
+        console.error('[getContentById]', e);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
@@ -103,18 +92,20 @@ export const filterContentByCategory = async (req, res) => {
     try {
         const { category } = req.params;
         const contents = await filterContentByCategoryRecord(category);
-
-        res.status(200).json({
+        if (!contents || contents.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: `No hay contenido para la categoría "${category}"`
+            });
+        }
+        return res.status(200).json({
             success: true,
             message: `Contenido filtrado por categoría "${category}" obtenido exitosamente`,
             total: contents.length,
             data: contents
         });
     } catch (e) {
-        res.status(500).json({
-            success: false,
-            message: 'Error al filtrar el contenido',
-            error: e.message
-        });
+        console.error('[filterContentByCategory]', e);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };

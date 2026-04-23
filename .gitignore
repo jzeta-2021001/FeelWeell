@@ -482,3 +482,20 @@ $RECYCLE.BIN/
 
 # Vim temporary swap files
 *.swp
+
+
+# Logs de error de npm/pnpm/yarn
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Carpetas de build de React/Vite/Next.js
+dist/
+build/
+out/
+
+# Caché de herramientas
+.eslintcache
+.stylelintcache
+.next/
+.cache/

@@ -1,75 +1,84 @@
 import * as adminService from './admin.service.js';
 
-// Ver todos los registros emocionales de todos los usuarios
 export const getAllMoodEntries = async (req, res) => {
     try {
         const { from, to, userId } = req.query;
         const entries = await adminService.getAllMoodEntries({ from, to, userId });
-        res.json({ total: entries.length, entries });
+        return res.status(200).json({ success: true, total: entries.length, data: entries });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('[getAllMoodEntries]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Eliminar un registro emocional por ID
 export const deleteMoodEntry = async (req, res) => {
     try {
         const { id } = req.params;
         await adminService.deleteMoodEntry(id);
-        res.json({ success: true, message: `Registro ${id} eliminado` });
+        return res.status(200).json({ success: true, message: `Registro ${id} eliminado` });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (err.message.includes('no encontrado') || err.message.includes('not found')) {
+            return res.status(404).json({ success: false, message: 'Registro no encontrado' });
+        }
+        console.error('[deleteMoodEntry]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Ver todos los streaks
 export const getAllStreaks = async (req, res) => {
     try {
         const streaks = await adminService.getAllStreaks();
-        res.json({ total: streaks.length, streaks });
+        return res.status(200).json({ success: true, total: streaks.length, data: streaks });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('[getAllStreaks]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Resetear racha de un usuario específico
 export const resetUserStreak = async (req, res) => {
     try {
         const { userId } = req.params;
         const streak = await adminService.resetUserStreak(userId);
-        res.json({ success: true, message: `Racha de ${userId} reseteada`, streak });
+        return res.status(200).json({ success: true, message: `Racha de ${userId} reseteada`, data: streak });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (err.message.includes('no encontrado') || err.message.includes('not found')) {
+            return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+        console.error('[resetUserStreak]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Ver todos los perfiles emocionales
 export const getAllProfiles = async (req, res) => {
     try {
         const profiles = await adminService.getAllProfiles();
-        res.json({ total: profiles.length, profiles });
+        return res.status(200).json({ success: true, total: profiles.length, data: profiles });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('[getAllProfiles]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Eliminar perfil/cuestionario de un usuario
 export const deleteUserProfile = async (req, res) => {
     try {
         const { userId } = req.params;
         await adminService.deleteUserProfile(userId);
-        res.json({ success: true, message: `Perfil de ${userId} eliminado` });
+        return res.status(200).json({ success: true, message: `Perfil de ${userId} eliminado` });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        if (err.message.includes('no encontrado') || err.message.includes('not found')) {
+            return res.status(404).json({ success: false, message: 'Perfil no encontrado' });
+        }
+        console.error('[deleteUserProfile]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };
 
-// Stats generales del sistema
 export const getSystemStats = async (req, res) => {
     try {
         const stats = await adminService.getSystemStats();
-        res.json(stats);
+        return res.status(200).json({ success: true, data: stats });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        console.error('[getSystemStats]', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };

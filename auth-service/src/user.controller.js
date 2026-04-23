@@ -87,7 +87,8 @@ export const login = async (req, res) => {
                 `http://localhost:5001/api/daily-message/today/${user._id}`,
                 {
                     headers:{
-                        'Authorization': `Bearer${token}`
+                        //============FIX=============
+                        'Authorization': `Bearer ${token}`
                     }
                 }
             );
@@ -176,6 +177,73 @@ export const resetPasswordController = async (req, res) => {
         return res.status(400).json({
             success: false,
             message: 'Error al restablecer la contraseña',
+            error: e.message
+        });
+    }
+};
+
+
+//Crear Admin 
+export const createAdmin = async (req, res) => {
+    try {
+        const user = await createUserRecord({ 
+            userData: { ...req.body, role: 'ADMIN_ROLE' }  // fuerza el rol admin
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Admin creado exitosamente.',
+            data: user
+        });
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al crear el admin',
+            error: e.message
+        });
+    }
+};
+
+//Crear Admin Mood Tracking
+export const createAdminMood = async (req, res) => {
+    try {
+        const user = await createUserRecord({ 
+            userData: { ...req.body, role: 'ADMIN_MOODTRACKING_ROLE' }
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Admin de mood tracking creado exitosamente.',
+            data: user
+        });
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al crear el admin de mood tracking',
+            error: e.message
+        });
+    }
+};
+
+//Crear Admin Healthy Service
+export const createAdminHealthy = async (req, res) => {
+    try {
+        const user = await createUserRecord({ 
+            userData: { ...req.body, role: 'ADMIN_HEALTHY_ROLE' }
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: 'Admin de healthy service creado exitosamente.',
+            data: user
+        });
+
+    } catch (e) {
+        return res.status(500).json({
+            success: false,
+            message: 'Error al crear el admin de healthy service',
             error: e.message
         });
     }

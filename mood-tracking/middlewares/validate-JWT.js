@@ -37,20 +37,18 @@ export const validateJWT = (req, res, next) => {
         // Log para debug - remover en producción
         if (!decoded.role) {
             console.warn(
-                `Token sin campo 'role' para usuario ${decoded.sub}. Payload:`,
+                `Token sin campo 'role' para usuario ${decoded.id}. Payload:`,
                 JSON.stringify(decoded, null, 2)
             );
         }
 
+        //======FIX============
         req.user = {
-            id: decoded.sub, // userId del servicio de autenticación
-            jti: decoded.jti, // ID único del token
-            iat: decoded.iat, // Emitido en
-            role: decoded.role || 'USER_ROLE', // Rol del usuario (default: USER_ROLE)
-            //Agregado por carlos Zeta: Agregamos nuevo campo para el tipo de cuenta
-            // Si el token no tiene un campo 'accountType', asumimos 'Monetaria' por compatibilidad con tokens antiguos
-            // Esto nos permite que después lo decodifique.
-            accountType: decoded.accountType || 'Monetaria'
+            id: decoded.id || decoded.sub,
+            username: decoded.username,
+            jti: decoded.jti,
+            iat: decoded.iat,
+            role: decoded.role || 'USER_ROLE'
         };
 
         next();
