@@ -284,27 +284,23 @@ El sistema implementa:
 | Servicio | URL Base |
 |---|---|
 | Auth Service | `http://localhost:3006/feelWell/v1` |
-| Healthy Service | `http://localhost:3008/feelWell/v1` |
-| Daily Positive Service | `http://localhost:5000/api` |
+| Healthy Service | `http://localhost:3008/healthyService/v1` |
+| Daily Positive Service | `http://localhost:5001` |
 | Mood Tracking Service | `http://localhost:3001/feelweell/v1` |
 
 ---
 
 ## Auth Service
+
 | Método | Endpoint | Descripción | Auth |
 |--------|----------|-------------|------|
-| POST | `/auth/` | Registrar nuevo usuario | — |
+| GET | `/health` | Estado del servicio | — |
+| POST | `/auth` | Registrar nuevo usuario | — |
 | GET | `/auth/activate/:token` | Activar cuenta por email | — |
 | POST | `/auth/login` | Iniciar sesión | — |
-| PUT | `/auth/change-password` | Cambiar contraseña | Token |
 | POST | `/auth/forgot-password` | Solicitar recuperación de contraseña | — |
-| POST | `/auth/reset-password/:token` | Restablecer contraseña | — |
-
-### Health
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| GET | `/feelWell/v1/health` | Estado del servicio |
+| POST | `/auth/reset-password/:token` | Restablecer contraseña con token | — |
+| PUT | `/auth/change-password` | Cambiar contraseña | Token |
 
 ---
 
@@ -462,7 +458,7 @@ feliz | tranquilo | triste | ansioso | enojado | estresado | motivado
 
 ## Endpoints
 
-### Exercises `/exercises`
+### Exercises `/healthyService/v1/exercises`
 
 | Método | Endpoint | Descripción | Auth |
 |--------|----------|-------------|------|
@@ -499,7 +495,7 @@ La foto se envía como `multipart/form-data` con el campo `photo`.
 
 ---
 
-### Contents `/contents`
+### Contents `/healthyService/v1/contents`
 
 | Método | Endpoint | Descripción | Auth |
 |--------|----------|-------------|------|
@@ -542,33 +538,24 @@ La foto se envía como `multipart/form-data` con el campo `photo`.
 
 | Método | Endpoint | Descripción | Auth |
 |---|---|---|---|
-| GET | `/notifications/` | Obtener todas las notificaciones del usuario | Token |
-| PUT | `/notifications/:id` | Ver detalle de una notificación | Token |
-| POST | `/notifications/` | Crear una nueva notificación | ADMIN_ROLE |
-| GET | `/notifications/:id/read` | Marcar notificación como leída | Token |
-| PATCH | `/notifications/read-all` | Marcar todas las notificaciones como leídas | Token |
-| PATCH | `/notifications/:id` | Eliminar una notificación | Token |
-| PATCH | `/notifications/unread/count` | Obtener cantidad de notificaciones no leídas | Token |
-| POST | `/notifications/streak-alert` | Enviar alerta de racha en riesgo | Token |
-| POST | `/notifications/exercise-reminder` | Enviar recordatorio de ejercicio pendiente | Token |
+| GET | `/notifications/my` | Obtener todas las notificaciones del usuario | Token |
+| GET | `/notifications/preferences` | Ver preferencias de notificaciones | Token |
+| PUT | `/notifications/preferences` | Actualizar preferencias de notificaciones | Token |
+| PATCH | `/notifications/preferences/toggle` | Activar/desactivar un tipo de notificación | Token |
+| PATCH | `/notifications/:id/read` | Marcar notificación como leída | Token |
+| POST | `/notifications/log` | Registrar log de notificación | Token |
+| POST | `/notifications/schedule/mood-reminder` | Programar recordatorio de estado de ánimo | Token |
+| POST | `/notifications/schedule/streak-alert` | Enviar alerta de racha en riesgo | Token |
+| POST | `/notifications/schedule/exercise-reminder` | Enviar recordatorio de ejercicio pendiente | Token |
 
 ```json
-// Crear notificación
-{
-  "userId": "id_del_usuario",
-  "title": "¡Tu racha está en riesgo!",
-  "message": "No olvides registrar tu estado de ánimo hoy para mantener tu racha de 5 días.",
-  "type": "streak_alert",
-  "isRead": false
-}
-
-// Alerta de racha en riesgo
+// Alerta de racha en riesgo (POST /notifications/schedule/streak-alert)
 {
   "userId": "id_del_usuario",
   "currentStreak": 5
 }
 
-// Recordatorio de ejercicio
+// Recordatorio de ejercicio (POST /notifications/schedule/exercise-reminder)
 {
   "userId": "id_del_usuario",
   "exerciseId": "id_del_ejercicio",
@@ -587,14 +574,17 @@ streak_alert | exercise_reminder | mood_reminder | motivational | general
 
 | Método | Endpoint | Descripción | Auth |
 |---|---|---|---|
-| GET | `/daily/message` | Obtener mensaje motivador del día | Token |
-| GET | `/daily/history/:userId` | Ver historial de mensajes del usuario | Token |
-| POST | `/daily/message` | Crear nuevo mensaje motivador | ADMIN_ROLE |
-| PUT | `/daily/message/:id` | Actualizar mensaje motivador | ADMIN_ROLE |
-| DELETE | `/daily/message/:id` | Eliminar mensaje motivador | ADMIN_ROLE |
+| GET | `/feelWell/v1/health` | Estado del servicio | — |
+| GET | `/api/daily-message/today/:userId` | Obtener mensaje motivador del día para el usuario | Token |
+| GET | `/api/admin/messages` | Listar todos los mensajes motivadores | ADMIN_ROLE |
+| GET | `/api/admin/messages/active` | Listar mensajes activos | ADMIN_ROLE |
+| GET | `/api/admin/messages/:userId` | Ver mensajes de un usuario específico | ADMIN_ROLE |
+| POST | `/api/admin/messages` | Crear nuevo mensaje motivador | ADMIN_ROLE |
+| PATCH | `/api/admin/messages/:id` | Actualizar mensaje motivador | ADMIN_ROLE |
+| DELETE | `/api/admin/messages/:id` | Eliminar mensaje motivador | ADMIN_ROLE |
 
 ```json
-// Respuesta de mensaje del día
+// Respuesta de GET /api/daily-message/today/:userId
 {
   "message": "Cada pequeño paso que das hoy es un gran avance hacia tu bienestar.",
   "type": "afirmacion",
@@ -688,7 +678,7 @@ FEELWELL/
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/tu-usuario/FeelWell.git
+git clone https://github.com/jzeta-2021001/FeelWeell.git
 cd FeelWell
 ```
 
@@ -817,6 +807,30 @@ cd daily-positive-service
 dotnet restore
 dotnet run --project src/DailyPositive.Api
 ```
+
+---
+
+# Colección Postman
+
+La colección Postman con todos los endpoints del sistema se encuentra versionada en el repositorio:
+
+```
+FeelWell_postman_collection.json
+```
+
+Incluye peticiones organizadas por servicio:
+
+- **Auth-service** — registro, login, activación, recuperación y cambio de contraseña
+- **Healthy-service** — ejercicios, contenido educativo y notificaciones
+- **MessagePositive-service** — mensajes motivadores diarios (Daily Positive Service)
+- **MoodTracking-service** — registro emocional, rachas y administración
+
+### Cómo importar
+
+1. Abrir Postman
+2. Seleccionar **Import**
+3. Arrastrar el archivo `FeelWell_postman_collection.json` o seleccionarlo desde el explorador
+4. Configurar las variables de entorno con los tokens y URLs correspondientes
 
 ---
 
