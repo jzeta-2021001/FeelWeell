@@ -10,11 +10,13 @@ import { dbConnection } from './db.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
 import chatRoutes from '../src/chat/chat.routes.js';
+import { swaggerSpec, swaggerUi } from './documentation.js'; // ← nuevo
 
 const BASE_PATH = '/feelWell/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/chat`, chatRoutes);
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ← nuevo
 
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({
@@ -55,6 +57,7 @@ export const initServer = async () => {
         app.listen(PORT, () => {
             console.log(`FeelWell Service running on port: ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/health`);
+            console.log(`Swagger docs: http://localhost:${PORT}${BASE_PATH}/api-docs`); // ← nuevo
         });
     } catch (e) {
         console.error(`Error al iniciar el servidor: ${e.message}`);

@@ -12,11 +12,13 @@ import { errorHandler } from '../middlewares/handle-errors.js';
 import moodRoute from '../src/mood-tracking/mood/mood.route.js';      
 import streakRoutes from '../src/mood-tracking/streak/streak.route.js'; 
 import adminRoutes from '../src/mood-tracking/admin/admin.router.js';
-import { connect as connectRabbit } from '../src/mood-tracking/rabbitmq.service.js'; // ← nuevo
+import { connect as connectRabbit } from '../src/mood-tracking/rabbitmq.service.js';
+import { swaggerSpec, swaggerUi } from './documentation.js';
 
 const BASE_PATH = '/feelweell/v1';
 
 const routes = (app) => {
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ← primero, antes de rutas protegidas
     app.use(`${BASE_PATH}/moodTracking`, moodRoute);
     app.use(`${BASE_PATH}`, streakRoutes);
     app.use(`${BASE_PATH}/admin`, adminRoutes);
@@ -61,6 +63,7 @@ export const initServer = async () => {
         app.listen(PORT, () => {
             console.log(`Feel Weell - Mood Tracking Services running on port ${PORT}`);
             console.log(`Health: http://localhost:${PORT}${BASE_PATH}/health`);
+            console.log(`Swagger docs: http://localhost:${PORT}${BASE_PATH}/api-docs`);
         });
     } catch (err) {
         console.error(`Error al iniciar servidor: ${err.message}`);

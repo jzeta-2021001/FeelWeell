@@ -11,7 +11,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000', // ajusta si usas otro puerto
+                url: 'http://localhost:3000', 
                 description: 'Servidor local'
             }
         ],
@@ -33,7 +33,7 @@ const options = {
         ]
     },
 
-    // IMPORTANTE: aquí apuntas a tus routes documentadas
+   
     apis: [
         './src/user.routes.js'
     ]
