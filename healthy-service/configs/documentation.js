@@ -1,6 +1,7 @@
 import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
 import {exerciseSchemas} from '../src/exercises/exercise.schema.js';
+import {contentSchemas} from '../src/contents/content.schema.js'
 
 const options = {
     definition: {
@@ -12,7 +13,8 @@ const options = {
         },
         components: {
             schemas:{
-                ...exerciseSchemas
+                ...exerciseSchemas,
+                ...contentSchemas
             },
             securitySchemes: {
                 bearerAuth: {
