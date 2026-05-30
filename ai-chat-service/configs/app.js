@@ -22,7 +22,7 @@ const routes = (app) => {
         res.status(200).json({
             status: 'Healthy',
             timeStamp: new Date().toISOString(),
-            service: 'Zen AI Service'
+            service: 'Tiyú AI Service'
         });
     });
 
