@@ -36,11 +36,16 @@ export const activateUserAccount = async (token) => {
     const user = await User.findOne({ activationToken: token });
 
     if (!user) {
-        throw new Error('Token de activación inválido o expirado');
+        const error = new Error('Este enlace ya fue usado o expiro. Si tu cuenta ya esta activa, puedes iniciar sesion.');
+        error.code = 'ACTIVATION_TOKEN_INVALID';
+        throw error;
     }
 
     if (user.isActive) {
-        throw new Error('La cuenta ya está activada');
+        return {
+            alreadyActive: true,
+            user
+        };
     }
 
     user.isActive = true;
@@ -48,7 +53,10 @@ export const activateUserAccount = async (token) => {
 
     await user.save();
 
-    return user;
+    return {
+        alreadyActive: false,
+        user
+    };
 };
 
 
