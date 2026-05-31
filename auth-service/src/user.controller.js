@@ -43,17 +43,23 @@ export const createUser = async (req, res) => {
 export const activateAccount = async (req, res) => {
     try {
         const { token } = req.params;
-        await activateUserAccount(token);
+        const result = await activateUserAccount(token);
 
         return res.status(200).json({
             success: true,
-            message: 'Cuenta activada exitosamente. Ya puedes iniciar sesión.'
+            alreadyActive: result.alreadyActive,
+            message: result.alreadyActive
+                ? 'Tu cuenta fue activada. Puedes iniciar sesion.'
+                : 'Tu cuenta fue activada. Puedes iniciar sesion.'
         });
 
     } catch (e) {
         return res.status(400).json({
             success: false,
-            message: 'Error al activar la cuenta',
+            code: e.code || 'ACTIVATION_ERROR',
+            message: e.code === 'ACTIVATION_TOKEN_INVALID'
+                ? 'Tu cuenta fue activada. Puedes iniciar sesion.'
+                : 'No pudimos activar la cuenta en este momento.',
             error: e.message
         });
     }
