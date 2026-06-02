@@ -287,6 +287,7 @@ El sistema implementa:
 | Healthy Service | `http://localhost:3008/healthyService/v1` |
 | Daily Positive Service | `http://localhost:5001` |
 | Mood Tracking Service | `http://localhost:3001/feelweell/v1` |
+| Feel Well AI Service | `http://localhost:3007` |
 
 ---
 
@@ -752,6 +753,24 @@ JWT_AUDIENCE=feelWell
 JWT_EXPIRES_IN=1h
 
 RABBITMQ_URL=amqp://localhost
+```
+
+### feel-well-ai/.env
+```env
+PORT=3007
+
+URI_MONGODB=mongodb://localhost:27017/feel-well-ai
+
+JWT_SECRET=E$3cr3tD3bUgg3rS3@Ts@In6am2024XX
+JWT_ISSUER=feelWell
+JWT_AUDIENCE=feelWell
+JWT_EXPIRES_IN=1h
+
+```
+
+### client-admin/.env
+```env
+VITE_AUTH_URL=http://localhost:3006/feelWell/v1
 ```
 
 ### daily-positive-service — appsettings.json
