@@ -187,3 +187,69 @@ export const resetPassword = async (token, newPassword) => {
 
     return { message: 'Contraseña restablecida exitosamente' };
 };
+
+// Agregar al final de user.services.js
+
+export const updateProfileRecord = async (userId, profileData) => {
+    const { firstName, surname, phone, email, username } = profileData;
+
+    if (email) {
+        const existing = await User.findOne({ email, _id: { $ne: userId } });
+        if (existing) {
+            const e = new Error('El correo ya está registrado por otro usuario');
+            e.statusCode = 409;
+            throw e;
+        }
+    }
+
+    if (username) {
+        const existing = await User.findOne({ username, _id: { $ne: userId } });
+        if (existing) {
+            const e = new Error('El username ya está registrado por otro usuario');
+            e.statusCode = 409;
+            throw e;
+        }
+    }
+
+    const updated = await User.findByIdAndUpdate(
+        userId,
+        { firstName, surname, phone, email, username },
+        { new: true, runValidators: true }
+    ).select('-password -activationToken -resetPasswordToken -resetPasswordExpires');
+
+    if (!updated) {
+        const e = new Error('Usuario no encontrado');
+        e.statusCode = 404;
+        throw e;
+    }
+
+    return updated;
+};
+
+export const getAllUsersRecord = async () => {
+    return await User.find()
+        .select('-password -activationToken -resetPasswordToken -resetPasswordExpires')
+        .sort({ createdAt: -1 });
+};
+
+export const toggleUserStatusRecord = async (id) => {
+    const user = await User.findById(id).select('-password -activationToken -resetPasswordToken -resetPasswordExpires');
+    if (!user) {
+        const e = new Error('Usuario no encontrado');
+        e.statusCode = 404;
+        throw e;
+    }
+    user.isActive = !user.isActive;
+    await user.save();
+    return user;
+};
+
+export const deleteUserRecord = async (id) => {
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+        const e = new Error('Usuario no encontrado');
+        e.statusCode = 404;
+        throw e;
+    }
+    return { message: 'Usuario eliminado correctamente' };
+};

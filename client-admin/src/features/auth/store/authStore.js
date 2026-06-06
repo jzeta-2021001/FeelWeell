@@ -1,23 +1,26 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import {
   loginRequest,
   registerRequest,
   forgotPasswordRequest,
   resetPasswordRequest,
   changePasswordRequest,
-} from "../../../shared/apis";
+} from '../../../shared/apis';
 
-const getErrorMessage = (error, fallback) => {
-  const firstValidationError = error.response?.data?.errors?.[0]?.message;
+const ALLOWED_ROLES = [
+  'USER_ROLE',
+  'ADMIN_ROLE',
+  'ADMIN_USERS_ROLE',
+  'ADMIN_MOODTRACKING_ROLE',
+  'ADMIN_HEALTHY_ROLE',
+];
 
-  return (
-    firstValidationError ||
-    error.response?.data?.error ||
-    error.response?.data?.message ||
-    fallback
-  );
-};
+const getErrorMessage = (error, fallback) =>
+  error.response?.data?.errors?.[0]?.message ||
+  error.response?.data?.error ||
+  error.response?.data?.message ||
+  fallback;
 
 export const useAuthStore = create(
   persist(
@@ -32,9 +35,21 @@ export const useAuthStore = create(
       checkAuth: () => {
         const token = get().token;
         const user = get().user;
+        const hasAccess = ALLOWED_ROLES.includes(user?.role);
+
+        if (token && !hasAccess) {
+          set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            isLoadingAuth: false,
+            error: 'No tienes permiso para acceder a esta aplicación',
+          });
+          return;
+        }
 
         set({
-          isAuthenticated: Boolean(token && user),
+          isAuthenticated: Boolean(token && user && hasAccess),
           isLoadingAuth: false,
         });
       },
@@ -42,27 +57,20 @@ export const useAuthStore = create(
       login: async ({ username, password }) => {
         try {
           set({ loading: true, error: null });
-
           const response = await loginRequest({ username, password });
+          const { user, token } = response.data.data;
 
-          set({
-            user: response.data.data.user,
-            token: response.data.data.token,
-            loading: false,
-            error: null,
-            isAuthenticated: true,
-          });
+          if (!ALLOWED_ROLES.includes(user?.role)) {
+            const message = 'No tienes permiso para acceder a esta aplicación';
+            set({ loading: false, isAuthenticated: false, error: message });
+            return { success: false, error: message };
+          }
 
-          return { success: true };
+          set({ user, token, loading: false, error: null, isAuthenticated: true });
+          return { success: true, role: user.role };
         } catch (error) {
-          const message = getErrorMessage(error, "Error al iniciar sesion");
-
-          set({
-            loading: false,
-            error: message,
-            isAuthenticated: false,
-          });
-
+          const message = getErrorMessage(error, 'Error al iniciar sesión');
+          set({ loading: false, error: message, isAuthenticated: false });
           return { success: false, error: message };
         }
       },
@@ -70,20 +78,12 @@ export const useAuthStore = create(
       registerUser: async (formData) => {
         try {
           set({ loading: true, error: null });
-
           await registerRequest(formData);
-
           set({ loading: false });
-
-          return {
-            success: true,
-            message: "Cuenta creada. Revisa tu correo para activarla.",
-          };
+          return { success: true, message: 'Cuenta creada. Revisa tu correo para activarla.' };
         } catch (error) {
-          const message = getErrorMessage(error, "Error al registrar usuario");
-
+          const message = getErrorMessage(error, 'Error al registrar usuario');
           set({ loading: false, error: message });
-
           return { success: false, error: message };
         }
       },
@@ -91,20 +91,12 @@ export const useAuthStore = create(
       forgotPassword: async (email) => {
         try {
           set({ loading: true, error: null });
-
           const response = await forgotPasswordRequest(email);
-
           set({ loading: false });
-
-          return {
-            success: true,
-            message: response.data.message,
-          };
+          return { success: true, message: response.data.message };
         } catch (error) {
-          const message = getErrorMessage(error, "Error al enviar correo");
-
+          const message = getErrorMessage(error, 'Error al enviar correo');
           set({ loading: false, error: message });
-
           return { success: false, error: message };
         }
       },
@@ -112,23 +104,12 @@ export const useAuthStore = create(
       resetPassword: async ({ token, newPassword }) => {
         try {
           set({ loading: true, error: null });
-
-          const response = await resetPasswordRequest({
-            token,
-            newPassword,
-          });
-
+          const response = await resetPasswordRequest({ token, newPassword });
           set({ loading: false });
-
-          return {
-            success: true,
-            message: response.data.message,
-          };
+          return { success: true, message: response.data.message };
         } catch (error) {
-          const message = getErrorMessage(error, "Error al restablecer contraseña");
-
+          const message = getErrorMessage(error, 'Error al restablecer contraseña');
           set({ loading: false, error: message });
-
           return { success: false, error: message };
         }
       },
@@ -136,25 +117,18 @@ export const useAuthStore = create(
       changePassword: async ({ currentPassword, newPassword }) => {
         try {
           set({ loading: true, error: null });
-
-          const response = await changePasswordRequest({
-            currentPassword,
-            newPassword,
-          });
-
+          const response = await changePasswordRequest({ currentPassword, newPassword });
           set({ loading: false });
-
-          return {
-            success: true,
-            message: response.data.message,
-          };
+          return { success: true, message: response.data.message };
         } catch (error) {
-          const message = getErrorMessage(error, "Error al cambiar contraseña");
-
+          const message = getErrorMessage(error, 'Error al cambiar contraseña');
           set({ loading: false, error: message });
-
           return { success: false, error: message };
         }
+      },
+
+      updateUser: (updates) => {
+        set((s) => ({ user: { ...s.user, ...updates } }));
       },
 
       logout: () => {
@@ -167,7 +141,19 @@ export const useAuthStore = create(
       },
     }),
     {
-      name: "feelweell-auth",
+      name: 'feelweell-auth',
+      partialize: (state) => ({
+        user: state.user,
+        token: state.token,
+        isAuthenticated: state.isAuthenticated,
+      }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.checkAuth();
+        } else {
+          useAuthStore.setState({ isLoadingAuth: false });
+        }
+      },
     }
   )
 );
