@@ -1,16 +1,20 @@
 import { Router } from 'express';
-import { 
-    createUser, 
+import {
+    createUser,
     createAdmin,
     createAdminMood,
     createAdminHealthy,
-    activateAccount, 
-    login, 
-    updatePassword, 
-    forgotPassword, 
-    resetPasswordController 
+    activateAccount,
+    login,
+    updatePassword,
+    forgotPassword,
+    resetPasswordController,
+    updateProfile,
+    getAllUsers,
+    toggleUserStatus,
+    deleteUser
 } from './user.controller.js';
-import { validateCreateUser, validateLogin, validateChangePassword, validateForgotPassword, validateResetPassword } from '../middlewares/user-validator.js'
+import { validateCreateUser, validateLogin, validateChangePassword, validateForgotPassword, validateResetPassword, validateUpdateProfile } from '../middlewares/user-validator.js'
 import { validateJWT } from '../middlewares/validate-JWT.js';
 import { validateRole } from '../middlewares/validate-role.js';
 
@@ -250,5 +254,11 @@ router.post('/admin/healthy', validateJWT, validateRole('ADMIN_ROLE'), validateC
  *         description: Contraseña actualizada
  */
 router.put('/change-password', validateJWT, validateChangePassword, updatePassword);
+
+router.put('/profile', validateJWT, validateUpdateProfile, updateProfile);
+
+router.get('/users', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), getAllUsers);
+router.patch('/users/:id/toggle-status', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), toggleUserStatus);
+router.delete('/users/:id', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), deleteUser);
 
 export default router;
