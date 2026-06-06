@@ -5,8 +5,7 @@ import { validateRole } from '../../../middlewares/validate-role.js';
 import {
     validateMoodEntry,
     validateMoodHistory,
-    validateQuestionnaire,
-    validateMoodEvent
+    validateQuestionnaire
 } from '../../../middlewares/mood-validator.js';
 
 const router = Router();
@@ -412,95 +411,5 @@ router.post('/questionnaire', validateQuestionnaire, moodController.submitQuesti
  *               $ref: '#/components/schemas/ErrorResponse'
  */
 router.get('/profile', moodController.getUserProfile);
-
-/**
- * @swagger
- * /feelweell/v1/moodTracking/events/publish:
- *   post:
- *     summary: Publicar un evento de mood a RabbitMQ
- *     description: |
- *       Publica un evento relacionado con el estado de ánimo del usuario en el broker RabbitMQ.
- *       Los eventos válidos son:
- *       - `mood.streak_at_risk`: La racha del usuario está en riesgo de perderse.
- *       - `mood.not_registered`: El usuario no ha registrado su estado de ánimo hoy.
- *     tags: [Mood Tracking]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - eventType
- *             properties:
- *               eventType:
- *                 type: string
- *                 enum: [mood.streak_at_risk, mood.not_registered]
- *                 description: Tipo de evento a publicar en el broker
- *                 example: "mood.streak_at_risk"
- *           example:
- *             eventType: "mood.streak_at_risk"
- *     responses:
- *       200:
- *         description: Evento publicado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
- *                     success:
- *                       type: boolean
- *                       example: true
- *                     eventType:
- *                       type: string
- *                       example: "mood.streak_at_risk"
- *                     userId:
- *                       type: string
- *                       example: "user_abc123"
- *       400:
- *         description: eventType inválido o no proporcionado
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *             examples:
- *               eventTypeRequerido:
- *                 summary: Campo eventType faltante
- *                 value:
- *                   success: false
- *                   message: "eventType es requerido"
- *               eventoInvalido:
- *                 summary: Tipo de evento no reconocido
- *                 value:
- *                   success: false
- *                   message: "Evento inválido. Usa: mood.streak_at_risk, mood.not_registered"
- *       401:
- *         description: Token JWT no proporcionado o inválido
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       403:
- *         description: El usuario no tiene el rol requerido
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- *       500:
- *         description: Error interno del servidor
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/ErrorResponse'
- */
-router.post('/events/publish', validateMoodEvent, moodController.publishMoodEvents);
 
 export default router;

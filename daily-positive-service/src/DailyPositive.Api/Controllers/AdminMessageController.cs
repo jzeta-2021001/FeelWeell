@@ -120,6 +120,7 @@ public class AdminMessageController : ControllerBase
     ///     }
     /// </remarks>
     /// <param name="id">ID del mensaje a actualizar</param>
+    /// /// <param name="dto">Datos que se actualizarán.</param>
     /// <response code="200">Mensaje actualizado correctamente</response>
     /// <response code="401">Token ausente o inválido</response>
     /// <response code="403">El token no tiene rol ADMIN_ROLE</response>
