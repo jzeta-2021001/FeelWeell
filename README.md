@@ -744,15 +744,25 @@ NODE_TLS_REJECT_UNAUTHORIZED=0
 ### mood-tracking/.env
 ```env
 PORT=3001
-
 URI_MONGODB=mongodb://localhost:27017/feel-well
-
-JWT_SECRET=tu_secreto_aqui
+JWT_SECRET=E$3cr3tD3bUgg3rS3@Ts@In6am2024XX
 JWT_ISSUER=feelWell
 JWT_AUDIENCE=feelWell
 JWT_EXPIRES_IN=1h
 
-RABBITMQ_URL=amqp://localhost
+# RABBIT
+RABBITMQ_URL=amqp://admin:debuggers123@localhost:5672
+RABBITMQ_USER=admin
+RABBITMQ_PASS=debuggers123
+RABBITMQ_EXCHANGE=mood.events
+RABBITMQ_DLX=mood.events.dlx
+RABBITMQ_PREFETCH=10
+RABBITMQ_RECONNECT_DELAY_MS=1000
+RABBITMQ_RECONNECT_MAX_DELAY_MS=30000
+RABBITMQ_MAX_RETRIES=3
+
+NODE_ENV=development
+NODE_TLS_REJECT_UNAUTHORIZED=0
 ```
 
 ### feel-well-ai/.env
@@ -826,6 +836,46 @@ cd daily-positive-service
 dotnet restore
 dotnet run --project src/DailyPositive.Api
 ```
+
+---
+
+# Levantar con Docker
+
+El proyecto incluye configuración Docker para levantar todos los servicios con un solo comando.
+
+## Requisitos
+
+- Docker Desktop instalado y corriendo
+
+## Contenedores incluidos
+
+| Contenedor | Imagen | Puerto |
+|---|---|---|
+| feelweell-auth | feelweell-auth-service | 3006 |
+| feelweell-healthy | feelweell-healthy-service | 3008 |
+| feelweell-mood | feelweell-mood-tracking | 3001 |
+| feelweell-ai-chat | feelweell-ai-chat-service | 3010 |
+| feelweell-daily | dotnet DailyPositive | 5001 |
+| feelweell-mongodb | mongo:7 | 27017 |
+| feelweell-rabbitmq | rabbitmq:3-management-alpine | 5672 / 15672 |
+
+## Comandos
+
+```bash
+# Levantar todos los servicios
+docker compose up
+
+# Levantar y reconstruir imágenes (usar tras cambios en el código)
+docker compose up --build
+
+# Reconstruir solo un servicio específico
+docker compose up --build auth-service
+
+# Detener todos los servicios
+docker compose down
+```
+
+> Al iniciar por primera vez, el auth-service ejecuta automáticamente el seeder de administradores si no existen en la base de datos.
 
 ---
 
