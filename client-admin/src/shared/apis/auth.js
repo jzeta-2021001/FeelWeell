@@ -1,27 +1,26 @@
-import { axiosAuth } from "./api";
+import { axiosAuth } from "./api.js";
 
-const AUTH_URL = "/api/auth";
 
 export const loginRequest = async ({ username, password }) => {
-  return await axiosAuth.post(`${AUTH_URL}/login`, { username, password });
+  return await axiosAuth.post(`/login`, { username, password });
 };
 
 export const activateAccountRequest = async (token) => {
-  return await axiosAuth.get(`${AUTH_URL}/activate/${token}`);
+  return await axiosAuth.get(`/activate/${token}`);
 };
 
 export const forgotPasswordRequest = async (email) => {
-  return await axiosAuth.post(`${AUTH_URL}/forgot-password`, { email });
+  return await axiosAuth.post(`/forgot-password`, { email });
 };
 
 export const resetPasswordRequest = async ({ token, newPassword }) => {
-  return await axiosAuth.post(`${AUTH_URL}/reset-password/${token}`, { newPassword });
+  return await axiosAuth.post(`/reset-password/${token}`, { newPassword });
 };
 
 export const changePasswordRequest = async ({ currentPassword, newPassword }) => {
-  return await axiosAuth.put(`${AUTH_URL}/change-password`, { currentPassword, newPassword });
+  return await axiosAuth.put(`/change-password`, { currentPassword, newPassword });
 };
 
 export const registerRequest = async ({ firstName, surname, username, email, password }) => {
-  return await axiosAuth.post(AUTH_URL, { firstName, surname, username, email, password });
+  return await axiosAuth.post('/', { firstName, surname, username, email, password });
 };
