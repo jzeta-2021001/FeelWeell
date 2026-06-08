@@ -16,7 +16,7 @@ import authRoutes from '../src/user.routes.js';
 // Swagger
 import { swaggerSpec, swaggerUi } from './documentation.js';
 
-const BASE_PATH = '/feelWell/v1';
+const BASE_PATH = '/feelWeell/v1';
 
 const routes = (app) => {
 
