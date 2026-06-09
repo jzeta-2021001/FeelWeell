@@ -1,1 +1,3 @@
-export * from "./auth";
+export { axiosAuth } from './api.js';
+
+export * from './auth.js';

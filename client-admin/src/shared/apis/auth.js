@@ -1,49 +1,50 @@
-import { axiosAuth } from "./api";
+import { axiosAuth } from './api.js';
 
-const AUTH_URL = "/api/auth";
-
-export const loginRequest = async ({ username, password }) => {
-  return await axiosAuth.post(`${AUTH_URL}/login`, {
-    username,
-    password,
-  });
+// ── Autenticación ──
+export const login = async (data) => {
+  return await axiosAuth.post('/auth/login', data);
 };
 
-export const activateAccountRequest = async (token) => {
-  return await axiosAuth.get(`${AUTH_URL}/activate/${token}`);
+export const register = async (data) => {
+  return await axiosAuth.post('/auth', data);
 };
 
-export const forgotPasswordRequest = async (email) => {
-  return await axiosAuth.post(`${AUTH_URL}/forgot-password`, {
-    email,
-  });
+export const activateAccount = async (token) => {
+  return await axiosAuth.get(`/auth/activate/${token}`);
 };
 
-export const resetPasswordRequest = async ({ token, newPassword }) => {
-  return await axiosAuth.post(`${AUTH_URL}/reset-password/${token}`, {
-    newPassword,
-  });
+export const forgotPassword = async (email) => {
+  return await axiosAuth.post('/auth/forgot-password', { email });
 };
 
-export const changePasswordRequest = async ({ currentPassword, newPassword }) => {
-  return await axiosAuth.put(`${AUTH_URL}/change-password`, {
-    currentPassword,
-    newPassword,
-  });
+export const resetPassword = async (token, newPassword) => {
+  return await axiosAuth.post(`/auth/reset-password/${token}`, { newPassword });
 };
 
-export const registerRequest = async ({
-  firstName,
-  surname,
-  username,
-  email,
-  password,
-}) => {
-  return await axiosAuth.post(AUTH_URL, {
-    firstName,
-    surname,
-    username,
-    email,
-    password,
-  });
+export const changePassword = async ({ currentPassword, newPassword }) => {
+  return await axiosAuth.put('/auth/change-password', { currentPassword, newPassword });
 };
+
+export const updateProfile = async (data) => {
+  return await axiosAuth.put('/auth/profile', data);
+};
+
+// ── Gestión de usuarios (admin) ──
+export const getAllUsers = async () => {
+  return await axiosAuth.get('/auth/users');
+};
+
+export const createUser = async (data) => {
+  return await axiosAuth.post('/auth', data);
+};
+
+export const toggleUserStatus = async (id) => {
+  return await axiosAuth.patch(`/auth/users/${id}/toggle-status`);
+};
+
+export const deleteUser = async (id) => {
+  return await axiosAuth.delete(`/auth/users/${id}`);
+};
+
+// Alias usado por useVerifyEmail
+export const verifyEmail = activateAccount;

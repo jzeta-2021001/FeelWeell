@@ -5,13 +5,4 @@ import tailwindcss from '@tailwindcss/vite';
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server: {
-    proxy: {
-      "/api/auth": {
-        target: "http://localhost:3006",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/auth/, "/feelWell/v1/auth"),
-      },
-    },
-  },
 });
