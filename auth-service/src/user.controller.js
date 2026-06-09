@@ -4,7 +4,11 @@ import {
     loginUser,
     changePassword,
     requestPasswordReset,
-    resetPassword
+    resetPassword,
+    updateProfileRecord,
+    getAllUsersRecord,
+    toggleUserStatusRecord,
+    deleteUserRecord
 } from "./user.services.js";
 import jwt from 'jsonwebtoken';
 
@@ -38,6 +42,34 @@ export const createUser = async (req, res) => {
     }
 };
 
+export const getAllUsers = async (req, res) => {
+    try {
+        const users = await getAllUsersRecord();
+        res.status(200).json({ success: true, data: users });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ success: false, message: error.message });
+    }
+};
+
+export const toggleUserStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user = await toggleUserStatusRecord(id);
+        res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ success: false, message: error.message });
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await deleteUserRecord(id);
+        res.status(200).json({ success: true, message: result.message });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({ success: false, message: error.message });
+    }
+};
 
 //Activar cuenta
 export const activateAccount = async (req, res) => {
@@ -92,16 +124,16 @@ export const login = async (req, res) => {
             const mgResponse = await fetch(
                 `http://localhost:5001/api/daily-message/today/${user._id}`,
                 {
-                    headers:{
+                    headers: {
                         //============FIX=============
                         'Authorization': `Bearer ${token}`
                     }
                 }
             );
-            if(mgResponse.ok){
+            if (mgResponse.ok) {
                 const msgData = await mgResponse.json();
                 dailyMessage = msgData.data;
-            }else{
+            } else {
                 console.error('daily-service respondió con status:', mgResponse.status);
             }
         } catch (err) {
@@ -192,7 +224,7 @@ export const resetPasswordController = async (req, res) => {
 //Crear Admin 
 export const createAdmin = async (req, res) => {
     try {
-        const user = await createUserRecord({ 
+        const user = await createUserRecord({
             userData: { ...req.body, role: 'ADMIN_ROLE' }  // fuerza el rol admin
         });
 
@@ -214,7 +246,7 @@ export const createAdmin = async (req, res) => {
 //Crear Admin Mood Tracking
 export const createAdminMood = async (req, res) => {
     try {
-        const user = await createUserRecord({ 
+        const user = await createUserRecord({
             userData: { ...req.body, role: 'ADMIN_MOODTRACKING_ROLE' }
         });
 
@@ -236,7 +268,7 @@ export const createAdminMood = async (req, res) => {
 //Crear Admin Healthy Service
 export const createAdminHealthy = async (req, res) => {
     try {
-        const user = await createUserRecord({ 
+        const user = await createUserRecord({
             userData: { ...req.body, role: 'ADMIN_HEALTHY_ROLE' }
         });
 
@@ -250,6 +282,25 @@ export const createAdminHealthy = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'Error al crear el admin de healthy service',
+            error: e.message
+        });
+    }
+};
+
+export const updateProfile = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await updateProfileRecord(userId, req.body);
+
+        return res.status(200).json({
+            success: true,
+            message: 'Perfil actualizado exitosamente',
+            data: user
+        });
+    } catch (e) {
+        return res.status(e.statusCode || 500).json({
+            success: false,
+            message: 'Error al actualizar el perfil',
             error: e.message
         });
     }

@@ -9,11 +9,12 @@ import { helmetOptions } from './helmet.configuration.js';
 import { dbConnection } from './db.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
 import { errorHandler } from '../middlewares/handle-errors.js';
-import moodRoute from '../src/mood-tracking/mood/mood.route.js';      
-import streakRoutes from '../src/mood-tracking/streak/streak.route.js'; 
+import moodRoute from '../src/mood-tracking/mood/mood.route.js';
+import streakRoutes from '../src/mood-tracking/streak/streak.route.js';
 import adminRoutes from '../src/mood-tracking/admin/admin.router.js';
-import { connect as connectRabbit } from '../src/mood-tracking/rabbitmq.service.js';
 import { swaggerSpec, swaggerUi } from './documentation.js';
+import { rabbitConnection } from '../infrastructure/messaging/rabbitmq.connection.js';
+import { channelManager } from '../infrastructure/messaging/rabbitmq.channel-manager.js';
 
 const BASE_PATH = '/feelweell/v1';
 
@@ -48,6 +49,11 @@ const middlewares = (app) => {
     app.use(requestLimit);
 };
 
+const initRabbitMQ = async () => {
+    rabbitConnection.onConnected((connection) => channelManager.initialize(connection));
+    await rabbitConnection.connect();
+}
+
 export const initServer = async () => {
     const app = express();
     const PORT = process.env.PORT;
@@ -56,9 +62,18 @@ export const initServer = async () => {
     try {
         middlewares(app);
         await dbConnection();
-        await connectRabbit(); 
+        await initRabbitMQ();
         routes(app);
         app.use(errorHandler);
+
+        const shutdown = async (signal) => {
+            console.log(`Señal ${signal} recibida. Cerrando...`);
+            await rabbitConnection.close();
+            process.exit(0);
+        };
+
+        process.on('SIGTERM', () => shutdown('SIGTERM'));
+        process.on('SIGINT', () => shutdown('SIGINT'));
 
         app.listen(PORT, () => {
             console.log(`Feel Weell - Mood Tracking Services running on port ${PORT}`);

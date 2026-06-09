@@ -1,48 +1,54 @@
-
 import MoodEntry from './moodEntry.model.js';
 import QuestionnaireResponse from '../questionnaireResponse.model.js';
 import { updateStreak } from '../streak/streak.service.js';
+import { publishEvent } from '../../../infrastructure/messaging/rabbitmq.publisher.js';
+import { ROUTING_KEYS } from '../../../infrastructure/messaging/mood.events.js';
 
+export const registerMoodEntry = async (userId, { emotion, intensity, note }) => {
+  const existing = await getTodayEntry(userId);
+  if (existing) throw new Error('Ya se ha registrado el estado de ánimo para hoy');
 
-export const registerMoodEntry = async (userId, {emotion, intensity, note}) => {
-    const existing = await getTodayEntry(userId);
-    if (existing) throw new Error('Ya se ha registrado el estado de ánimo para hoy');
+  const entry = await MoodEntry.create({
+    userId,
+    emotion,
+    intensity,
+    note: note || '',
+    date: new Date(),
+  });
 
-    const entry = await MoodEntry.create({
-        userId,
-        emotion,
-        intensity,
-        note: note || '',
-        date: new Date(),
-    });
+  await updateStreak(userId);
 
-    await updateStreak(userId);
-    return entry;
+  // Evento de dominio: se dispara como efecto de registrar un entry
+  // El error de publicación no bloquea la respuesta al usuario
+  publishEvent(ROUTING_KEYS.ENTRY_CREATED, { userId, entryId: entry._id, emotion, intensity })
+    .catch((err) => console.error('[MoodService] Error publicando evento entry.created:', err.message));
+
+  return entry;
 };
 
 export const getTodayEntry = async (userId) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
 
-    return MoodEntry.findOne({
-        userId,
-        date: { $gte: today, $lt: tomorrow }
-    });
+  return MoodEntry.findOne({
+    userId,
+    date: { $gte: today, $lt: tomorrow },
+  });
 };
 
-export const getMoodHistory = async (userId, {from, to}) => {
-    const filter = { userId };
-    
-    if(from || to){
-        filter.date = {};
-        if(from) filter.date.$gte = new Date(from);
-        if(to) filter.date.$lte = new Date(to);
-    }
+export const getMoodHistory = async (userId, { from, to }) => {
+  const filter = { userId };
 
-    return MoodEntry.find(filter).sort({ date: -1 });
+  if (from || to) {
+    filter.date = {};
+    if (from) filter.date.$gte = new Date(from);
+    if (to) filter.date.$lte = new Date(to);
+  }
+
+  return MoodEntry.find(filter).sort({ date: -1 });
 };
 
 export const getInitialQuestionnaire = async () => {
@@ -55,8 +61,8 @@ export const getInitialQuestionnaire = async () => {
         { value: 2, label: 'Rara vez' },
         { value: 3, label: 'A veces' },
         { value: 4, label: 'Frecuentemente' },
-        { value: 5, label: 'Siempre' }
-      ]
+        { value: 5, label: 'Siempre' },
+      ],
     },
     {
       questionId: 2,
@@ -66,8 +72,8 @@ export const getInitialQuestionnaire = async () => {
         { value: 2, label: 'Bajo' },
         { value: 3, label: 'Moderado' },
         { value: 4, label: 'Alto' },
-        { value: 5, label: 'Muy alto' }
-      ]
+        { value: 5, label: 'Muy alto' },
+      ],
     },
     {
       questionId: 3,
@@ -77,9 +83,9 @@ export const getInitialQuestionnaire = async () => {
         { value: 2, label: 'Rara vez' },
         { value: 3, label: 'A veces' },
         { value: 4, label: 'Frecuentemente' },
-        { value: 5, label: 'Siempre' }
-      ]
-    }
+        { value: 5, label: 'Siempre' },
+      ],
+    },
   ];
 };
 
@@ -98,6 +104,10 @@ export const submitQuestionnaire = async (userId, answers) => {
     { upsert: true, new: true }
   );
 
+  // Evento de dominio: cuestionario completado
+  publishEvent(ROUTING_KEYS.QUESTIONNAIRE_COMPLETED, { userId, emotionalProfile })
+    .catch((err) => console.error('[MoodService] Error publicando questionnaire.completed:', err.message));
+
   return { emotionalProfile, response };
 };
 
@@ -112,19 +122,25 @@ export const getUserProfile = async (userId) => {
     userId,
     emotionalProfile: profile.emotionalProfile,
     completedQuestionnaire: true,
-    completedAt: profile.completedAt
+    completedAt: profile.completedAt,
   };
 };
 
+/**
+ * Publicación manual de eventos (uso interno/admin, no expuesto por HTTP).
+ * Mantiene compatibilidad con el flujo existente de streak_at_risk / not_registered.
+ */
 export const publishMoodEvents = async (userId, eventType) => {
-  const validEvents = ['mood.streak_at_risk', 'mood.not_registered'];
+  const validEvents = [ROUTING_KEYS.STREAK_AT_RISK, ROUTING_KEYS.NOT_REGISTERED];
 
   if (!validEvents.includes(eventType)) {
     throw new Error(`Evento inválido. Usa: ${validEvents.join(', ')}`);
   }
 
-  // RabbitMQ pendiente de integración
-  const { publishMoodEvent } = await import('../rabbitmq.service.js');
-  await publishMoodEvent(eventType, { userId, timestamp: new Date().toISOString() });
-  return { success: true, eventType, userId };
+  const eventId = await publishEvent(eventType, {
+    userId,
+    triggeredAt: new Date().toISOString(),
+  });
+
+  return { success: true, eventType, userId, eventId };
 };
