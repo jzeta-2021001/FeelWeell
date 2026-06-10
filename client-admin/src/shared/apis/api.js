@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useAuthStore } from '../../features/auth/store/authStore.js';
 
 // Instancia única para el auth-service de FeelWeell
 const axiosAuth = axios.create({
@@ -11,9 +10,14 @@ const axiosAuth = axios.create({
 });
 
 // Interceptor de REQUEST — adjunta el JWT y marca el cliente
-axiosAuth.interceptors.request.use((config) => {
+// Refactorización: Importación dinámica para romper la Dependencia Circular
+axiosAuth.interceptors.request.use(async (config) => {
   config._axiosClient = 'auth';
+  
+  // Lazy Loading del store
+  const { useAuthStore } = await import('../../features/auth/store/authStore.js');
   const token = useAuthStore.getState().token;
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -45,6 +49,9 @@ const handleRefreshToken = async function (_error) {
     (status === 401 || (status === 403 && errorCode === 'TOKEN_EXPIRED'));
 
   if (shouldRefresh) {
+    // Refactorización: Importación dinámica para la recuperación de sesión
+    const { useAuthStore } = await import('../../features/auth/store/authStore.js');
+
     if (_isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
