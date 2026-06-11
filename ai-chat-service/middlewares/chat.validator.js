@@ -11,7 +11,7 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 export const validateChatMessage = [
-    body('mensaje')
+    body('message')
         .notEmpty().withMessage('El mensaje es requerido')
         .isString().withMessage('El mensaje debe ser texto')
         .isLength({ min: 1, max: 2000 }).withMessage('El mensaje debe tener entre 1 y 2000 caracteres')

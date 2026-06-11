@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
@@ -6,12 +7,6 @@ import { EditProfileModal } from '../components/EditProfileModal';
 import toast from 'react-hot-toast';
 
 const MOODS = ['Bien', 'Normal', 'Mal', 'Ansioso'];
-const QUICK_ACTIONS = [
-    { icon: BarChart2, label: 'Historial', sub: '12' },
-    { icon: Dumbbell, label: 'Ejercicios', sub: '1/3' },
-    { icon: MessageCircle, label: 'Chat', sub: '•' },
-    { icon: BellRing, label: 'Alertas', sub: '2' },
-];
 const DAILY_ITEMS = ['Reto Diario', 'Escribir como me siento'];
 
 export const UserPage = () => {
@@ -20,13 +15,20 @@ export const UserPage = () => {
     const [selectedMood, setSelectedMood] = useState(null);
     const [selectedIntensity, setSelectedIntensity] = useState(null);
     const [showEditProfile, setShowEditProfile] = useState(false);
-    
+    const navigate = useNavigate();
     const [dailyMessage, setDailyMessage] = useState("");
     const [loadingMessage, setLoadingMessage] = useState(true);
 
+    const QUICK_ACTIONS = [
+        { icon: BarChart2, label: 'Historial', sub: '12' },
+        { icon: Dumbbell, label: 'Ejercicios', sub: '1/3' },
+        { icon: MessageCircle, label: 'Chat', sub: '•' },
+        { icon: BellRing, label: 'Alertas', sub: '2' },
+    ];
+
     useEffect(() => {
         const fetchDailyMessage = async () => {
-            if (!user?.id && !user?._id) return; 
+            if (!user?.id && !user?._id) return;
             const userId = user.id || user._id;
 
             try {
@@ -77,7 +79,7 @@ export const UserPage = () => {
             <div className='flex flex-col gap-[18px]'>
                 <p className='m-0 text-[15px] text-[#7b8094] font-bold'>Hola, {user?.firstName} {user?.surname}</p>
                 <h1 className='m-0 text-[32px] font-black text-[#2f3348]'>¿Cómo te sientes hoy?</h1>
-                
+
                 <div className='bg-gradient-to-r from-[#f5f6ff] to-white border-l-[5px] border-[#6d72d8] rounded-r-2xl p-5 my-1 shadow-sm flex items-start gap-4 transition-all hover:shadow-md'>
                     <div className='bg-[#6d72d8] p-2.5 rounded-xl text-white shrink-0 mt-0.5'>
                         <Smile size={22} />
@@ -124,9 +126,10 @@ export const UserPage = () => {
                 </div>
 
                 <div className='grid grid-cols-4 gap-3'>
-                    {QUICK_ACTIONS.map(({ icon: Icon, label, sub }) => (
+                    {QUICK_ACTIONS.map(({ icon: Icon, label, sub, onClick }) => (
                         <button key={label}
-                            className='flex flex-col items-center gap-1.5 px-2.5 py-[18px] border border-[#e5e7f0] rounded-2xl bg-white cursor-pointer hover:bg-[#f5f6ff] hover:border-[#c5c8f2] transition-all shadow-sm'>
+                            onClick={onClick}
+                            className='flex flex-col items-center gap-1.5 px-2.5 py-[18px] border border-[#e5e7f0] rounded-2xl bg-white cursor-pointer hover:bg-[#f5f6ff] transition-colors'>
                             <Icon size={26} className='text-[#6d72d8]' />
                             <span className='text-[13px] font-extrabold text-[#505570]'>{label}</span>
                             <span className='text-xs font-bold text-[#9b9fb8]'>{sub}</span>

@@ -16,6 +16,7 @@ import { ContentPage } from '../../features/dashboard/pages/ContentPage';
 import { UserPage } from '../../features/users/pages/UserPage';
 import { MotivationalPage } from '../../features/dashboard/pages/MotivationalPage';
 import { MoodTrackingPage } from '../../features/dashboard/pages/MoodTrackingPage';
+import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -46,6 +47,7 @@ export const AppRoutes = () => {
         }
       >
         <Route index element={<UserPage />} />
+        <Route path='chat' element={<ChatPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}

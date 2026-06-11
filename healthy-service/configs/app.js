@@ -14,7 +14,7 @@ import contentRoutes from '../src/contents/content.routes.js';
 import notificationRoutes from '../src/notifications/notification.route.js';
 import { swaggerSpec, swaggerUi } from './documentation.js';
 
-const BASE_PATH = '/healthyService/v1';
+const BASE_PATH = '/feelWeell/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/exercises`, exerciseRoutes);

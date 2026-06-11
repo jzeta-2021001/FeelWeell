@@ -5,9 +5,9 @@ import { sendMessage } from './chat.service.js';
 export const chat = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { mensaje } = req.body;
+        const { message } = req.body;
 
-        const result = await sendMessage(userId, mensaje);
+        const result = await sendMessage(userId, message);
 
         res.status(200).json({
             success: true,
