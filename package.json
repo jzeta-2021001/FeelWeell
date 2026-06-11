@@ -1,0 +1,22 @@
+{
+	"name": "feelweell",
+	"version": "1.0.0",
+	"description": "Package JSON que ayudará a levantar todos los servicios desde una terminal",
+	"private": true,
+	"scripts": {
+		"install:all": "pnpm install && cd ai-chat-service && pnpm install && cd ../auth-service && pnpm install && cd ../client-admin && pnpm install && cd ../healthy-service && pnpm install && cd ../mood-tracking && pnpm install",
+		"start": "concurrently -k -n \"IA,AUTH,DAILY,HEALTHY,MOOD,CLIENT\" -c \"cyan,blue,yellow,green,magenta,red\" \"pnpm run ia\" \"pnpm run auth\" \"pnpm run daily\" \"pnpm run healthy\" \"pnpm run mood\" \"pnpm run client\"",
+		"daily": "cd daily-positive-service/src/DailyPositive.Api && dotnet run",
+		"ia" : "cd ai-chat-service && pnpm run dev",
+		"auth": "cd auth-service && pnpm run dev",
+		"healthy": "cd healthy-service && pnpm run dev",
+		"mood" : "cd mood-tracking && pnpm run dev",
+		"client" : "cd client-admin && pnpm run dev"
+	},
+	"keywords": [],
+	"author": "Los Debuggers",
+	"license": "ISC",
+	"devDependencies": {
+		"concurrently": "^10.0.3"
+	}
+}
