@@ -25,7 +25,7 @@ const PATRONES_FUERA_DE_ALCANCE = [
     // Estadística
     /\b(MEDIA|MEDIANA|MODA|VARIANZA|DESVIACION (ESTANDAR|TIPICA)|PROBABILIDAD)\b/,
 
-    /\b(TAREA|DEBERES?|EJERCICIO|EXAMEN|PRUEBA|QUIZ|TRABAJO ESCOLAR)\b/,
+    /\b(TAREA|DEBERES?|MATEMATICA|QUIZ|TRABAJO ESCOLAR)\b/,
     // Historia
     /\b(GUERRA DE|BATALLA DE|SIGLO [IVXLCDM]+|PRESIDENTES? DE|HISTORIA DE|REVOLUCION)\b/,
     /\b(INDEPENDENCIA DE|COLONIA|CONQUISTADORES?|MAYAS?|AZTECAS?|INCAS?)\b/,
@@ -66,19 +66,19 @@ const PATRONES_FUERA_DE_ALCANCE = [
 ];
 
 
-const esFueraDeAlcance = (mensaje) => {
-    const textoNorm = normalizar(mensaje);
+const esFueraDeAlcance = (message) => {
+    const textoNorm = normalizar(message);
     return PATRONES_FUERA_DE_ALCANCE.some((patron) => patron.test(textoNorm));
 };
 
 export const detectarTemaFueraDeAlcance = (req, res, next) => {
-    const { mensaje } = req.body;
+    const { message } = req.body;
 
-    if (!mensaje || typeof mensaje !== 'string') {
+    if (!message || typeof message !== 'string') {
         return next();
     }
 
-    if (esFueraDeAlcance(mensaje)) {
+    if (esFueraDeAlcance(message)) {
         return res.status(200).json({
             success: true,
             tipo: 'FUERA_DE_ALCANCE',

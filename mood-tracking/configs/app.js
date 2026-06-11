@@ -16,7 +16,7 @@ import { swaggerSpec, swaggerUi } from './documentation.js';
 import { rabbitConnection } from '../infrastructure/messaging/rabbitmq.connection.js';
 import { channelManager } from '../infrastructure/messaging/rabbitmq.channel-manager.js';
 
-const BASE_PATH = '/feelweell/v1';
+const BASE_PATH = '/feelWeell/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ← primero, antes de rutas protegidas

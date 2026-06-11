@@ -12,7 +12,7 @@ import { errorHandler } from '../middlewares/handle-errors.js';
 import chatRoutes from '../src/chat/chat.routes.js';
 import { swaggerSpec, swaggerUi } from './documentation.js'; // ← nuevo
 
-const BASE_PATH = '/feelWell/v1';
+const BASE_PATH = '/feelWeell/v1';
 
 const routes = (app) => {
     app.use(`${BASE_PATH}/chat`, chatRoutes);

@@ -16,8 +16,8 @@ const RESPUESTA_CRISIS =
     'pero ellos pueden darte el apoyo humano que necesitas ya mismo. 💙';
 
 export const detectCrisis = async (req, res, next) => {
-    const { mensaje } = req.body;
-    const textoUpper = mensaje.toUpperCase();
+    const { message } = req.body;
+    const textoUpper = message.toUpperCase();
 
     const keywordsDetectadas = PALABRAS_RIESGO.filter((palabra) =>
         textoUpper.includes(palabra)
@@ -29,7 +29,7 @@ export const detectCrisis = async (req, res, next) => {
         // Guardamos la alerta en BD de forma no bloqueante
         saveCrisisAlert({
             userId,
-            triggerMessage: mensaje,
+            triggerMessage: message,
             detectedKeywords: keywordsDetectadas,
             responseGiven: RESPUESTA_CRISIS
         });
