@@ -10,9 +10,27 @@ const axiosAuth = axios.create({
   },
 });
 
+export const axiosIA = axios.create({
+  baseURL: import.meta.env.VITE_AI_URL,
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 // Interceptor de REQUEST — adjunta el JWT y marca el cliente
-axiosAuth.interceptors.request.use((config) => {
+// Refactorización: Importación dinámica para romper la Dependencia Circular
+axiosAuth.interceptors.request.use(async (config) => {
   config._axiosClient = 'auth';
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+axiosIA.interceptors.request.use((config) => {
+  config._axiosIA = 'ia';
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -45,6 +63,9 @@ const handleRefreshToken = async function (_error) {
     (status === 401 || (status === 403 && errorCode === 'TOKEN_EXPIRED'));
 
   if (shouldRefresh) {
+    // Refactorización: Importación dinámica para la recuperación de sesión
+    const { useAuthStore } = await import('../../features/auth/store/authStore.js');
+
     if (_isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
