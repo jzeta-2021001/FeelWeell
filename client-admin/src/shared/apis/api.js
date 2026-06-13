@@ -41,6 +41,15 @@ axiosIA.interceptors.request.use((config) => {
   return config;
 });
 
+axiosIA.interceptors.request.use((config) => {
+  config._axiosIA = 'ia';
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // ── Lógica de refresh token (misma estructura que DebuggersEats) ──
 let _isRefreshing = false;
 let failedQueue = [];
