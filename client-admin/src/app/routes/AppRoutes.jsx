@@ -18,6 +18,7 @@ import { MotivationalPage } from '../../features/dashboard/pages/MotivationalPag
 import { MoodTrackingPage } from '../../features/dashboard/pages/MoodTrackingPage';
 import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
 import { ExercisesAdminPage } from '../../features/exercises/page/ExercisesAdminPage.jsx';
+import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -84,7 +85,7 @@ export const AppRoutes = () => {
           path='content'
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE']}>
-              <ContentPage />
+              <ContentsAdminPage />
             </RoleGuard>
           }
         />

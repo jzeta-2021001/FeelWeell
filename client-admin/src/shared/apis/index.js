@@ -4,3 +4,4 @@ export * from './users.js'; // <- Crítico: No omitir esta línea
 export * from './motivational.js';
 export * from './chat.js';
 export * from './exercise.js';
+export * from './content.js';
