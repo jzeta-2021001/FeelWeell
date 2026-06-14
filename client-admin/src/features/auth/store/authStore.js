@@ -7,6 +7,7 @@ import {
   changePassword as changePasswordRequest,
   forgotPassword as forgotPasswordRequest,
   resetPassword as resetPasswordRequest,
+  updateProfile as updateProfileRequest,
 } from '../../../shared/apis';
 import { showError } from '../../../shared/utils/toast.js';
 
@@ -62,6 +63,19 @@ export const useAuthStore = create(
 
       updateUser: (updates) => {
         set((s) => ({ user: { ...s.user, ...updates } }));
+      },
+
+      updateOwnProfile: async (profileData) => {
+        set({ loading: true });
+        try {
+          const response = await updateProfileRequest(profileData);
+          const updated = response.data?.data ?? response.data ?? response;
+          set((s) => ({ user: { ...s.user, ...updated }, loading: false }));
+          return { success: true };
+        } catch (err) {
+          set({ loading: false });
+          return { success: false, error: getErrorMessage(err, 'Error al actualizar perfil') };
+        }
       },
 
       logout: () => {
