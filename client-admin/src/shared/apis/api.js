@@ -10,7 +10,7 @@ const axiosAuth = axios.create({
   },
 });
 
-export const axiosIA = axios.create({
+const axiosIA = axios.create({
   baseURL: import.meta.env.VITE_AI_URL,
   timeout: 30000,
   headers: {
@@ -125,4 +125,4 @@ const handleRefreshToken = async function (_error) {
 
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
 
-export { axiosAuth };
+export { axiosAuth, axiosIA };

@@ -9,7 +9,7 @@ import { ProtectedRoutes } from './ProtectedRoutes';
 import { RoleGuard } from './RoleGuard';
 import { UserLayout } from '../layouts/UserLayout';
 import { DashboardPage } from '../layouts/DashboardPage';
-import { Users } from '../../features/users/components/Users';
+import { UserAdminPage } from '../../features/users/pages/UserAdminPage.jsx';
 import { PanelPage } from '../../features/dashboard/pages/PanelPage';
 import { ExercisesPage } from '../../features/dashboard/pages/ExercisesPage';
 import { ContentPage } from '../../features/dashboard/pages/ContentPage';
@@ -67,7 +67,7 @@ export const AppRoutes = () => {
           path='users'
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_USERS_ROLE']}>
-              <Users />
+              <UserAdminPage />
             </RoleGuard>
           }
         />

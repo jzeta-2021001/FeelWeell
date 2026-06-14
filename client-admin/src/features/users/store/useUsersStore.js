@@ -1,20 +1,11 @@
 import { create } from 'zustand';
 import {
-    getAllUsersRequest,
-    toggleUserStatusRequest,
-    deleteUserRequest,
-    createUserRequest,
-    updateProfileRequest,
-} from '../../../shared/apis/users';
-
-const getErrorMessage = (error, fallback) => {
-    return (
-        error.response?.data?.errors?.[0]?.message ||
-        error.response?.data?.error ||
-        error.response?.data?.message ||
-        fallback
-    );
-};
+    getAllUsers as getAllUsersRequest,
+    toggleUserStatus as toggleUserStatusRequest,
+    deleteUser as deleteUserRequest,
+    createUser as createUserRequest,
+    updateProfile as updateProfileRequest,
+} from '../../../shared/apis';
 
 export const useUserStore = create((set, get) => ({
     users: [],
@@ -28,87 +19,76 @@ export const useUserStore = create((set, get) => ({
         if (state.loading) return;
         if (!force && state.users.length > 0) return;
 
+        set({ loading: true, error: null });
         try {
-            set({ loading: true, error: null });
             const response = await getAllUsersRequest();
-            set({ users: response.data.data || [], loading: false });
-        } catch (error) {
+            const users = response.data?.data ?? response.data ?? response;
+
+            set({ users: Array.isArray(users) ? users : [], loading: false });
+        } catch (err) {
             set({
-                error: getErrorMessage(error, 'Error al obtener usuarios'),
+                error: err.response?.data?.message || 'Error al listar usuarios',
                 loading: false,
             });
+        }
+    },
+
+    createUser: async (userData) => {
+        set({ loading: true });
+        try {
+            await createUserRequest(userData);
+            set({ loading: false });
+            return { success: true };
+        } catch (err) {
+            set({ loading: false });
+            return { success: false, error: err.response?.data?.message || 'Error al crear usuario' };
         }
     },
 
     toggleUserStatus: async (id) => {
         try {
-            set({ loading: true, error: null });
             const response = await toggleUserStatusRequest(id);
-            set({
-                users: get().users.map((u) => (u._id === id ? response.data.data : u)),
-                loading: false,
-            });
+            const updated = response.data?.data ?? response.data ?? response;
+
+            set((state) => ({
+                users: state.users.map((u) =>
+                    u._id === id ? { ...u, isActive: updated.isActive } : u
+                ),
+            }));
             return { success: true };
-        } catch (error) {
-            set({
-                loading: false,
-                error: getErrorMessage(error, 'Error al cambiar estado del usuario'),
-            });
-            return { success: false, error: getErrorMessage(error, 'Error al cambiar estado') };
+        } catch (err) {
+            return { success: false, error: err.response?.data?.message || 'Error al cambiar estado' };
         }
     },
 
     deleteUser: async (id) => {
         try {
-            set({ loading: true, error: null });
             await deleteUserRequest(id);
-            set({
-                users: get().users.filter((u) => u._id !== id),
-                loading: false,
-            });
+            set((state) => ({
+                users: state.users.filter((u) => u._id !== id),
+            }));
             return { success: true };
-        } catch (error) {
-            set({
-                loading: false,
-                error: getErrorMessage(error, 'Error al eliminar usuario'),
-            });
-            return { success: false, error: getErrorMessage(error, 'Error al eliminar') };
+        } catch (err) {
+            return { success: false, error: err.response?.data?.message || 'Error al eliminar usuario' };
         }
     },
 
-    createUser: async (userData) => {
+    updateProfile: async (userId, profileData) => {
+        set({ loading: true });
         try {
-            set({ loading: true, error: null });
-            const response = await createUserRequest(userData);
-            const newUser = response.data.data;
-            set({ users: [...get().users, newUser], loading: false });
-            return { success: true };
-        } catch (error) {
-            set({
-                loading: false,
-                error: getErrorMessage(error, 'Error al crear usuario'),
-            });
-            return { success: false, error: getErrorMessage(error, 'Error al crear') };
-        }
-    },
-
-    updateProfile: async (profileData) => {
-        try {
-            set({ loading: true, error: null });
             const response = await updateProfileRequest(profileData);
-            const updated = response.data.data;
-            // Refleja el cambio en la lista si el usuario está en ella
-            set({
-                users: get().users.map((u) => (u._id === updated._id ? updated : u)),
+            const updated = response.data?.data ?? response.data ?? response;
+
+            set((state) => ({
+                users: state.users.map((u) =>
+                    u._id === userId ? { ...u, ...updated } : u
+                ),
                 loading: false,
-            });
-            return { success: true, data: updated };
-        } catch (error) {
-            set({
-                loading: false,
-                error: getErrorMessage(error, 'Error al actualizar el perfil'),
-            });
-            return { success: false, error: getErrorMessage(error, 'Error al actualizar') };
+            }));
+            return { success: true };
+        } catch (err) {
+            set({ loading: false });
+            return { success: false, error: err.response?.data?.message || 'Error al actualizar perfil' };
         }
     },
 }));
