@@ -18,6 +18,14 @@ const axiosIA = axios.create({
   },
 });
 
+const axiosHealthy = axios.create({
+  baseURL: import.meta.env.VITE_HEALTHY_URL,
+  timeout: 5000,
+  headers: {
+    'Content-Type' : 'application/json',
+  },
+});
+
 // Interceptor de REQUEST — adjunta el JWT y marca el cliente
 // Refactorización: Importación dinámica para romper la Dependencia Circular
 axiosAuth.interceptors.request.use(async (config) => {
@@ -38,8 +46,8 @@ axiosIA.interceptors.request.use((config) => {
   return config;
 });
 
-axiosIA.interceptors.request.use((config) => {
-  config._axiosIA = 'ia';
+axiosHealthy.interceptors.request.use( async (config) => {
+  config._axiosHealthy = 'healthy';
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -125,4 +133,4 @@ const handleRefreshToken = async function (_error) {
 
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
 
-export { axiosAuth, axiosIA };
+export { axiosAuth, axiosIA, axiosHealthy };
