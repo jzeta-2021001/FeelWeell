@@ -9,6 +9,11 @@ const streakSchema = new Schema(
       unique: true,
     },
 
+    username: {
+      type: String,
+      default: null,
+    },
+
     currentStreak: {
       type: Number,
       default: 0,

@@ -126,10 +126,7 @@ export const getUserProfile = async (userId) => {
   };
 };
 
-/**
- * Publicación manual de eventos (uso interno/admin, no expuesto por HTTP).
- * Mantiene compatibilidad con el flujo existente de streak_at_risk / not_registered.
- */
+
 export const publishMoodEvents = async (userId, eventType) => {
   const validEvents = [ROUTING_KEYS.STREAK_AT_RISK, ROUTING_KEYS.NOT_REGISTERED];
 
