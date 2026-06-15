@@ -74,9 +74,11 @@ const handleRefreshToken = async function (_error) {
   const status = _error.response?.status;
   const errorCode = _error.response?.data?.error;
   const isRefreshEndpoint = (_original.url || '').includes('/auth/refresh');
+  const isLoginEndpoint = (_original.url || '').includes('/auth/login');
 
   const shouldRefresh =
     !isRefreshEndpoint &&
+    !isLoginEndpoint &&
     (status === 401 || (status === 403 && errorCode === 'TOKEN_EXPIRED'));
 
   if (shouldRefresh) {

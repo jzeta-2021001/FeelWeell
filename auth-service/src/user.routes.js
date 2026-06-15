@@ -257,7 +257,7 @@ router.put('/change-password', validateJWT, validateChangePassword, updatePasswo
 
 router.put('/profile', validateJWT, validateUpdateProfile, updateProfile);
 
-router.get('/users', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), getAllUsers);
+router.get('/users', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE', 'ADMIN_MOODTRACKING_ROLE'), getAllUsers);
 router.patch('/users/:id/toggle-status', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), toggleUserStatus);
 router.delete('/users/:id', validateJWT, validateRole('ADMIN_ROLE', 'ADMIN_USERS_ROLE'), deleteUser);
 

@@ -3,8 +3,9 @@ import * as moodService from './mood.service.js';
 export const registerMoodEntry = async (req, res) => {
   try {
     const userId = req.user.id;
+    const username = req.user.username ?? null;
     const { emotion, intensity, note } = req.body;
-    const entry = await moodService.registerMoodEntry(userId, { emotion, intensity, note });
+    const entry = await moodService.registerMoodEntry(userId, { emotion, intensity, note }, username);
     return res.status(201).json({ success: true, message: 'Estado registrado', data: entry });
   } catch (err) {
     if (err.message.includes('Ya se ha registrado')) {

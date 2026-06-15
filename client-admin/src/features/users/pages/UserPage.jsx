@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile } from 'lucide-react';
+import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile, Flame } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
 import { EditProfileModal } from '../components/EditProfileModal';
@@ -94,6 +94,31 @@ export const UserPage = () => {
                             </p>
                         )}
                     </div>
+                </div>
+
+                {/* Widget de racha */}
+                <div className='bg-[#fffbeb] border border-[#fde68a] rounded-2xl px-5 py-4 shadow-sm'>
+                    <div className='flex items-center justify-between mb-2'>
+                        <div className='flex items-center gap-2'>
+                            <Flame size={18} className='text-[#f59e0b]' />
+                            <span className='text-sm font-extrabold text-[#92400e]'>Tu racha</span>
+                        </div>
+                        <span className='text-lg font-black text-[#f59e0b]'>
+                            {user?.streak ?? 0} <span className='text-sm font-bold text-[#b45309]'>día{(user?.streak ?? 0) !== 1 ? 's' : ''}</span>
+                        </span>
+                    </div>
+                    <p className='m-0 text-[11px] text-[#b45309] font-semibold mb-2'>
+                        Próximo hito: 7 días
+                    </p>
+                    <div className='w-full bg-[#fde68a] rounded-full h-2'>
+                        <div
+                            className='bg-[#f59e0b] h-2 rounded-full transition-all duration-500'
+                            style={{ width: `${Math.min(((user?.streak ?? 0) / 7) * 100, 100)}%` }}
+                        />
+                    </div>
+                    <p className='m-0 text-right text-[11px] text-[#b45309] font-bold mt-1'>
+                        {Math.round(Math.min(((user?.streak ?? 0) / 7) * 100, 100))}%
+                    </p>
                 </div>
 
                 <div className='flex gap-2.5 flex-wrap mt-2'>

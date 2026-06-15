@@ -54,6 +54,18 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                         {errors.email && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.email.message}</span>}
                     </div>
 
+                    <div><label className={labelCls}>Rol</label>
+                        <select className={inputCls} {...register('role', { required: 'El rol es obligatorio' })}>
+                            <option value=''>Selecciona un rol</option>
+                            <option value='USER_ROLE'>Usuario</option>
+                            <option value='ADMIN_ROLE'>Administrador general</option>
+                            <option value='ADMIN_USERS_ROLE'>Admin de usuarios</option>
+                            <option value='ADMIN_MOODTRACKING_ROLE'>Admin de Mood Tracking</option>
+                            <option value='ADMIN_HEALTHY_ROLE'>Admin de Healthy</option>
+                        </select>
+                        {errors.role && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.role.message}</span>}
+                    </div>
+
                     <div className='grid grid-cols-2 gap-3.5'>
                         <div><label className={labelCls}>Contraseña</label>
                             <input className={inputCls} type='password' {...register('password', { required: 'La contraseña es obligatoria', minLength: { value: 8, message: 'Mínimo 8 caracteres' } })} />
