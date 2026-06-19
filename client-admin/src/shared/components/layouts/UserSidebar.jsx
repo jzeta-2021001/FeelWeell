@@ -1,9 +1,10 @@
-import { Home, MessageCircle, Trophy, Settings, Flame, LogOut } from 'lucide-react';
+import { Home, MessageCircle, Trophy, Settings, Flame, LogOut, Dumbbell } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store/authStore';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 
 const NAV_ITEMS = [
     { label: 'Inicio', icon: Home },
+    { label: 'Ejercicios', icon: Dumbbell },
     { label: 'Chat', icon: MessageCircle },
     { label: 'Retos Pendientes', icon: Trophy },
     { label: 'Configuraciones', icon: Settings },

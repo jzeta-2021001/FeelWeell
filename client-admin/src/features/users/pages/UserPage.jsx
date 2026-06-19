@@ -21,8 +21,8 @@ export const UserPage = () => {
 
     const QUICK_ACTIONS = [
         { icon: BarChart2, label: 'Historial', sub: '12' },
-        { icon: Dumbbell, label: 'Ejercicios', sub: '1/3' },
-        { icon: MessageCircle, label: 'Chat', sub: '•' },
+        { icon: Dumbbell, label: 'Ejercicios', sub: '1/3', onClick: () => navigate('/home/exercises') },
+        { icon: MessageCircle, label: 'Chat', sub: '•', onClick: () => navigate('/home/chat') },
         { icon: BellRing, label: 'Alertas', sub: '2' },
     ];
 
