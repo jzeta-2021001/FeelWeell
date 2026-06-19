@@ -6,6 +6,7 @@ import { getStreak } from '../../apis/streak';
 
 const PATH_TO_LABEL = {
   '/home': 'Inicio',
+  '/home/exercises': 'Ejercicios',
   '/home/chat': 'Chat',
   '/home/retos': 'Retos Pendientes',
   '/home/configuraciones': 'Configuraciones',
