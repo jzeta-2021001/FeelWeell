@@ -9,14 +9,18 @@ import { ProtectedRoutes } from './ProtectedRoutes';
 import { RoleGuard } from './RoleGuard';
 import { UserLayout } from '../layouts/UserLayout';
 import { DashboardPage } from '../layouts/DashboardPage';
-import { Users } from '../../features/users/components/Users';
+import { UserAdminPage } from '../../features/users/pages/UserAdminPage.jsx';
 import { PanelPage } from '../../features/dashboard/pages/PanelPage';
 import { ExercisesPage } from '../../features/dashboard/pages/ExercisesPage';
 import { ContentPage } from '../../features/dashboard/pages/ContentPage';
 import { UserPage } from '../../features/users/pages/UserPage';
+import { MoodPage } from '../../features/users/pages/MoodPage';
 import { MotivationalPage } from '../../features/dashboard/pages/MotivationalPage';
 import { MoodTrackingPage } from '../../features/dashboard/pages/MoodTrackingPage';
 import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
+import { ExercisesAdminPage } from '../../features/exercises/pages/ExercisesAdminPage.jsx';
+import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPage.jsx';
+import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -48,6 +52,8 @@ export const AppRoutes = () => {
       >
         <Route index element={<UserPage />} />
         <Route path='chat' element={<ChatPage />} />
+        <Route path='exercises' element={<UserExercisesPage />} />
+        <Route path='mood' element={<MoodPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}
@@ -67,7 +73,7 @@ export const AppRoutes = () => {
           path='users'
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_USERS_ROLE']}>
-              <Users />
+              <UserAdminPage />
             </RoleGuard>
           }
         />
@@ -75,7 +81,7 @@ export const AppRoutes = () => {
           path='exercises'
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE']}>
-              <ExercisesPage />
+              <ExercisesAdminPage />
             </RoleGuard>
           }
         />
@@ -83,7 +89,7 @@ export const AppRoutes = () => {
           path='content'
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE']}>
-              <ContentPage />
+              <ContentsAdminPage />
             </RoleGuard>
           }
         />

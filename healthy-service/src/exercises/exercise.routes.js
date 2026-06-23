@@ -246,7 +246,7 @@ router.post('/', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercise
  *       500:
  *         description: Error al actualizar
  */
-router.put('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), validateUpdateExercise, updateExercise);
+router.put('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercisePhotoMiddleware.single('photo'), validateUpdateExercise, updateExercise);
 
 /**
  * @swagger

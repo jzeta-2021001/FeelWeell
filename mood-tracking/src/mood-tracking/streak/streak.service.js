@@ -2,7 +2,7 @@ import Streak from './streak.model.js';
 
 
 export const getCurrentStreak = async (userId) => {
-    let streak = await Streak.findOne({ userId }); // ← let, no const
+    let streak = await Streak.findOne({ userId });
 
     if (!streak) {
         streak = await Streak.create({ userId, currentStreak: 0, maxStreak: 0 });
@@ -15,11 +15,16 @@ export const getCurrentStreak = async (userId) => {
     };
 };
 
-export const updateStreak = async (userId) => {
-    let streak = await Streak.findOne({ userId }); // ← let, no const
+export const updateStreak = async (userId, username = null) => {
+    let streak = await Streak.findOne({ userId });
 
     if (!streak) {
-        streak = new Streak({ userId });
+        streak = new Streak({ userId, username });
+    }
+
+    // Guardar username si aún no lo tenía
+    if (username && !streak.username) {
+        streak.username = username;
     }
 
     const now = new Date();

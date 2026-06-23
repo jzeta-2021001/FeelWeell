@@ -115,12 +115,12 @@ const seederAdmin = async () => {
     try {
         const adminExists = await User.findOne({ username: 'admin' });
         if (!adminExists) {
-            const hashedPassword = await hash('Admin123!FeelWell', 10);
+            const hashedPassword = await hash(process.env.SEEDER_ADMIN_PASSWORD, 10);
             await new User({
                 firstName: 'Administrador',
                 surname: 'Principal',
-                email: 'admin@feelwell.com',
-                phone: '42459699',
+                email: process.env.SEEDER_ADMIN_EMAIL,
+                phone: process.env.SEEDER_ADMIN_PHONE,
                 username: 'admin',
                 password: hashedPassword,
                 role: 'ADMIN_ROLE',
@@ -130,12 +130,12 @@ const seederAdmin = async () => {
 
         const adminUsersExists = await User.findOne({ username: 'admin-users' });
         if (!adminUsersExists) {
-            const hashedPassword = await hash('AdminUsers123!FeelWell', 10);
+            const hashedPassword = await hash(process.env.SEEDER_ADMIN_USERS_PASSWORD, 10);
             await new User({
                 firstName: 'Administrador',
                 surname: 'Usuarios',
-                email: 'admin.users@feelwell.com',
-                phone: '42459700',
+                email: process.env.SEEDER_ADMIN_USERS_EMAIL,
+                phone: process.env.SEEDER_ADMIN_USERS_PHONE,
                 username: 'admin-users',
                 password: hashedPassword,
                 role: 'ADMIN_USERS_ROLE',
@@ -145,12 +145,12 @@ const seederAdmin = async () => {
 
         const adminMoodExists = await User.findOne({ username: 'admin-mood' });
         if (!adminMoodExists) {
-            const hashedPassword = await hash('AdminMood123!FeelWell', 10);
+            const hashedPassword = await hash(process.env.SEEDER_ADMIN_MOOD_PASSWORD, 10);
             await new User({
                 firstName: 'Administrador',
                 surname: 'MoodTracking',
-                email: 'admin.mood@feelwell.com',
-                phone: '42459701',
+                email: process.env.SEEDER_ADMIN_MOOD_EMAIL,
+                phone: process.env.SEEDER_ADMIN_MOOD_PHONE,
                 username: 'admin-mood',
                 password: hashedPassword,
                 role: 'ADMIN_MOODTRACKING_ROLE',
@@ -160,12 +160,12 @@ const seederAdmin = async () => {
 
         const adminHealthyExists = await User.findOne({ username: 'admin-healthy' });
         if (!adminHealthyExists) {
-            const hashedPassword = await hash('AdminHealthy123!FeelWell', 10);
+            const hashedPassword = await hash(process.env.SEEDER_ADMIN_HEALTHY_PASSWORD, 10);
             await new User({
                 firstName: 'Administrador',
                 surname: 'Healthy',
-                email: 'admin.healthy@feelwell.com',
-                phone: '42459702',
+                email: process.env.SEEDER_ADMIN_HEALTHY_EMAIL,
+                phone: process.env.SEEDER_ADMIN_HEALTHY_PHONE,
                 username: 'admin-healthy',
                 password: hashedPassword,
                 role: 'ADMIN_HEALTHY_ROLE',

@@ -3,25 +3,26 @@ import * as moodService from './mood.service.js';
 export const registerMoodEntry = async (req, res) => {
   try {
     const userId = req.user.id;
+    const username = req.user.username ?? null;
     const { emotion, intensity, note } = req.body;
-    const entry = await moodService.registerMoodEntry(userId, { emotion, intensity, note });
-    return res.status(201).json({ success: true, message: 'Estado registrado', data: entry });
+    const entry = await moodService.registerMoodEntry(userId, username, { emotion, intensity, note });
+    return res.status(201).json({ success: true, data: entry });
   } catch (err) {
     if (err.message.includes('Ya se ha registrado')) {
-      return res.status(400).json({ success: false, message: err.message });
+      return res.status(409).json({ success: false, message: err.message });
     }
     console.error('[registerMoodEntry]', err);
     return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 };
 
-export const getTodayMoodEntry = async (req, res) => {
+export const getTodayMood = async (req, res) => {
   try {
     const userId = req.user.id;
     const entry = await moodService.getTodayEntry(userId);
-    return res.status(200).json({ success: true, registered: !!entry, data: entry });
+    return res.status(200).json({ success: true, registered: !!entry, data: entry ?? null });
   } catch (err) {
-    console.error('[getTodayMoodEntry]', err);
+    console.error('[getTodayMood]', err);
     return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 };
@@ -30,8 +31,8 @@ export const getMoodHistory = async (req, res) => {
   try {
     const userId = req.user.id;
     const { from, to } = req.query;
-    const history = await moodService.getMoodHistory(userId, { from, to });
-    return res.status(200).json({ success: true, total: history.length, data: history });
+    const entries = await moodService.getMoodHistory(userId, { from, to });
+    return res.status(200).json({ success: true, total: entries.length, data: entries });
   } catch (err) {
     console.error('[getMoodHistory]', err);
     return res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -41,9 +42,6 @@ export const getMoodHistory = async (req, res) => {
 export const getInitialQuestionnaire = async (req, res) => {
   try {
     const questions = await moodService.getInitialQuestionnaire();
-    if (!questions || questions.length === 0) {
-      return res.status(404).json({ success: false, message: 'No hay cuestionario configurado' });
-    }
     return res.status(200).json({ success: true, data: questions });
   } catch (err) {
     console.error('[getInitialQuestionnaire]', err);
@@ -56,7 +54,7 @@ export const submitQuestionnaire = async (req, res) => {
     const userId = req.user.id;
     const { answers } = req.body;
     const result = await moodService.submitQuestionnaire(userId, answers);
-    return res.status(201).json({ success: true, data: result });
+    return res.status(200).json({ success: true, data: result });
   } catch (err) {
     console.error('[submitQuestionnaire]', err);
     return res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -67,12 +65,24 @@ export const getUserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const profile = await moodService.getUserProfile(userId);
-    if (!profile) {
-      return res.status(404).json({ success: false, message: 'Perfil no encontrado' });
-    }
     return res.status(200).json({ success: true, data: profile });
   } catch (err) {
     console.error('[getUserProfile]', err);
+    return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+  }
+};
+
+export const publishMoodEvents = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { eventType } = req.body;
+    const result = await moodService.publishMoodEvents(userId, eventType);
+    return res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    if (err.message.includes('Evento inválido')) {
+      return res.status(400).json({ success: false, message: err.message });
+    }
+    console.error('[publishMoodEvents]', err);
     return res.status(500).json({ success: false, message: 'Error interno del servidor' });
   }
 };

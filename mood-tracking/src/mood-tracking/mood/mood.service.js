@@ -4,7 +4,7 @@ import { updateStreak } from '../streak/streak.service.js';
 import { publishEvent } from '../../../infrastructure/messaging/rabbitmq.publisher.js';
 import { ROUTING_KEYS } from '../../../infrastructure/messaging/mood.events.js';
 
-export const registerMoodEntry = async (userId, { emotion, intensity, note }) => {
+export const registerMoodEntry = async (userId, username, { emotion, intensity, note }) => {
   const existing = await getTodayEntry(userId);
   if (existing) throw new Error('Ya se ha registrado el estado de ánimo para hoy');
 
@@ -16,10 +16,8 @@ export const registerMoodEntry = async (userId, { emotion, intensity, note }) =>
     date: new Date(),
   });
 
-  await updateStreak(userId);
+  await updateStreak(userId, username);
 
-  // Evento de dominio: se dispara como efecto de registrar un entry
-  // El error de publicación no bloquea la respuesta al usuario
   publishEvent(ROUTING_KEYS.ENTRY_CREATED, { userId, entryId: entry._id, emotion, intensity })
     .catch((err) => console.error('[MoodService] Error publicando evento entry.created:', err.message));
 
@@ -104,7 +102,6 @@ export const submitQuestionnaire = async (userId, answers) => {
     { upsert: true, new: true }
   );
 
-  // Evento de dominio: cuestionario completado
   publishEvent(ROUTING_KEYS.QUESTIONNAIRE_COMPLETED, { userId, emotionalProfile })
     .catch((err) => console.error('[MoodService] Error publicando questionnaire.completed:', err.message));
 
@@ -126,10 +123,6 @@ export const getUserProfile = async (userId) => {
   };
 };
 
-/**
- * Publicación manual de eventos (uso interno/admin, no expuesto por HTTP).
- * Mantiene compatibilidad con el flujo existente de streak_at_risk / not_registered.
- */
 export const publishMoodEvents = async (userId, eventType) => {
   const validEvents = [ROUTING_KEYS.STREAK_AT_RISK, ROUTING_KEYS.NOT_REGISTERED];
 

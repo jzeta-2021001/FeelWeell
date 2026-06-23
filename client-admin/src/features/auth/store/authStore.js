@@ -7,6 +7,7 @@ import {
   changePassword as changePasswordRequest,
   forgotPassword as forgotPasswordRequest,
   resetPassword as resetPasswordRequest,
+  updateProfile as updateProfileRequest,
 } from '../../../shared/apis';
 import { showError } from '../../../shared/utils/toast.js';
 
@@ -64,6 +65,19 @@ export const useAuthStore = create(
         set((s) => ({ user: { ...s.user, ...updates } }));
       },
 
+      updateOwnProfile: async (profileData) => {
+        set({ loading: true });
+        try {
+          const response = await updateProfileRequest(profileData);
+          const updated = response.data?.data ?? response.data ?? response;
+          set((s) => ({ user: { ...s.user, ...updated }, loading: false }));
+          return { success: true };
+        } catch (err) {
+          set({ loading: false });
+          return { success: false, error: getErrorMessage(err, 'Error al actualizar perfil') };
+        }
+      },
+
       logout: () => {
         set({
           user: null,
@@ -90,7 +104,6 @@ export const useAuthStore = create(
               expiresAt: null,
               isLoadingAuth: false,
               isAuthenticated: false,
-              loading: false,
               error: message,
             });
             showError(message);
@@ -103,15 +116,16 @@ export const useAuthStore = create(
             refreshToken: data.data.refreshToken ?? null,
             expiresAt: data.data.expiresIn ?? null,
             isAuthenticated: true,
-            loading: false,
             error: null,
           });
 
           return { success: true, role };
         } catch (err) {
           const message = getErrorMessage(err, 'Error al iniciar sesión');
-          set({ error: message, loading: false });
+          set({ error: message });
           return { success: false, error: message };
+        } finally {
+          set({ loading: false });
         }
       },
 

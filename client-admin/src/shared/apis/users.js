@@ -1,7 +1,7 @@
 import { axiosAuth } from './api';
 
 export const getAllUsersRequest = async () => {
-    return await axiosAuth.get('/api/users');
+    return await axiosAuth.get('/auth/users');
 };
 
 export const toggleUserStatusRequest = async (id) => {

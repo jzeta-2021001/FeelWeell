@@ -12,6 +12,7 @@ export const LoginForm = ({ onRegister }) => {
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (formData) => {
+    useAuthStore.setState({ error: null });
     const result = await login(formData);
     if (result.success) {
       toast.success('Bienvenido a FeelWeell');

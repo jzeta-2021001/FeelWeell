@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { useAuthStore } from '../../features/auth/store/authStore.js';
 
 // Instancia única para el auth-service de FeelWeell
 const axiosAuth = axios.create({
@@ -9,7 +10,7 @@ const axiosAuth = axios.create({
   },
 });
 
-export const axiosIA = axios.create({
+const axiosIA = axios.create({
   baseURL: import.meta.env.VITE_AI_URL,
   timeout: 30000,
   headers: {
@@ -17,15 +18,19 @@ export const axiosIA = axios.create({
   },
 });
 
+const axiosHealthy = axios.create({
+  baseURL: import.meta.env.VITE_HEALTHY_URL,
+  timeout: 5000,
+  headers: {
+    'Content-Type' : 'application/json',
+  },
+});
+
 // Interceptor de REQUEST — adjunta el JWT y marca el cliente
 // Refactorización: Importación dinámica para romper la Dependencia Circular
 axiosAuth.interceptors.request.use(async (config) => {
   config._axiosClient = 'auth';
-  
-  // Lazy Loading del store
-  const { useAuthStore } = await import('../../features/auth/store/authStore.js');
   const token = useAuthStore.getState().token;
-  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -34,6 +39,15 @@ axiosAuth.interceptors.request.use(async (config) => {
 
 axiosIA.interceptors.request.use((config) => {
   config._axiosIA = 'ia';
+  const token = useAuthStore.getState().token;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+axiosHealthy.interceptors.request.use( async (config) => {
+  config._axiosHealthy = 'healthy';
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -60,9 +74,11 @@ const handleRefreshToken = async function (_error) {
   const status = _error.response?.status;
   const errorCode = _error.response?.data?.error;
   const isRefreshEndpoint = (_original.url || '').includes('/auth/refresh');
+  const isLoginEndpoint = (_original.url || '').includes('/auth/login');
 
   const shouldRefresh =
     !isRefreshEndpoint &&
+    !isLoginEndpoint &&
     (status === 401 || (status === 403 && errorCode === 'TOKEN_EXPIRED'));
 
   if (shouldRefresh) {
@@ -119,4 +135,4 @@ const handleRefreshToken = async function (_error) {
 
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
 
-export { axiosAuth };
+export { axiosAuth, axiosIA, axiosHealthy };
