@@ -14,6 +14,7 @@ import { PanelPage } from '../../features/dashboard/pages/PanelPage';
 import { ExercisesPage } from '../../features/dashboard/pages/ExercisesPage';
 import { ContentPage } from '../../features/dashboard/pages/ContentPage';
 import { UserPage } from '../../features/users/pages/UserPage';
+import { MoodPage } from '../../features/users/pages/MoodPage';
 import { MotivationalPage } from '../../features/dashboard/pages/MotivationalPage';
 import { MoodTrackingPage } from '../../features/dashboard/pages/MoodTrackingPage';
 import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
@@ -52,6 +53,7 @@ export const AppRoutes = () => {
         <Route index element={<UserPage />} />
         <Route path='chat' element={<ChatPage />} />
         <Route path='exercises' element={<UserExercisesPage />} />
+        <Route path='mood' element={<MoodPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}
