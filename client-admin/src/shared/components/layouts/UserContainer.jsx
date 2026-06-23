@@ -18,6 +18,10 @@ export const UserContainer = ({ onLogout, children }) => {
   const updateUser = useAuthStore((s) => s.updateUser);
   const activeLabel = PATH_TO_LABEL[location.pathname] ?? 'Inicio';
 
+
+  const isChat = location.pathname === '/home/chat';
+
+
   const handleNavigate = (label) => {
     const entry = Object.entries(PATH_TO_LABEL).find(([, v]) => v === label);
     if (entry) navigate(entry[0]);
@@ -37,7 +41,12 @@ export const UserContainer = ({ onLogout, children }) => {
   return (
     <div className='min-h-screen grid' style={{ gridTemplateColumns: '280px 1fr', background: 'var(--fw-user-gradient)' }}>
       <UserSidebar active={activeLabel} onNavigate={handleNavigate} onLogout={onLogout} />
-      <main className='overflow-y-auto' style={{ padding: 'clamp(20px,3vw,40px)' }}>{children}</main>
+      <main
+        className={isChat ? 'overflow-hidden flex flex-col' : 'overflow-y-auto'}
+        style={isChat ? { height: '100vh' } : { padding: 'clamp(20px,3vw,40px)' }}
+      >
+        {isChat ? children : <div style={{ padding: 'clamp(20px,3vw,40px)' }}>{children}</div>}
+      </main>
     </div>
   );
 };
