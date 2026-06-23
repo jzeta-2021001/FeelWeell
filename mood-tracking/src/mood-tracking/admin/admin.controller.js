@@ -59,16 +59,16 @@ export const getAllProfiles = async (req, res) => {
     }
 };
 
-export const deleteUserProfile = async (req, res) => {
+export const resetUserProfile = async (req, res) => {
     try {
         const { userId } = req.params;
-        await adminService.deleteUserProfile(userId);
-        return res.status(200).json({ success: true, message: `Perfil de ${userId} eliminado` });
+        const profile = await adminService.resetUserProfile(userId);
+        return res.status(200).json({ success: true, message: `Perfil de ${userId} reseteado`, data: profile });
     } catch (err) {
         if (err.message.includes('no encontrado') || err.message.includes('not found')) {
             return res.status(404).json({ success: false, message: 'Perfil no encontrado' });
         }
-        console.error('[deleteUserProfile]', err);
+        console.error('[resetUserProfile]', err);
         return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 };

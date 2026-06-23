@@ -37,8 +37,12 @@ export const getAllProfiles = async () => {
     return QuestionnaireResponse.find().sort({ completedAt: -1 });
 };
 
-export const deleteUserProfile = async (userId) => {
-    const profile = await QuestionnaireResponse.findOneAndDelete({ userId });
+export const resetUserProfile = async (userId) => {
+    const profile = await QuestionnaireResponse.findOneAndUpdate(
+        { userId },
+        { emotionalProfile: 'SIN_PERFIL', answers: [], completedAt: null },
+        { new: true }
+    );
     if (!profile) throw new Error(`Perfil de ${userId} no encontrado`);
     return profile;
 };

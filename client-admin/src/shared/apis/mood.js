@@ -21,8 +21,8 @@ export const submitQuestionnaire = (answers) => axiosMood.post('/moodTracking/qu
 export const getUserEmotionalProfile = () => axiosMood.get('/moodTracking/profile');
 
 // ── Admin endpoints ──────────────────────────────────────────────────────────
-export const adminGetAllMoodEntries = (params = {}) => axiosMood.get('/admin/mood-entries', { params });
-export const adminDeleteMoodEntry   = (id)          => axiosMood.delete(`/admin/mood-entries/${id}`);
-export const adminGetAllProfiles    = ()             => axiosMood.get('/admin/profiles');
-export const adminDeleteUserProfile = (userId)       => axiosMood.delete(`/admin/profiles/${userId}`);
-export const adminGetSystemStats    = ()             => axiosMood.get('/admin/stats');
+export const adminGetAllMoodEntries  = (params = {}) => axiosMood.get('/admin/mood-entries', { params });
+export const adminDeleteMoodEntry    = (id)          => axiosMood.delete(`/admin/mood-entries/${id}`);
+export const adminGetAllProfiles     = ()             => axiosMood.get('/admin/profiles');
+export const adminResetUserProfile   = (userId)       => axiosMood.put(`/admin/profiles/${userId}/reset`);
+export const adminGetSystemStats     = ()             => axiosMood.get('/admin/stats');

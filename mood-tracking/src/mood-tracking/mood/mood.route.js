@@ -149,7 +149,7 @@ router.post('/mood', validateMoodEntry, moodController.registerMoodEntry);
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
  */
-router.get('/mood/today', moodController.getTodayMoodEntry);
+router.get('/mood/today', moodController.getTodayMood);
 
 /**
  * @swagger
