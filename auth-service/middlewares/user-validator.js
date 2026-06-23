@@ -52,6 +52,15 @@ export const validateCreateUser = [
         .withMessage('Debe de crear una contraseña')
         .isLength({ min: 8 })
         .withMessage('La contraseña debe de contener como mínimo 8 caracteres'),
+    body('acceptTerms')
+        .notEmpty()
+        .withMessage('Debes aceptar los términos y condiciones para registrarte.')
+        .custom((value) => {
+            if (value !== true && value !== 'true') {
+                throw new Error('Debes aceptar los términos y condiciones para registrarte.');
+            }
+            return true;
+        }),
     checkValidators,
 ];
 
