@@ -21,6 +21,7 @@ import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
 import { ExercisesAdminPage } from '../../features/exercises/pages/ExercisesAdminPage.jsx';
 import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPage.jsx';
 import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesPage.jsx';
+import { UserContentsPage } from '../../features/contents/pages/UserContentsPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -53,6 +54,7 @@ export const AppRoutes = () => {
         <Route index element={<UserPage />} />
         <Route path='chat' element={<ChatPage />} />
         <Route path='exercises' element={<UserExercisesPage />} />
+        <Route path='content' element={<UserContentsPage />} />
         <Route path='mood' element={<MoodPage />} />
       </Route>
 
@@ -68,7 +70,6 @@ export const AppRoutes = () => {
         }
       >
         <Route index element={<Navigate to='panel' replace />} />
-        <Route path='panel' element={<PanelPage />} />
         <Route
           path='users'
           element={

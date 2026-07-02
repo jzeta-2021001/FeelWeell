@@ -11,12 +11,12 @@ import { errorMessage } from '../../../shared/utils/errorMessage.js';
 export const useUserExerciseStore = create((set, get) => ({
     exercises: [],
     recommended: [],
-    progress: null,
+    progress: null,       // { summary, completed, saved, pending }
     loading: false,
     progressLoading: false,
     error: null,
 
-    fetchExercises: async (type = null) => {
+    fetchExercises: async () => {
         try {
             set({ loading: true, error: null });
             const response = await getExercisesRequest();
@@ -34,7 +34,7 @@ export const useUserExerciseStore = create((set, get) => ({
             const response = await getRecommendedRequest();
             set({ recommended: response.data.data ?? [] });
             return { success: true };
-        } catch (err) {
+        } catch {
             set({ recommended: [] });
             return { success: false };
         }
@@ -46,7 +46,7 @@ export const useUserExerciseStore = create((set, get) => ({
             const response = await getUserProgressRequest();
             set({ progress: response.data.data, progressLoading: false });
             return { success: true };
-        } catch (err) {
+        } catch {
             set({ progressLoading: false });
             return { success: false };
         }
@@ -58,19 +58,18 @@ export const useUserExerciseStore = create((set, get) => ({
             await get().fetchProgress();
             return { success: true };
         } catch (err) {
-            const message = errorMessage(err, 'Error al completar el ejercicio');
-            return { success: false, error: message };
+            return { success: false, error: errorMessage(err, 'Error al completar el ejercicio') };
         }
     },
 
-    saveExercise: async (exerciseId) => {
+    toggleSaveExercise: async (exerciseId, isSaved) => {
+        if (isSaved) return { success: true, alreadySaved: true };
         try {
             await saveForLaterRequest(exerciseId);
             await get().fetchProgress();
             return { success: true };
         } catch (err) {
-            const message = errorMessage(err, 'Error al guardar el ejercicio');
-            return { success: false, error: message };
+            return { success: false, error: errorMessage(err, 'Error al guardar el ejercicio') };
         }
     },
 }));
