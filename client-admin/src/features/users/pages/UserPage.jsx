@@ -3,17 +3,37 @@ import { useNavigate } from 'react-router-dom';
 import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Smile, Flame } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
+import { useMoodStore } from '../../mood/store/moodStore.js';
 import { EditProfileModal } from '../components/EditProfileModal';
 import toast from 'react-hot-toast';
 
-const MOODS = ['Bien', 'Normal', 'Mal', 'Ansioso'];
+const MOOD_TO_EMOTION = {
+    Bien: 'FELIZ',
+    Normal: 'NEUTRAL',
+    Mal: 'TRISTE',
+    Ansioso: 'ANSIOSO',
+};
+
+const EMOTION_TO_MOOD = Object.fromEntries(
+    Object.entries(MOOD_TO_EMOTION).map(([mood, emotion]) => [emotion, mood])
+);
+
+const MOODS = [
+    { label: 'Bien', emoji: '😌' },
+    { label: 'Normal', emoji: '😐' },
+    { label: 'Mal', emoji: '😔' },
+    { label: 'Ansioso', emoji: '😟' },
+];
+
 const DAILY_ITEMS = ['Reto Diario', 'Escribir como me siento'];
 
 export const UserPage = () => {
     const user = useAuthStore((s) => s.user);
     const { updateProfile, loading } = useUserStore();
+    const { todayMood, checkingToday, submitting, checkTodayMood, registerMood } = useMoodStore();
     const [selectedMood, setSelectedMood] = useState(null);
     const [selectedIntensity, setSelectedIntensity] = useState(null);
+    const [feelingText, setFeelingText] = useState('');
     const [showEditProfile, setShowEditProfile] = useState(false);
     const navigate = useNavigate();
     const [dailyMessage, setDailyMessage] = useState("");
@@ -51,6 +71,36 @@ export const UserPage = () => {
 
         fetchDailyMessage();
     }, [user]);
+
+    useEffect(() => {
+        if (todayMood) {
+            setSelectedMood(EMOTION_TO_MOOD[todayMood.emotion] ?? null);
+            setSelectedIntensity(todayMood.intensity ?? null);
+            setFeelingText(todayMood.note ?? '');
+        } else {
+            setSelectedMood(null);
+            setSelectedIntensity(null);
+            setFeelingText('');
+        }
+    }, [todayMood]);
+
+    useEffect(() => {
+        if (user?.id || user?._id) checkTodayMood();
+    }, [user?.id, user?._id, checkTodayMood]);
+
+    const handleSubmitMood = async () => {
+        if (!selectedMood) { toast.error('Selecciona cómo te sientes'); return; }
+        const result = await registerMood({
+            emotion: MOOD_TO_EMOTION[selectedMood],
+            intensity: selectedIntensity ?? 5,
+            note: feelingText.trim(),
+        });
+        if (result.success) {
+            toast.success('¡Registraste tu estado de ánimo!');
+        } else {
+            toast.error(result.error);
+        }
+    };
 
     const handleSaveProfile = async (profileData) => {
         const result = await updateProfile(profileData);
@@ -121,34 +171,68 @@ export const UserPage = () => {
                     </p>
                 </div>
 
-                <div className='flex gap-2.5 flex-wrap mt-2'>
-                    {MOODS.map(label => (
-                        <button key={label} onClick={() => setSelectedMood(label)}
-                            className={`px-[22px] py-2.5 border-2 rounded-full text-sm font-extrabold cursor-pointer transition-all ${selectedMood === label ? 'bg-[#8b91ef] border-[#8b91ef] text-white shadow-md' : 'border-[#e5e7f0] bg-white text-[#505570] hover:border-[#8b91ef] hover:text-[#6d72d8]'}`}>
-                            {label}
-                        </button>
-                    ))}
+                <div className='bg-white border border-[#e5e7f0] rounded-2xl p-5 shadow-sm flex flex-col gap-5 mt-2'>
+                    <div>
+                        <p className='m-0 text-sm font-extrabold text-[#505570] mb-3'>Selecciona tu estado de ánimo</p>
+                        <div className='grid grid-cols-4 gap-2.5'>
+                            {MOODS.map(({ label, emoji }) => (
+                                <button
+                                    key={label}
+                                    onClick={() => !todayMood && setSelectedMood(label)}
+                                    disabled={!!todayMood}
+                                    className={`flex flex-col items-center gap-2 py-4 px-2 rounded-2xl transition-all border-2 ${selectedMood === label ? 'bg-fw-purple-light border-fw-purple-light shadow-md' : 'bg-fw-purple-bg/60 border-transparent hover:border-fw-purple-light'} ${todayMood ? 'cursor-not-allowed opacity-90' : 'cursor-pointer'}`}>
+                                    <span className='text-3xl leading-none'>{emoji}</span>
+                                    <span className={`text-[13px] font-extrabold ${selectedMood === label ? 'text-white' : 'text-[#505570]'}`}>{label}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className='flex justify-between items-center mb-2'>
+                            <p className='m-0 text-sm font-extrabold text-[#505570]'>¿Qué tan fuerte sientes la emoción?</p>
+                            <span className='text-lg font-black text-fw-purple'>{selectedIntensity ?? 5}</span>
+                        </div>
+                        <input
+                            type='range'
+                            min={1}
+                            max={10}
+                            value={selectedIntensity ?? 5}
+                            onChange={(e) => !todayMood && setSelectedIntensity(Number(e.target.value))}
+                            disabled={!!todayMood}
+                            className='w-full h-2 rounded-full appearance-none cursor-pointer accent-fw-purple bg-fw-purple-bg disabled:cursor-not-allowed disabled:opacity-90'
+                        />
+                        <div className='flex justify-between mt-1.5'>
+                            <span className='text-[11px] font-bold text-[#9b9fb8]'>Leve (1)</span>
+                            <span className='text-[11px] font-bold text-[#9b9fb8]'>Muy fuerte (10)</span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className='m-0 text-sm font-extrabold text-[#505570] mb-2'>Escribir cómo me siento (opcional)</p>
+                        <textarea
+                            value={feelingText}
+                            onChange={(e) => !todayMood && setFeelingText(e.target.value)}
+                            disabled={!!todayMood}
+                            placeholder='Puedes escribir lo que estás pensando...'
+                            rows={3}
+                            className='w-full border-[1.5px] border-[#e5e7f0] rounded-[14px] px-3.5 py-3 text-sm text-[#2f3348] font-semibold outline-none focus:border-fw-purple-light transition-colors resize-none placeholder:text-[#9b9fb8] placeholder:font-medium bg-fw-purple-bg/30 disabled:cursor-not-allowed disabled:opacity-90'
+                        />
+                    </div>
                 </div>
 
-                <p className='m-0 text-sm font-extrabold text-[#505570] mt-2'>¿Qué tan fuerte sientes la emoción?</p>
+                <button
+                    onClick={handleSubmitMood}
+                    disabled={submitting || !!todayMood}
+                    className='h-[46px] rounded-full bg-fw-purple text-white text-[15px] font-black cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed hover:bg-fw-purple-light transition-colors'
+                >
+                    {todayMood ? 'Ya registraste tu ánimo hoy ✓' : submitting ? 'Guardando...' : 'Guardar estado de ánimo'}
+                </button>
 
-                <div className='flex gap-2 flex-wrap'>
-                    {Array.from({ length: 10 }, (_, i) => i + 1).map(n => (
-                        <button key={n} onClick={() => setSelectedIntensity(n)}
-                            className={`w-10 h-10 border-2 rounded-[10px] text-sm font-extrabold cursor-pointer transition-all ${selectedIntensity === n ? 'bg-[#8b91ef] border-[#8b91ef] text-white shadow-md' : 'border-[#e5e7f0] bg-white text-[#505570] hover:border-[#8b91ef]'}`}>
-                            {n}
-                        </button>
-                    ))}
-                </div>
-
-                <div className='flex flex-col gap-2.5 mt-2'>
-                    {DAILY_ITEMS.map(label => (
-                        <button key={label}
-                            className='flex items-center gap-3 px-[18px] py-3.5 border border-[#e5e7f0] rounded-[14px] bg-white cursor-pointer text-left hover:bg-[#f5f6ff] hover:border-[#c5c8f2] transition-colors shadow-sm'>
-                            <span className='text-sm font-extrabold text-[#505570]'>{label}</span>
-                        </button>
-                    ))}
-                </div>
+                <button
+                    className='flex items-center gap-3 px-[18px] py-3.5 border border-[#e5e7f0] rounded-[14px] bg-white cursor-pointer text-left hover:bg-[#f5f6ff] hover:border-[#c5c8f2] transition-colors shadow-sm mt-2'>
+                    <span className='text-sm font-extrabold text-[#505570]'>Reto Diario</span>
+                </button>
 
                 <div className='grid grid-cols-4 gap-3'>
                     {QUICK_ACTIONS.map(({ icon: Icon, label, sub, onClick }) => (
