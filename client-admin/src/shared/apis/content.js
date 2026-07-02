@@ -1,5 +1,6 @@
 import { axiosHealthy } from '../apis/api.js';
 
+//Admin: gestión de contenido
 export const getContent = async () => {
     return await axiosHealthy.get('/contents');
 };
@@ -18,4 +19,13 @@ export const updateContent = async (id, data) => {
 
 export const deleteContent = async (id) => {
     return await axiosHealthy.delete(`/contents/${id}`);
+};
+
+//Usuario y Admin: consulta de contenido
+export const getContentById = async (id) => {
+    return await axiosHealthy.get(`/contents/${id}`);
+};
+
+export const getContentByCategory = async (category) => {
+    return await axiosHealthy.get(`/contents/category/${encodeURIComponent(category)}`);
 };

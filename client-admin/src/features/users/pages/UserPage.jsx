@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile, Flame } from 'lucide-react';
+import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Smile, Flame } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
 import { EditProfileModal } from '../components/EditProfileModal';
@@ -23,7 +23,7 @@ export const UserPage = () => {
         { icon: BarChart2, label: 'Historial', sub: '12' },
         { icon: Dumbbell, label: 'Ejercicios', sub: '1/3', onClick: () => navigate('/home/exercises') },
         { icon: MessageCircle, label: 'Chat', sub: '•', onClick: () => navigate('/home/chat') },
-        { icon: BellRing, label: 'Alertas', sub: '2' },
+        { icon: BookOpen, label: 'Contenido', sub: '•', onClick: () => navigate('/home/content') },
     ];
 
     useEffect(() => {
