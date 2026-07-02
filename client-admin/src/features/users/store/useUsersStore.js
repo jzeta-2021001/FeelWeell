@@ -36,9 +36,15 @@ export const useUserStore = create((set, get) => ({
     createUser: async (userData) => {
         set({ loading: true });
         try {
-            await createUserRequest(userData);
-            set({ loading: false });
-            return { success: true };
+            const response = await createUserRequest(userData);
+            const newUser = response.data?.data ?? response.data ?? response;
+
+            set((state) => ({
+                users: [newUser, ...state.users],
+                loading: false,
+            }));
+
+            return {success: true};
         } catch (err) {
             set({ loading: false });
             return { success: false, error: err.response?.data?.message || 'Error al crear usuario' };

@@ -77,6 +77,32 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                         </div>
                     </div>
 
+                    <div className='pt-1'>
+                        <label className='flex items-start gap-2.5 cursor-pointer select-none'>
+                            <span className='relative mt-0.5 shrink-0'>
+                                <input
+                                    type='checkbox'
+                                    className='peer sr-only'
+                                    {...register('acceptTerms', { required: 'Debes aceptar los términos y condiciones' })}
+                                />
+                                <span className='block w-5 h-5 rounded-[6px] border-[1.5px] border-[#e5e7f0] bg-white transition-colors duration-150 peer-checked:bg-[#8b91ef] peer-checked:border-[#8b91ef] peer-focus-visible:ring-2 peer-focus-visible:ring-[#8b91ef]/30' />
+                                <svg
+                                    className='pointer-events-none absolute inset-0 m-auto w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-150'
+                                    viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='3' strokeLinecap='round' strokeLinejoin='round'
+                                >
+                                    <polyline points='20 6 9 17 4 12' />
+                                </svg>
+                            </span>
+                            <span className='text-[13px] font-bold text-[#505570] leading-snug'>
+                                Acepto los{' '}
+                                <a href='#' onClick={(e) => e.stopPropagation()} className='text-[#6d72d8] font-extrabold hover:underline'>
+                                    términos y condiciones
+                                </a>
+                            </span>
+                        </label>
+                        {errors.acceptTerms && <span className='block text-[#d14b6d] text-[13px] font-bold mt-1.5'>{errors.acceptTerms.message}</span>}
+                    </div>
+
                     <div className='flex justify-end gap-3 pt-2'>
                         <button type='button' onClick={handleClose} disabled={loading}
                             className='h-[42px] px-5 border-[1.5px] border-[#e5e7f0] rounded-full bg-white text-sm font-extrabold text-[#7b8094] cursor-pointer'>
@@ -88,7 +114,7 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
