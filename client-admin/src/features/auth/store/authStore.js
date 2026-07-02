@@ -9,6 +9,7 @@ import {
   resetPassword as resetPasswordRequest,
   updateProfile as updateProfileRequest,
 } from '../../../shared/apis';
+import { useMoodStore } from '../../mood/store/moodStore.js';
 import { showError } from '../../../shared/utils/toast.js';
 
 const ALLOWED_ROLES = [
@@ -43,6 +44,7 @@ export const useAuthStore = create(
         const hasAccess = ALLOWED_ROLES.includes(role);
 
         if (token && !hasAccess) {
+          useMoodStore.getState().reset();
           set({
             user: null,
             token: null,
@@ -79,6 +81,7 @@ export const useAuthStore = create(
       },
 
       logout: () => {
+        useMoodStore.getState().reset();
         set({
           user: null,
           token: null,
