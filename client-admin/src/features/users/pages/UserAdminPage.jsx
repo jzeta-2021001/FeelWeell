@@ -66,7 +66,6 @@ export const UserAdminPage = () => {
         const result = await createUser(userData);
         if (result.success) {
             toast.success('Usuario creado. Se envió correo de activación.');
-            await getAllUsers({ force: true });
             return { success: true };
         }
         toast.error(result.error || 'No se pudo crear el usuario');
