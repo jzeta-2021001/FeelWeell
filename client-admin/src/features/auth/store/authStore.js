@@ -37,6 +37,12 @@ export const useAuthStore = create(
       error: null,
       isLoadingAuth: true,
       isAuthenticated: false,
+      // Bandera transitoria (no persistida): se activa justo después de un
+      // login exitoso para que la UI pueda reaccionar una sola vez (ej. que
+      // Tiyú salude). Se consume y limpia con clearJustLoggedIn().
+      justLoggedIn: false,
+
+      clearJustLoggedIn: () => set({ justLoggedIn: false }),
 
       checkAuth: () => {
         const token = get().token;
@@ -120,6 +126,7 @@ export const useAuthStore = create(
             expiresAt: data.data.expiresIn ?? null,
             isAuthenticated: true,
             error: null,
+            justLoggedIn: true,
           });
 
           return { success: true, role };

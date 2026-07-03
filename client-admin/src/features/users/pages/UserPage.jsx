@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile, Flame, BookOpen } from 'lucide-react';
+import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Flame } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
 import { useMoodStore } from '../../mood/store/moodStore.js';
 import { EditProfileModal } from '../components/EditProfileModal';
-import { NotificationBell } from '../../notifications/components/NotificationBell.jsx';
-import { useNotificationCenter } from '../../notifications/hooks/useNotificationCenter.js';
+import { TiyuMascot } from '../../../shared/components/ui/TiyuMascot.jsx';
 import toast from 'react-hot-toast';
 
 const MOOD_TO_EMOTION = {
@@ -31,6 +30,8 @@ const DAILY_ITEMS = ['Reto Diario', 'Escribir como me siento'];
 
 export const UserPage = () => {
     const user = useAuthStore((s) => s.user);
+    const justLoggedIn = useAuthStore((s) => s.justLoggedIn);
+    const clearJustLoggedIn = useAuthStore((s) => s.clearJustLoggedIn);
     const { updateProfile, loading } = useUserStore();
     const { todayMood, checkingToday, submitting, checkTodayMood, registerMood } = useMoodStore();
     const [selectedMood, setSelectedMood] = useState(null);
@@ -40,14 +41,23 @@ export const UserPage = () => {
     const navigate = useNavigate();
     const [dailyMessage, setDailyMessage] = useState("");
     const [loadingMessage, setLoadingMessage] = useState(true);
-    const { unread } = useNotificationCenter();
+    const tiyuRef = useRef(null);
+
+    // Tiyú saluda una sola vez, justo cuando el usuario acaba de iniciar sesión
+    // (la bandera se limpia de inmediato para que no vuelva a saludar si el
+    // usuario navega dentro de la app y regresa a esta pantalla).
+    useEffect(() => {
+        if (justLoggedIn) {
+            tiyuRef.current?.sayHello();
+            clearJustLoggedIn();
+        }
+    }, [justLoggedIn, clearJustLoggedIn]);
 
     const QUICK_ACTIONS = [
         { icon: BarChart2, label: 'Historial', sub: '12' },
         { icon: Dumbbell, label: 'Ejercicios', sub: '1/3', onClick: () => navigate('/home/exercises') },
         { icon: MessageCircle, label: 'Chat', sub: '•', onClick: () => navigate('/home/chat') },
         { icon: BookOpen, label: 'Contenido', sub: '•', onClick: () => navigate('/home/content') },
-        { icon: BellRing, label: 'Alertas', sub: String(unread), onClick: () => navigate('/home/notifications') },
     ];
 
     useEffect(() => {
@@ -118,12 +128,11 @@ export const UserPage = () => {
             <div className='flex justify-between items-center mb-7'>
                 <div />
                 <div className='flex gap-2'>
-                    {[Settings].map((Icon, i) => (
+                    {[Settings, Bell].map((Icon, i) => (
                         <button key={i} className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
                             <Icon size={18} />
                         </button>
                     ))}
-                    <NotificationBell />
                     <button onClick={() => setShowEditProfile(true)}
                         className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
                         <UserRound size={18} />
@@ -136,8 +145,8 @@ export const UserPage = () => {
                 <h1 className='m-0 text-[32px] font-black text-[#2f3348]'>¿Cómo te sientes hoy?</h1>
 
                 <div className='bg-gradient-to-r from-[#f5f6ff] to-white border-l-[5px] border-[#6d72d8] rounded-r-2xl p-5 my-1 shadow-sm flex items-start gap-4 transition-all hover:shadow-md'>
-                    <div className='bg-[#6d72d8] p-2.5 rounded-xl text-white shrink-0 mt-0.5'>
-                        <Smile size={22} />
+                    <div className='w-14 h-14 rounded-2xl bg-gradient-to-br from-[#eef0ff] to-[#dfe2fb] shrink-0 flex items-center justify-center overflow-hidden'>
+                        <TiyuMascot ref={tiyuRef} size={62} />
                     </div>
                     <div className='flex flex-col'>
                         <span className='text-[11px] font-extrabold text-[#8b91ef] uppercase tracking-widest mb-1.5'>Inspiración del día</span>
