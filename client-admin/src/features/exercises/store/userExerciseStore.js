@@ -5,6 +5,7 @@ import {
     getUserProgress as getUserProgressRequest,
     markExerciseCompleted as markCompletedRequest,
     saveExerciseForLater as saveForLaterRequest,
+    scheduleExerciseReminder as scheduleExerciseReminderRequest,
 } from '../../../shared/apis';
 import { errorMessage } from '../../../shared/utils/errorMessage.js';
 
@@ -62,11 +63,16 @@ export const useUserExerciseStore = create((set, get) => ({
         }
     },
 
-    toggleSaveExercise: async (exerciseId, isSaved) => {
+    toggleSaveExercise: async (exerciseId, isSaved, exerciseTitle = '') => {
         if (isSaved) return { success: true, alreadySaved: true };
         try {
             await saveForLaterRequest(exerciseId);
             await get().fetchProgress();
+
+            if (exerciseTitle) {
+                scheduleExerciseReminderRequest(exerciseId, exerciseTitle).catch(() => {});
+            }
+
             return { success: true };
         } catch (err) {
             return { success: false, error: errorMessage(err, 'Error al guardar el ejercicio') };
