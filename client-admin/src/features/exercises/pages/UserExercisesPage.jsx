@@ -68,7 +68,9 @@ export const UserExercisesPage = () => {
             toast('Ya está guardado para después', { icon: '🔖' });
             return;
         }
-        const result = await toggleSaveExercise(exerciseId, isSaved);
+       const exerciseTitle =
+           [...filteredExercises, ...savedExercises, ...recommended].find((ex) => ex._id === exerciseId)?.title ?? '';
+        const result = await toggleSaveExercise(exerciseId, isSaved, exerciseTitle);
         if (result.success) {
             toast.success('Guardado para después');
             setActiveExercise((prev) => prev?._id === exerciseId ? { ...prev, isSaved: true } : prev);

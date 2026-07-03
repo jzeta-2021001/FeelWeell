@@ -1,17 +1,17 @@
-import { Home, MessageCircle, Trophy, Settings, Flame, LogOut, Dumbbell, BookOpen } from 'lucide-react';
+import { Home, MessageCircle, Trophy, Settings, Flame, LogOut, Dumbbell, Bell } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store/authStore';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 
 const NAV_ITEMS = [
     { label: 'Inicio', icon: Home },
     { label: 'Ejercicios', icon: Dumbbell },
-    { label: 'Contenido', icon: BookOpen },
     { label: 'Chat', icon: MessageCircle },
+    { label: 'Notificaciones', icon: Bell },
     { label: 'Retos Pendientes', icon: Trophy },
     { label: 'Configuraciones', icon: Settings },
 ];
 
-export const UserSidebar = ({ active = 'Inicio', onNavigate, onLogout }) => {
+export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, onNavigate, onLogout }) => {
     const user = useAuthStore((s) => s.user);
     const streak = user?.streak ?? 0;
 
@@ -27,6 +27,11 @@ export const UserSidebar = ({ active = 'Inicio', onNavigate, onLogout }) => {
                     <button key={label} onClick={() => onNavigate?.(label)}
                         className={`flex items-center gap-2.5 px-4 py-[11px] rounded-[14px] border-none text-[15px] font-bold cursor-pointer text-left transition-colors ${active === label ? 'fw-user-nav-active' : 'bg-transparent text-[#7b8094] hover:bg-[rgba(109,114,216,0.08)] hover:text-[#4a4fbf]'}`}>
                         <Icon size={18} />{label}
+                        {label === 'Notificaciones' && unreadCount > 0 && (
+                            <span className={`ml-auto min-w-[20px] h-5 px-1 rounded-full text-[11px] font-black grid place-items-center ${active === label ? 'bg-white text-[#8b91ef]' : 'bg-[#d14b6d] text-white'}`}>
+                                {unreadCount > 9 ? '9+' : unreadCount}
+                            </span>
+                        )}
                     </button>
                 ))}
             </nav>

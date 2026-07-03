@@ -22,6 +22,7 @@ import { ExercisesAdminPage } from '../../features/exercises/pages/ExercisesAdmi
 import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPage.jsx';
 import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesPage.jsx';
 import { UserContentsPage } from '../../features/contents/pages/UserContentsPage.jsx';
+import { NotificationsPage } from '../../features/notifications/pages/NotificationsPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -56,6 +57,7 @@ export const AppRoutes = () => {
         <Route path='exercises' element={<UserExercisesPage />} />
         <Route path='content' element={<UserContentsPage />} />
         <Route path='mood' element={<MoodPage />} />
+        <Route path='notifications' element={<NotificationsPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}

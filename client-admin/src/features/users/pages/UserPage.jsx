@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Smile, Flame } from 'lucide-react';
+import { Settings, UserRound, BarChart2, Dumbbell, MessageCircle, BellRing, Smile, Flame, BookOpen } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
 import { useMoodStore } from '../../mood/store/moodStore.js';
 import { EditProfileModal } from '../components/EditProfileModal';
+import { NotificationBell } from '../../notifications/components/NotificationBell.jsx';
+import { useNotificationCenter } from '../../notifications/hooks/useNotificationCenter.js';
 import toast from 'react-hot-toast';
 
 const MOOD_TO_EMOTION = {
@@ -38,12 +40,14 @@ export const UserPage = () => {
     const navigate = useNavigate();
     const [dailyMessage, setDailyMessage] = useState("");
     const [loadingMessage, setLoadingMessage] = useState(true);
+    const { unread } = useNotificationCenter();
 
     const QUICK_ACTIONS = [
         { icon: BarChart2, label: 'Historial', sub: '12' },
         { icon: Dumbbell, label: 'Ejercicios', sub: '1/3', onClick: () => navigate('/home/exercises') },
         { icon: MessageCircle, label: 'Chat', sub: '•', onClick: () => navigate('/home/chat') },
         { icon: BookOpen, label: 'Contenido', sub: '•', onClick: () => navigate('/home/content') },
+        { icon: BellRing, label: 'Alertas', sub: String(unread), onClick: () => navigate('/home/notifications') },
     ];
 
     useEffect(() => {
@@ -114,11 +118,12 @@ export const UserPage = () => {
             <div className='flex justify-between items-center mb-7'>
                 <div />
                 <div className='flex gap-2'>
-                    {[Settings, Bell].map((Icon, i) => (
+                    {[Settings].map((Icon, i) => (
                         <button key={i} className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
                             <Icon size={18} />
                         </button>
                     ))}
+                    <NotificationBell />
                     <button onClick={() => setShowEditProfile(true)}
                         className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
                         <UserRound size={18} />

@@ -3,12 +3,13 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { UserSidebar } from './UserSidebar';
 import { useAuthStore } from '../../../features/auth/store/authStore';
 import { getStreak } from '../../apis/streak';
+import { useNotificationCenter } from '../../../features/notifications/hooks/useNotificationCenter.js';
 
 const PATH_TO_LABEL = {
   '/home': 'Inicio',
   '/home/exercises': 'Ejercicios',
-  '/home/content': 'Contenido',
   '/home/chat': 'Chat',
+  '/home/notifications': 'Notificaciones',
   '/home/retos': 'Retos Pendientes',
   '/home/configuraciones': 'Configuraciones',
 };
@@ -18,6 +19,7 @@ export const UserContainer = ({ onLogout, children }) => {
   const location = useLocation();
   const updateUser = useAuthStore((s) => s.updateUser);
   const activeLabel = PATH_TO_LABEL[location.pathname] ?? 'Inicio';
+  const { unread } = useNotificationCenter();
 
 
   const isChat = location.pathname === '/home/chat';
@@ -41,7 +43,7 @@ export const UserContainer = ({ onLogout, children }) => {
 
   return (
     <div className='min-h-screen grid' style={{ gridTemplateColumns: '280px 1fr', background: 'var(--fw-user-gradient)' }}>
-      <UserSidebar active={activeLabel} onNavigate={handleNavigate} onLogout={onLogout} />
+      <UserSidebar active={activeLabel} unreadCount={unread} onNavigate={handleNavigate} onLogout={onLogout} />
       <main
         className={isChat ? 'overflow-hidden flex flex-col' : 'overflow-y-auto'}
         style={isChat ? { height: '100vh' } : { padding: 'clamp(20px,3vw,40px)' }}

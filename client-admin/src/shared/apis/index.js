@@ -7,3 +7,4 @@ export * from './exercise.js';
 export * from './content.js';
 export * from './streak.js';
 export * from './mood.js';
+export * from './notifications.js';
