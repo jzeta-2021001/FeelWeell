@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Settings, Bell, UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Flame } from 'lucide-react';
+import { UserRound, BarChart2, Dumbbell, MessageCircle, BookOpen, Flame } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
 import { useUserStore } from '../store/useUsersStore';
 import { useMoodStore } from '../../mood/store/moodStore.js';
 import { EditProfileModal } from '../components/EditProfileModal';
 import { TiyuMascot } from '../../../shared/components/ui/TiyuMascot.jsx';
+import { NotificationBell } from '../../notifications/components/NotificationBell.jsx';
+import { useNotificationCenter } from '../../notifications/hooks/useNotificationCenter.js';
 import toast from 'react-hot-toast';
 
 const MOOD_TO_EMOTION = {
@@ -42,6 +44,7 @@ export const UserPage = () => {
     const [dailyMessage, setDailyMessage] = useState("");
     const [loadingMessage, setLoadingMessage] = useState(true);
     const tiyuRef = useRef(null);
+    const { unread } = useNotificationCenter();
 
     // Tiyú saluda una sola vez, justo cuando el usuario acaba de iniciar sesión
     // (la bandera se limpia de inmediato para que no vuelva a saludar si el
@@ -128,11 +131,7 @@ export const UserPage = () => {
             <div className='flex justify-between items-center mb-7'>
                 <div />
                 <div className='flex gap-2'>
-                    {[Settings, Bell].map((Icon, i) => (
-                        <button key={i} className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
-                            <Icon size={18} />
-                        </button>
-                    ))}
+                    <NotificationBell />
                     <button onClick={() => setShowEditProfile(true)}
                         className='w-[38px] h-[38px] border border-[#e5e7f0] rounded-[10px] bg-white grid place-items-center cursor-pointer text-[#6d72d8] shadow-sm hover:shadow-md transition-all'>
                         <UserRound size={18} />

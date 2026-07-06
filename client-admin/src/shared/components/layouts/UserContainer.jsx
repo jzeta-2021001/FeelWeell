@@ -11,7 +11,6 @@ const PATH_TO_LABEL = {
   '/home/chat': 'Chat',
   '/home/notifications': 'Notificaciones',
   '/home/retos': 'Retos Pendientes',
-  '/home/configuraciones': 'Configuraciones',
 };
 
 export const UserContainer = ({ onLogout, children }) => {
