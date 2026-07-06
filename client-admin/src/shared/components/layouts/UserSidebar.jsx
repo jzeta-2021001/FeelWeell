@@ -1,4 +1,4 @@
-import { Home, MessageCircle, Trophy, Settings, Flame, LogOut, Dumbbell, Bell } from 'lucide-react';
+import { Home, MessageCircle, Trophy, Flame, LogOut, Dumbbell, Bell } from 'lucide-react';
 import { useAuthStore } from '../../../features/auth/store/authStore';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 
@@ -8,7 +8,6 @@ const NAV_ITEMS = [
     { label: 'Chat', icon: MessageCircle },
     { label: 'Notificaciones', icon: Bell },
     { label: 'Retos Pendientes', icon: Trophy },
-    { label: 'Configuraciones', icon: Settings },
 ];
 
 export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, onNavigate, onLogout }) => {
