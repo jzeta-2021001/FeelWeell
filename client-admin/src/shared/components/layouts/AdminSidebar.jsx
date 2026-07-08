@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User } from 'lucide-react';
+import { LayoutDashboard, Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User, Target } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
@@ -9,6 +9,7 @@ const ALL_ITEMS = [
     { label: 'Usuarios', to: '/dashboard/users', icon: Users, roles: ['ADMIN_ROLE', 'ADMIN_USERS_ROLE'] },
     { label: 'Ejercicios', to: '/dashboard/exercises', icon: Dumbbell, roles: ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE'] },
     { label: 'Contenido', to: '/dashboard/content', icon: FileText, roles: ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE'] },
+    { label: 'Reto Diario', to: '/dashboard/daily-challenges', icon: Target, roles: ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE'] },
     { label: 'Mensajes Motiv.', to: '/dashboard/motivational', icon: Heart, roles: ['ADMIN_ROLE', 'ADMIN_MOODTRACKING_ROLE'] },
     { label: 'Mood Tracking', to: '/dashboard/mood-tracking', icon: BarChart2, roles: ['ADMIN_ROLE', 'ADMIN_MOODTRACKING_ROLE'] },
 ];

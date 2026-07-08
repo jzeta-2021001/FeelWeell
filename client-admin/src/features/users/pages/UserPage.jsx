@@ -9,6 +9,7 @@ import { TiyuMascot } from '../../../shared/components/ui/TiyuMascot.jsx';
 import { NotificationBell } from '../../notifications/components/NotificationBell.jsx';
 import { useNotificationCenter } from '../../notifications/hooks/useNotificationCenter.js';
 import toast from 'react-hot-toast';
+import { DailyChallengeWidget } from '../../exercises/components/DailyChallengeWidget.jsx';
 
 const MOOD_TO_EMOTION = {
     Bien: 'FELIZ',
@@ -242,10 +243,9 @@ export const UserPage = () => {
                     {todayMood ? 'Ya registraste tu ánimo hoy ✓' : submitting ? 'Guardando...' : 'Guardar estado de ánimo'}
                 </button>
 
-                <button
-                    className='flex items-center gap-3 px-[18px] py-3.5 border border-[#e5e7f0] rounded-[14px] bg-white cursor-pointer text-left hover:bg-[#f5f6ff] hover:border-[#c5c8f2] transition-colors shadow-sm mt-2'>
-                    <span className='text-sm font-extrabold text-[#505570]'>Reto Diario</span>
-                </button>
+                <div className="mt-2">
+                    <DailyChallengeWidget currentMood={todayMood?.emotion || 'ANSIOSO'} />
+                </div>
 
                 <div className='grid grid-cols-4 gap-3'>
                     {QUICK_ACTIONS.map(({ icon: Icon, label, sub, onClick }) => (
