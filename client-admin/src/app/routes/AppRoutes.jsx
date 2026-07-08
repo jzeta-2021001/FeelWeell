@@ -23,6 +23,9 @@ import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPa
 import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesPage.jsx';
 import { UserContentsPage } from '../../features/contents/pages/UserContentsPage.jsx';
 import { NotificationsPage } from '../../features/notifications/pages/NotificationsPage.jsx';
+import { RetosPage } from '../../features/exercises/pages/RetosPage.jsx';
+// INYECCIÓN: Importar la nueva vista de administrador para retos diarios
+import { DailyChallengesAdminPage } from '../../features/exercises/pages/DailyChallengesAdminPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -58,6 +61,7 @@ export const AppRoutes = () => {
         <Route path='content' element={<UserContentsPage />} />
         <Route path='mood' element={<MoodPage />} />
         <Route path='notifications' element={<NotificationsPage />} />
+        <Route path='retos' element={<RetosPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}
@@ -85,6 +89,15 @@ export const AppRoutes = () => {
           element={
             <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE']}>
               <ExercisesAdminPage />
+            </RoleGuard>
+          }
+        />
+        {/* INYECCIÓN: Ruta del panel administrativo de retos */}
+        <Route
+          path='daily-challenges'
+          element={
+            <RoleGuard allowedRoles={['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE']}>
+              <DailyChallengesAdminPage />
             </RoleGuard>
           }
         />
