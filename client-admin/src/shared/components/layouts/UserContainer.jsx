@@ -5,12 +5,23 @@ import { useAuthStore } from '../../../features/auth/store/authStore';
 import { getStreak } from '../../apis/streak';
 import { useNotificationCenter } from '../../../features/notifications/hooks/useNotificationCenter.js';
 
+// Diccionario de rutas actualizado para soportar la navegación al Historial
 const PATH_TO_LABEL = {
   '/home': 'Inicio',
   '/home/exercises': 'Ejercicios',
+  '/home/history': 'Historial', 
   '/home/chat': 'Chat',
   '/home/notifications': 'Notificaciones',
   '/home/retos': 'Retos Pendientes',
+};
+
+// Función estandarizada para obtener la fecha local correcta con ceros a la izquierda
+const getLocalTodayString = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 };
 
 export const UserContainer = ({ onLogout, children }) => {
@@ -33,9 +44,13 @@ export const UserContainer = ({ onLogout, children }) => {
   // Sincronización del estado del reto con el LocalStorage y el Sidebar
   useEffect(() => {
     const checkChallengeStatus = () => {
-        const todayStr = new Date().toISOString().split('T')[0];
+        if (!user) return;
+        
+        // Usamos la fecha sincronizada
+        const todayStr = getLocalTodayString();
         const storageKey = `fw_challenge_completed_${user?.id || user?._id}_${todayStr}`;
         const isCompleted = localStorage.getItem(storageKey) === 'true';
+        
         setHasPendingChallenge(!isCompleted);
     };
 
