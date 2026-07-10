@@ -24,8 +24,8 @@ import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesP
 import { UserContentsPage } from '../../features/contents/pages/UserContentsPage.jsx';
 import { NotificationsPage } from '../../features/notifications/pages/NotificationsPage.jsx';
 import { RetosPage } from '../../features/exercises/pages/RetosPage.jsx';
-// INYECCIÓN: Importar la nueva vista de administrador para retos diarios
 import { DailyChallengesAdminPage } from '../../features/exercises/pages/DailyChallengesAdminPage.jsx';
+import { HistoryPage } from '../../features/exercises/pages/HistoryPage.jsx';
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -62,6 +62,9 @@ export const AppRoutes = () => {
         <Route path='mood' element={<MoodPage />} />
         <Route path='notifications' element={<NotificationsPage />} />
         <Route path='retos' element={<RetosPage />} />
+        
+        {/* NUEVA RUTA: Historial del Usuario */}
+        <Route path='history' element={<HistoryPage />} />
       </Route>
 
       {/* ── Vista ADMIN ── */}
@@ -92,7 +95,6 @@ export const AppRoutes = () => {
             </RoleGuard>
           }
         />
-        {/* INYECCIÓN: Ruta del panel administrativo de retos */}
         <Route
           path='daily-challenges'
           element={

@@ -29,14 +29,15 @@ const MOODS = [
     { label: 'Ansioso', emoji: '😟' },
 ];
 
-const DAILY_ITEMS = ['Reto Diario', 'Escribir como me siento'];
-
 export const UserPage = () => {
     const user = useAuthStore((s) => s.user);
     const justLoggedIn = useAuthStore((s) => s.justLoggedIn);
     const clearJustLoggedIn = useAuthStore((s) => s.clearJustLoggedIn);
     const { updateProfile, loading } = useUserStore();
-    const { todayMood, checkingToday, submitting, checkTodayMood, registerMood } = useMoodStore();
+    
+    // CORRECCIÓN: Agregamos 'submitting' que faltaba aquí
+    const { todayMood, checkTodayMood, registerMood, submitting } = useMoodStore();
+    
     const [selectedMood, setSelectedMood] = useState(null);
     const [selectedIntensity, setSelectedIntensity] = useState(null);
     const [feelingText, setFeelingText] = useState('');
@@ -45,11 +46,7 @@ export const UserPage = () => {
     const [dailyMessage, setDailyMessage] = useState("");
     const [loadingMessage, setLoadingMessage] = useState(true);
     const tiyuRef = useRef(null);
-    const { unread } = useNotificationCenter();
 
-    // Tiyú saluda una sola vez, justo cuando el usuario acaba de iniciar sesión
-    // (la bandera se limpia de inmediato para que no vuelva a saludar si el
-    // usuario navega dentro de la app y regresa a esta pantalla).
     useEffect(() => {
         if (justLoggedIn) {
             tiyuRef.current?.sayHello();
@@ -58,10 +55,10 @@ export const UserPage = () => {
     }, [justLoggedIn, clearJustLoggedIn]);
 
     const QUICK_ACTIONS = [
-        { icon: BarChart2, label: 'Historial', sub: '12' },
+        { icon: BarChart2, label: 'Historial', sub: 'Ver', onClick: () => navigate('/home/history') },
         { icon: Dumbbell, label: 'Ejercicios', sub: '1/3', onClick: () => navigate('/home/exercises') },
-        { icon: MessageCircle, label: 'Chat', sub: '•', onClick: () => navigate('/home/chat') },
-        { icon: BookOpen, label: 'Contenido', sub: '•', onClick: () => navigate('/home/content') },
+        { icon: MessageCircle, label: 'Chat', sub: 'Ir', onClick: () => navigate('/home/chat') },
+        { icon: BookOpen, label: 'Contenido', sub: 'Leer', onClick: () => navigate('/home/content') },
     ];
 
     useEffect(() => {
@@ -76,8 +73,6 @@ export const UserPage = () => {
 
                 if (result.success && result.data) {
                     setDailyMessage(result.data.content || result.data.message || "Cada día es una nueva oportunidad para mejorar.");
-                } else {
-                    throw new Error("Estructura de respuesta inválida");
                 }
             } catch (error) {
                 console.error("Error al obtener el mensaje del día:", error);
@@ -95,10 +90,6 @@ export const UserPage = () => {
             setSelectedMood(EMOTION_TO_MOOD[todayMood.emotion] ?? null);
             setSelectedIntensity(todayMood.intensity ?? null);
             setFeelingText(todayMood.note ?? '');
-        } else {
-            setSelectedMood(null);
-            setSelectedIntensity(null);
-            setFeelingText('');
         }
     }, [todayMood]);
 
@@ -144,7 +135,7 @@ export const UserPage = () => {
                 <p className='m-0 text-[15px] text-[#7b8094] font-bold'>Hola, {user?.firstName} {user?.surname}</p>
                 <h1 className='m-0 text-[32px] font-black text-[#2f3348]'>¿Cómo te sientes hoy?</h1>
 
-                <div className='bg-gradient-to-r from-[#f5f6ff] to-white border-l-[5px] border-[#6d72d8] rounded-r-2xl p-5 my-1 shadow-sm flex items-start gap-4 transition-all hover:shadow-md'>
+                <div className='bg-gradient-to-r from-[#f5f6ff] to-white border-l-[5px] border-[#6d72d8] rounded-r-2xl p-5 my-1 shadow-sm flex items-start gap-4'>
                     <div className='w-14 h-14 rounded-2xl bg-gradient-to-br from-[#eef0ff] to-[#dfe2fb] shrink-0 flex items-center justify-center overflow-hidden'>
                         <TiyuMascot ref={tiyuRef} size={62} />
                     </div>
@@ -153,14 +144,11 @@ export const UserPage = () => {
                         {loadingMessage ? (
                             <div className='h-4 bg-[#e5e7f0] rounded w-64 animate-pulse mt-1'></div>
                         ) : (
-                            <p className='m-0 text-[15px] text-[#4a4f6b] font-medium italic leading-relaxed'>
-                                "{dailyMessage}"
-                            </p>
+                            <p className='m-0 text-[15px] text-[#4a4f6b] font-medium italic leading-relaxed'>"{dailyMessage}"</p>
                         )}
                     </div>
                 </div>
 
-                {/* Widget de racha */}
                 <div className='bg-[#fffbeb] border border-[#fde68a] rounded-2xl px-5 py-4 shadow-sm'>
                     <div className='flex items-center justify-between mb-2'>
                         <div className='flex items-center gap-2'>
@@ -171,18 +159,9 @@ export const UserPage = () => {
                             {user?.streak ?? 0} <span className='text-sm font-bold text-[#b45309]'>día{(user?.streak ?? 0) !== 1 ? 's' : ''}</span>
                         </span>
                     </div>
-                    <p className='m-0 text-[11px] text-[#b45309] font-semibold mb-2'>
-                        Próximo hito: 7 días
-                    </p>
                     <div className='w-full bg-[#fde68a] rounded-full h-2'>
-                        <div
-                            className='bg-[#f59e0b] h-2 rounded-full transition-all duration-500'
-                            style={{ width: `${Math.min(((user?.streak ?? 0) / 7) * 100, 100)}%` }}
-                        />
+                        <div className='bg-[#f59e0b] h-2 rounded-full transition-all duration-500' style={{ width: `${Math.min(((user?.streak ?? 0) / 7) * 100, 100)}%` }} />
                     </div>
-                    <p className='m-0 text-right text-[11px] text-[#b45309] font-bold mt-1'>
-                        {Math.round(Math.min(((user?.streak ?? 0) / 7) * 100, 100))}%
-                    </p>
                 </div>
 
                 <div className='bg-white border border-[#e5e7f0] rounded-2xl p-5 shadow-sm flex flex-col gap-5 mt-2'>
@@ -201,7 +180,6 @@ export const UserPage = () => {
                             ))}
                         </div>
                     </div>
-
                     <div>
                         <div className='flex justify-between items-center mb-2'>
                             <p className='m-0 text-sm font-extrabold text-[#505570]'>¿Qué tan fuerte sientes la emoción?</p>
@@ -214,14 +192,9 @@ export const UserPage = () => {
                             value={selectedIntensity ?? 5}
                             onChange={(e) => !todayMood && setSelectedIntensity(Number(e.target.value))}
                             disabled={!!todayMood}
-                            className='w-full h-2 rounded-full appearance-none cursor-pointer accent-fw-purple bg-fw-purple-bg disabled:cursor-not-allowed disabled:opacity-90'
+                            className='w-full h-2 rounded-full appearance-none cursor-pointer accent-fw-purple bg-fw-purple-bg disabled:cursor-not-allowed'
                         />
-                        <div className='flex justify-between mt-1.5'>
-                            <span className='text-[11px] font-bold text-[#9b9fb8]'>Leve (1)</span>
-                            <span className='text-[11px] font-bold text-[#9b9fb8]'>Muy fuerte (10)</span>
-                        </div>
                     </div>
-
                     <div>
                         <p className='m-0 text-sm font-extrabold text-[#505570] mb-2'>Escribir cómo me siento (opcional)</p>
                         <textarea
@@ -230,7 +203,7 @@ export const UserPage = () => {
                             disabled={!!todayMood}
                             placeholder='Puedes escribir lo que estás pensando...'
                             rows={3}
-                            className='w-full border-[1.5px] border-[#e5e7f0] rounded-[14px] px-3.5 py-3 text-sm text-[#2f3348] font-semibold outline-none focus:border-fw-purple-light transition-colors resize-none placeholder:text-[#9b9fb8] placeholder:font-medium bg-fw-purple-bg/30 disabled:cursor-not-allowed disabled:opacity-90'
+                            className='w-full border-[1.5px] border-[#e5e7f0] rounded-[14px] px-3.5 py-3 text-sm text-[#2f3348] font-semibold outline-none focus:border-fw-purple-light bg-fw-purple-bg/30 disabled:cursor-not-allowed'
                         />
                     </div>
                 </div>

@@ -3,21 +3,31 @@ import { CheckCircle, Clock } from 'lucide-react';
 import { axiosHealthy } from '../../../shared/apis/api'; 
 import { useAuthStore } from '../../auth/store/authStore';
 
+// Función estandarizada para obtener la fecha local correcta con ceros a la izquierda
+const getLocalTodayString = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
 export const DailyChallengeWidget = ({ currentMood = 'ANSIOSO' }) => {
     const user = useAuthStore((s) => s.user);
     const [challenge, setChallenge] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [completed, setCompleted] = useState(false);
 
-    // Generar llave de caché segura con fecha local para evitar desfases UTC
-    const now = new Date();
-    const todayStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+    // Generar llave de caché estandarizada
+    const todayStr = getLocalTodayString();
     const storageKey = `fw_challenge_completed_${user?.id || user?._id}_${todayStr}`;
 
     useEffect(() => {
         // Validar caché al montar el componente
-        if (localStorage.getItem(storageKey) === 'true') {
+        const isCompleted = localStorage.getItem(storageKey) === 'true';
+        if (isCompleted) {
             setCompleted(true);
+            window.dispatchEvent(new Event('challengeCompleted'));
         }
 
         const fetchChallenge = async () => {
@@ -39,7 +49,7 @@ export const DailyChallengeWidget = ({ currentMood = 'ANSIOSO' }) => {
     const handleComplete = () => {
         setCompleted(true);
         localStorage.setItem(storageKey, 'true'); // Guardar en caché persistente
-        window.dispatchEvent(new Event('challengeCompleted')); // Notificar al menú lateral
+        window.dispatchEvent(new Event('challengeCompleted')); // Notificar al menú lateral en tiempo real
     };
 
     if (isLoading) {
