@@ -87,7 +87,7 @@ export const getInitialQuestionnaire = async () => {
   ];
 };
 
-export const submitQuestionnaire = async (userId, answers) => {
+export const submitQuestionnaire = async (userId, username, answers) => {
   const avgScore = answers.reduce((sum, a) => sum + a.answer, 0) / answers.length;
 
   let emotionalProfile;
@@ -98,7 +98,7 @@ export const submitQuestionnaire = async (userId, answers) => {
 
   const response = await QuestionnaireResponse.findOneAndUpdate(
     { userId },
-    { userId, answers, emotionalProfile, completedAt: new Date() },
+    { userId, username, answers, emotionalProfile, completedAt: new Date() },
     { upsert: true, new: true }
   );
 
@@ -116,7 +116,8 @@ export const getUserProfile = async (userId) => {
   }
 
   return {
-    userId,
+    userId: profile.userId,
+    username: profile.username,
     emotionalProfile: profile.emotionalProfile,
     completedQuestionnaire: true,
     completedAt: profile.completedAt,

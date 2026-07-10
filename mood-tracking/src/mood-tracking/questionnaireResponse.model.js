@@ -25,6 +25,12 @@ const questionnaireResponseSchema = new Schema(
       unique: true,
     },
 
+    username: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+    
     answers: {
       type: [answerSchema],
       required: [true, "Las respuestas son obligatorias"],

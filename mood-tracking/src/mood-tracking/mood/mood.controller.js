@@ -51,9 +51,9 @@ export const getInitialQuestionnaire = async (req, res) => {
 
 export const submitQuestionnaire = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const { id: userId, username } = req.user;
     const { answers } = req.body;
-    const result = await moodService.submitQuestionnaire(userId, answers);
+    const result = await moodService.submitQuestionnaire(userId, username, answers);
     return res.status(200).json({ success: true, data: result });
   } catch (err) {
     console.error('[submitQuestionnaire]', err);
