@@ -498,7 +498,7 @@ const ProfilesSection = () => {
               {profiles.map((p) => (
                 <tr key={p.userId} className="hover:bg-gray-50 transition-colors">
                   <td className="px-4 py-3 font-mono text-xs text-gray-500">
-                    {p.userId ? `${p.userId.slice(0, 8)}…` : '—'}
+                    @{p.username ?? '-'}
                   </td>
                   <td className="px-4 py-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
