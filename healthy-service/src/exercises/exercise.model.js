@@ -1,7 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const EXERCISE_TYPES = ['RESPIRACIÓN', 'MEDITACIÓN', 'YOGA', 'RELAJACIÓN', 'MINDFULNESS', 'ESTIRAMIENTO'];
-const PROFILE_TYPES = ['EQUILIBRADO', 'RESILIENTE', 'ANSIOSO', 'DEPRESIVO']
+const PROFILE_TYPES = ['EQUILIBRADO', 'RESILIENTE', 'ANSIOSO', 'DEPRESIVO'];
 
 const exerciseSchema = new Schema(
     {
@@ -30,7 +30,7 @@ const exerciseSchema = new Schema(
             required: [true, 'Obtener el perfil de emociones del usuario es obligatorio.'],
             enum: {
                 values: PROFILE_TYPES,
-                message: `Tipo de emoción no permitida. Los tipos permitidos son: ${PROFILE_TYPES.join(', ')}`
+                message: `Tipo de perfil no permitido. Los tipos permitidos son: ${PROFILE_TYPES.join(', ')}`
             }
         },
         type: {

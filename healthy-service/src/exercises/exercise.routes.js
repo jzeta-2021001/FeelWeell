@@ -7,6 +7,9 @@ import { uploadExercisePhoto as uploadExercisePhotoMiddleware } from '../../midd
 
 const router = Router();
 
+// Definición de roles autorizados para gestión administrativa (ADMIN_ROLE, ADMIN_HEALTHY_ROLE, ADMIN_USERS_ROLE)
+const ADMIN_ROLES = ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE', 'ADMIN_USERS_ROLE'];
+
 /**
  * @swagger
  * /healthyService/v1/exercises:
@@ -166,7 +169,7 @@ router.get('/:id', validateJWT, validateExerciseId, getExerciseById);
  *     requestBody:
  *       required: true
  *       content:
- *         multipart/form-data:
+ *         application/json:
  *           schema:
  *             type: object
  *             properties:
@@ -182,9 +185,6 @@ router.get('/:id', validateJWT, validateExerciseId, getExerciseById);
  *                 type: number
  *               instructions:
  *                 type: string
- *               photo:
- *                 type: string
- *                 format: binary
  *     responses:
  *       201:
  *         description: Ejercicio creado correctamente
@@ -206,7 +206,13 @@ router.get('/:id', validateJWT, validateExerciseId, getExerciseById);
  *       500:
  *         description: Error al crear el ejercicio
  */
-router.post('/', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercisePhotoMiddleware.single('photo'), validateCreateExercise, createExercise);
+// RUTA MODIFICADA: Middleware de carga de imágenes eliminado para usar JSON puro.
+router.post('/', 
+    validateJWT, 
+    validateRole(...ADMIN_ROLES), 
+    validateCreateExercise, 
+    createExercise
+);
 
 /**
  * @swagger
@@ -246,7 +252,13 @@ router.post('/', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercise
  *       500:
  *         description: Error al actualizar
  */
-router.put('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercisePhotoMiddleware.single('photo'), validateUpdateExercise, updateExercise);
+// RUTA MODIFICADA: Middleware de carga de imágenes eliminado para usar JSON puro.
+router.put('/:id', 
+    validateJWT, 
+    validateRole(...ADMIN_ROLES), 
+    validateUpdateExercise, 
+    updateExercise
+);
 
 /**
  * @swagger
@@ -284,7 +296,12 @@ router.put('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExerci
  *       500:
  *         description: Error al eliminar
  */
-router.delete('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), validateExerciseId, deleteExercise);
+router.delete('/:id', 
+    validateJWT, 
+    validateRole(...ADMIN_ROLES), 
+    validateExerciseId, 
+    deleteExercise
+);
 
 /**
  * @swagger
@@ -320,7 +337,13 @@ router.delete('/:id', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), validateE
  *       500:
  *         description: Error al subir la foto
  */
-router.post('/:id/photo', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploadExercisePhotoMiddleware.single('photo'), uploadExercisePhoto);
+// Esta ruta MANTIENE el middleware para permitir la subida de archivos específicamente
+router.post('/:id/photo', 
+    validateJWT, 
+    validateRole(...ADMIN_ROLES), 
+    uploadExercisePhotoMiddleware.single('photo'), 
+    uploadExercisePhoto
+);
 
 /**
  * @swagger
@@ -356,7 +379,11 @@ router.post('/:id/photo', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), uploa
  *       500:
  *         description: Error al eliminar la foto
  */
-router.delete('/:id/photo', validateJWT, validateRole('ADMIN_HEALTHY_ROLE'), deleteExercisePhoto);
+router.delete('/:id/photo', 
+    validateJWT, 
+    validateRole(...ADMIN_ROLES), 
+    deleteExercisePhoto
+);
 
 /**
  * @swagger

@@ -2,7 +2,7 @@ import { body, param, query } from 'express-validator';
 import { checkValidators } from './check-validators.js';
 
 const EXERCISE_TYPES = ['RESPIRACIÓN', 'MEDITACIÓN', 'YOGA', 'RELAJACIÓN', 'MINDFULNESS', 'ESTIRAMIENTO'];
-const PROFILE_TYPES = ['EQUILIBRADO', 'RESILIENTE', 'ANSIOSO', 'DEPRESIVO']
+const PROFILE_TYPES = ['EQUILIBRADO', 'RESILIENTE', 'ANSIOSO', 'DEPRESIVO'];
 
 export const validateCreateExercise = [
     body('title')
