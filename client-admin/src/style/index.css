@@ -31,6 +31,20 @@
 
 body {
   margin: 0;
+  min-width: 320px;
+}
+
+.fw-dashboard-layout,
+.fw-user-layout {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .fw-dashboard-layout,
+  .fw-user-layout {
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
 }
 
 @keyframes spin {

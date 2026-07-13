@@ -1,5 +1,7 @@
 import { BookOpen, ExternalLink } from 'lucide-react';
 import { CATEGORY_STYLES, TYPE_STYLES, TYPE_ICONS } from '../constants/constants.js';
+import { YouTubePlayer } from '../../../shared/components/ui/YouTubePlayer.jsx';
+import { getYouTubeVideoId } from '../../../shared/utils/youtube.js';
 
 const formatDate = (dateStr) => {
     if (!dateStr) return '';
@@ -15,6 +17,7 @@ export const UserContentDetailBody = ({ content }) => {
     const categoryStyle = CATEGORY_STYLES[content.category] ?? { cls: 'bg-fw-purple-bg text-fw-purple' };
     const typeStyle = TYPE_STYLES[content.type] ?? { cls: 'bg-fw-purple-bg text-fw-purple' };
     const TypeIcon = TYPE_ICONS[content.type] ?? BookOpen;
+    const isYouTubeVideo = content.type === 'VIDEO' && getYouTubeVideoId(content.url);
 
     const handleLinkClick = (e) => {
         e.preventDefault();
@@ -23,8 +26,10 @@ export const UserContentDetailBody = ({ content }) => {
 
     return (
         <>
-            <div className='relative w-full h-[200px] shrink-0 overflow-hidden bg-fw-purple-bg/50 flex items-center justify-center'>
-                {content.photoUrl ? (
+            <div className='relative w-full aspect-video shrink-0 overflow-hidden bg-fw-purple-bg/50 flex items-center justify-center'>
+                {isYouTubeVideo ? (
+                    <YouTubePlayer url={content.url} title={content.title} className='w-full h-full' />
+                ) : content.photoUrl ? (
                     <img src={content.photoUrl} alt={content.title} className='w-full h-full object-cover' />
                 ) : (
                     <TypeIcon size={56} className='text-fw-purple-light opacity-50' />
@@ -70,7 +75,7 @@ export const UserContentDetailBody = ({ content }) => {
                         rel='noopener noreferrer'
                         className='flex items-center justify-between gap-2.5 bg-white border-[1.5px] border-[#e5e7f0] rounded-2xl px-4 py-3.5 no-underline hover:border-fw-purple-light transition-colors'
                     >
-                        <span className='text-[13px] font-extrabold text-fw-purple'>Ver recurso original</span>
+                        <span className='text-[13px] font-extrabold text-fw-purple'>{isYouTubeVideo ? 'Ver en YouTube' : 'Ver recurso original'}</span>
                         <ExternalLink size={15} className='text-fw-purple shrink-0' />
                     </a>
                 )}

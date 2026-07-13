@@ -33,6 +33,13 @@ export const validateCreateContent = [
         .optional()
         .isURL()
         .withMessage('La URL no tiene un formato válido'),
+    body('url').custom((url, { req }) => {
+        if (req.body.type !== 'VIDEO') return true;
+        if (!url) throw new Error('El enlace de YouTube es obligatorio para un video');
+        const hostname = new URL(url).hostname.replace(/^www\./, '');
+        if (hostname === 'youtube.com' || hostname === 'm.youtube.com' || hostname === 'youtu.be') return true;
+        throw new Error('Los contenidos de tipo VIDEO deben usar un enlace de YouTube');
+    }),
     body('body')
         .optional()
         .trim()
@@ -69,6 +76,13 @@ export const validateUpdateContent = [
         .optional()
         .isURL()
         .withMessage('La URL no tiene un formato válido'),
+    body('url').custom((url, { req }) => {
+        if (req.body.type !== 'VIDEO') return true;
+        if (!url) throw new Error('El enlace de YouTube es obligatorio para un video');
+        const hostname = new URL(url).hostname.replace(/^www\./, '');
+        if (hostname === 'youtube.com' || hostname === 'm.youtube.com' || hostname === 'youtu.be') return true;
+        throw new Error('Los contenidos de tipo VIDEO deben usar un enlace de YouTube');
+    }),
     checkValidators
 ];
 

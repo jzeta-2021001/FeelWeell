@@ -1,9 +1,12 @@
 import { BookOpen } from 'lucide-react';
 import { CATEGORY_STYLES, TYPE_STYLES } from '../constants/constants.js';
+import { YouTubePlayer } from '../../../shared/components/ui/YouTubePlayer.jsx';
+import { getYouTubeVideoId } from '../../../shared/utils/youtube.js';
 
 export const ContentCard = ({ content, onEdit, onDelete, canManage }) => {
     const categoryStyle = CATEGORY_STYLES[content.category] || { cls: 'bg-fw-purple-bg text-fw-purple' };
     const typeStyle = TYPE_STYLES[content.type] || { cls: 'bg-fw-purple-bg text-fw-purple' };
+    const isYouTubeVideo = content.type === 'VIDEO' && getYouTubeVideoId(content.url);
 
     const normalizeUrl = (url) => {
     if (!url) return null;
@@ -19,8 +22,10 @@ export const ContentCard = ({ content, onEdit, onDelete, canManage }) => {
 
     return (
         <div className='bg-white border border-[#e5e7f0] rounded-[16px] overflow-hidden flex flex-col hover:shadow-[0_8px_24px_rgba(90,85,140,0.08)] transition-shadow'>
-            <div className='w-full h-40 bg-fw-purple-bg/40 flex items-center justify-center overflow-hidden'>
-                {content.photoUrl ? (
+            <div className='w-full aspect-video bg-fw-purple-bg/40 flex items-center justify-center overflow-hidden'>
+                {isYouTubeVideo ? (
+                    <YouTubePlayer url={content.url} title={content.title} className='w-full h-full' />
+                ) : content.photoUrl ? (
                     <img src={content.photoUrl} alt={content.title} className='w-full h-full object-cover' />
                 ) : (
                     <BookOpen size={32} className='text-fw-purple-light' />

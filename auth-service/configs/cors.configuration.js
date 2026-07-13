@@ -1,18 +1,27 @@
-/**
- * Configuración de CORS para el servidor FeelWell.
- *
- * Permite:
- * - Acceso desde cualquier origen (origin: true)
- * - Envío de credenciales (cookies, headers de autenticación)
- * - Métodos HTTP permitidos: GET, POST, PUT, PATCH
- * - Headers permitidos: Content-Type y Authorization
- *
- * Esta configuración es utilizada globalmente en la aplicación
- * para controlar las políticas de acceso entre dominios.
- */
+const parseOrigins = (raw) =>
+    (raw || '')
+        .split(',')
+        .map((o) => o.trim().replace(/\/$/, '')) // quita barra final si la tuviera
+        .filter(Boolean);
+
+const allowedOrigins = parseOrigins(process.env.ALLOWED_ORIGINS || process.env.FRONTEND_URL);
+
+console.log('[CORS] auth-service — orígenes permitidos:', allowedOrigins);
+
 export const corsOptions = {
-    origin: true,
+    origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+
+        const normalizedOrigin = origin.replace(/\/$/, '');
+
+        if (allowedOrigins.includes(normalizedOrigin)) {
+            return callback(null, true);
+        }
+
+        console.warn(`[CORS] Origen rechazado: "${origin}". Permitidos: ${allowedOrigins.join(', ')}`);
+        return callback(new Error('No permitido por política CORS'));
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH'],
-    allowedHeaders:['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization']
 };

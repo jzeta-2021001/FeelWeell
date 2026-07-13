@@ -78,7 +78,7 @@ export const UserContainer = ({ onLogout, children }) => {
   }, [updateUser]);
 
   return (
-    <div className='min-h-screen grid' style={{ gridTemplateColumns: '280px 1fr', background: 'var(--fw-user-gradient)' }}>
+    <div className='fw-user-layout min-h-screen' style={{ background: 'var(--fw-user-gradient)' }}>
       {/* Pasamos el estado hasPendingChallenge al Sidebar */}
       <UserSidebar 
         active={activeLabel} 
@@ -94,7 +94,7 @@ export const UserContainer = ({ onLogout, children }) => {
         {isChat ? (
             children 
         ) : (
-            <div style={{ padding: 'clamp(20px,3vw,40px)' }}>
+            <div style={{ padding: 'clamp(16px,3vw,40px)' }}>
                 {children}
             </div>
         )}

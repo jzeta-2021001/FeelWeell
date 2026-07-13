@@ -1,29 +1,13 @@
 import rateLimit from "express-rate-limit";
 
-/**
- * Limitador de peticiones (Rate Limiting) para el servidor FeelWell.
- *
- * Configuración:
- * - Ventana de tiempo: 15 minutos
- * - Máximo de solicitudes por IP: 25
- *
- * Funcionalidad:
- * - Previene abuso de la API (fuerza bruta, spam, etc.)
- * - Responde con código HTTP 429 cuando se excede el límite
- *
- * Respuesta cuando se excede el límite:
- * - success: false
- * - message: mensaje descriptivo
- * - error: código interno (RATE_LIMIT_EXCEEDED)
- * - retryAfter: tiempo en segundos para volver a intentar
- */
 export const requestLimit = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 25, // máximo de 25 solicitudes por IP
-
+    windowMs: 15 * 60 * 1000,
+    max: 300,
+    standardHeaders: true,
+    legacyHeaders: false,
+    skip: (req) => req.path.endsWith('/health'),
     handler: (req, res) => {
         console.log(`Peticiones excedidas desde IP: ${req.ip}, Endpoint: ${req.path}`);
-
         res.status(429).json({
             success: false,
             message: 'Demasiadas peticiones desde esta IP. Por favor vuelva a intentarlo más tarde',

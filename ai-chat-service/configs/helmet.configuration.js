@@ -1,21 +1,23 @@
 export const helmetOptions = {
     contentSecurityPolicy: {
         useDefaults: true,
-        directives:{
+        directives: {
             defaultSrc: ["'self'"],
-            scriptSrc:["'self'", "'unsafe-inline'"],
-            styleSrc:["'self'", "'unsafe-inline'"],
-            imgSrc:["'self'", 'data:', 'blob: '],
-            connectSrc:["'self'"],
-            fontSrc:["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+            imgSrc: ["'self'", 'data:', 'blob:'],
+            connectSrc: ["'self'"],
+            fontSrc: ["'self'"],
             objectSrc: ["'none'"],
-            baseUri:["'self'"],
-            frameAcestors:["'none'"]
-        }//directiva
-    },//ContentSecurityPolice
-    hsts: false,
-    frameguard:{action: 'deny'},
+            baseUri: ["'self'"],
+            frameAncestors: ["'none'"]
+        }
+    },
+    hsts: process.env.NODE_ENV === 'production'
+        ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+        : false,
+    frameguard: { action: 'deny' },
     hidePoweredBy: true,
-    crossOriginResourcePolicy: {policy: 'cross-origin'},
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
     crossOriginEmbedderPolicy: false,
 };
