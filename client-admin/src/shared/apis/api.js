@@ -1,61 +1,52 @@
 import axios from 'axios';
+// Importación estática del store para el uso general, 
+// pero dinámica dentro del interceptor para evitar dependencias circulares
 import { useAuthStore } from '../../features/auth/store/authStore.js';
 
-// Instancia única para el auth-service de FeelWeell
+// Instancias configuradas
 const axiosAuth = axios.create({
   baseURL: import.meta.env.VITE_AUTH_URL,
   timeout: 8000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 const axiosIA = axios.create({
   baseURL: import.meta.env.VITE_AI_URL,
   timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
 const axiosHealthy = axios.create({
   baseURL: import.meta.env.VITE_HEALTHY_URL,
   timeout: 5000,
-  headers: {
-    'Content-Type' : 'application/json',
-  },
+  headers: { 'Content-Type': 'application/json' },
 });
 
-// Interceptor de REQUEST — adjunta el JWT y marca el cliente
-// Refactorización: Importación dinámica para romper la Dependencia Circular
-axiosAuth.interceptors.request.use(async (config) => {
-  config._axiosClient = 'auth';
+// 1. Interceptores de REQUEST (Adjuntar JWT)
+const attachToken = (config) => {
   const token = useAuthStore.getState().token;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
+};
+
+axiosAuth.interceptors.request.use((config) => {
+  config._axiosClient = 'auth';
+  return attachToken(config);
 });
 
 axiosIA.interceptors.request.use((config) => {
   config._axiosIA = 'ia';
-  const token = useAuthStore.getState().token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  return attachToken(config);
 });
 
-axiosHealthy.interceptors.request.use( async (config) => {
+axiosHealthy.interceptors.request.use((config) => {
   config._axiosHealthy = 'healthy';
-  const token = useAuthStore.getState().token;
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
+  return attachToken(config);
 });
 
-// ── Lógica de refresh token (misma estructura que DebuggersEats) ──
+// 2. Lógica de Refresh Token (Centralizada)
 let _isRefreshing = false;
 let failedQueue = [];
 
@@ -67,12 +58,15 @@ function _processQueue(_error, token = null) {
 const handleRefreshToken = async function (_error) {
   const _original = _error.config;
 
+  // Si no hay respuesta o ya se intentó refrescar, rechazamos
   if (!_original || _original._retry) {
     return Promise.reject(_error);
   }
 
   const status = _error.response?.status;
   const errorCode = _error.response?.data?.error;
+  
+  // Evitamos bucles infinitos en endpoints de autenticación
   const isRefreshEndpoint = (_original.url || '').includes('/auth/refresh');
   const isLoginEndpoint = (_original.url || '').includes('/auth/login');
 
@@ -82,18 +76,17 @@ const handleRefreshToken = async function (_error) {
     (status === 401 || (status === 403 && errorCode === 'TOKEN_EXPIRED'));
 
   if (shouldRefresh) {
-    // Refactorización: Importación dinámica para la recuperación de sesión
     const { useAuthStore } = await import('../../features/auth/store/authStore.js');
 
     if (_isRefreshing) {
       return new Promise((resolve, reject) => {
         failedQueue.push({ resolve, reject });
       })
-        .then((token) => {
-          _original.headers['Authorization'] = 'Bearer ' + token;
-          return axiosAuth(_original);
-        })
-        .catch((err) => Promise.reject(err));
+      .then((token) => {
+        _original.headers['Authorization'] = 'Bearer ' + token;
+        return axios(_original); // Reintentar usando la instancia original
+      })
+      .catch((err) => Promise.reject(err));
     }
 
     _original._retry = true;
@@ -120,7 +113,7 @@ const handleRefreshToken = async function (_error) {
 
       _processQueue(null, accessToken);
       _original.headers['Authorization'] = 'Bearer ' + accessToken;
-      return axiosAuth(_original);
+      return axios(_original);
     } catch (err) {
       _processQueue(err, null);
       useAuthStore.getState().logout();
@@ -133,6 +126,9 @@ const handleRefreshToken = async function (_error) {
   return Promise.reject(_error);
 };
 
+// 3. Aplicar Interceptores de RESPONSE a TODOS los servicios
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
+axiosIA.interceptors.response.use((res) => res, handleRefreshToken);
+axiosHealthy.interceptors.response.use((res) => res, handleRefreshToken);
 
 export { axiosAuth, axiosIA, axiosHealthy };
