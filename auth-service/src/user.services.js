@@ -226,10 +226,29 @@ export const updateProfileRecord = async (userId, profileData) => {
     return updated;
 };
 
-export const getAllUsersRecord = async () => {
-    return await User.find()
-        .select('-password -activationToken -resetPasswordToken -resetPasswordExpires')
-        .sort({ createdAt: -1 });
+export const getAllUsersRecord = async ({ page = 1, limit = 20 } = {}) => {
+    const safeLimit = Math.min(Number(limit) || 20, 100);
+    const safePage = Math.max(Number(page) || 1, 1);
+
+    const [users, total] = await Promise.all([
+        User.find()
+            .select('-password -activationToken -resetPasswordToken -resetPasswordExpires')
+            .sort({ createdAt: -1 })
+            .skip((safePage - 1) * safeLimit)
+            .limit(safeLimit)
+            .lean(),
+        User.countDocuments()
+    ]);
+
+    return {
+        users,
+        pagination: {
+            page: safePage,
+            limit: safeLimit,
+            total,
+            totalPages: Math.ceil(total / safeLimit)
+        }
+    };
 };
 
 export const toggleUserStatusRecord = async (id) => {

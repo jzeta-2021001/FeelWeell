@@ -1,11 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User, Target } from 'lucide-react';
+import { Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User, Target } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
 
 const ALL_ITEMS = [
-    { label: 'Panel General', to: '/dashboard/panel', icon: LayoutDashboard, roles: [] },
     { label: 'Usuarios', to: '/dashboard/users', icon: Users, roles: ['ADMIN_ROLE', 'ADMIN_USERS_ROLE'] },
     { label: 'Ejercicios', to: '/dashboard/exercises', icon: Dumbbell, roles: ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE'] },
     { label: 'Contenido', to: '/dashboard/content', icon: FileText, roles: ['ADMIN_ROLE', 'ADMIN_HEALTHY_ROLE'] },
@@ -47,8 +46,8 @@ export const AdminSidebar = ({ user, onLogout }) => {
 
     return (
         <>
-            <aside className='flex flex-col gap-7 p-7 bg-white border-r border-[#e5e7f0] min-h-screen'>
-                <div className='flex items-center gap-3.5'>
+            <aside className='flex items-center gap-3 p-3 bg-white border-b border-[#e5e7f0] md:flex-col md:items-stretch md:gap-7 md:p-7 md:border-b-0 md:border-r md:min-h-screen'>
+                <div className='flex shrink-0 items-center gap-3.5'>
                     <img src={logo} alt='FeelWeell' className='w-[38px] h-[38px] rounded-[10px] object-cover' />
                     <div>
                         <h1 className='m-0 text-xl text-[#6d72d8] font-black'>FeelWeell</h1>
@@ -56,18 +55,18 @@ export const AdminSidebar = ({ user, onLogout }) => {
                     </div>
                 </div>
 
-                <nav className='flex flex-col gap-2.5'>
+                <nav className='flex min-w-0 flex-1 gap-2 overflow-x-auto md:flex-col md:gap-2.5'>
                     {items.map(({ label, to, icon: Icon }) => (
                         <Link key={to} to={to}
-                            className={`min-h-11 flex items-center gap-2.5 rounded-xl px-3.5 text-[15px] font-extrabold no-underline transition-colors ${location.pathname.startsWith(to) ? 'fw-nav-active' : 'text-[#565b70] hover:bg-[#edefff] hover:text-[#6d72d8]'}`}>
-                            <Icon size={18} />{label}
+                            className={`min-h-11 shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 text-[15px] font-extrabold no-underline transition-colors ${location.pathname.startsWith(to) ? 'fw-nav-active' : 'text-[#565b70] hover:bg-[#edefff] hover:text-[#6d72d8]'}`}>
+                            <Icon size={18} /><span className='hidden sm:inline'>{label}</span>
                         </Link>
                     ))}
                 </nav>
 
-                <div className='mt-auto relative' ref={dropdownRef}>
+                <div className='relative shrink-0 md:mt-auto' ref={dropdownRef}>
                     {dropdownOpen && (
-                        <div className='absolute bottom-[calc(100%+8px)] left-0 right-0 bg-white border border-[#e5e7f0] rounded-[14px] p-1.5 shadow-[0_8px_32px_rgba(90,85,160,0.14)] z-50 animate-fadeIn'>
+                        <div className='absolute top-[calc(100%+8px)] right-0 w-[180px] bg-white border border-[#e5e7f0] rounded-[14px] p-1.5 shadow-[0_8px_32px_rgba(90,85,160,0.14)] z-50 animate-fadeIn md:bottom-[calc(100%+8px)] md:top-auto md:left-0 md:right-0 md:w-auto'>
                             <button
                                 onClick={handleOpenProfile}
                                 className='w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-[10px] border-none bg-transparent text-sm font-extrabold text-[#444660] cursor-pointer hover:bg-[#f0f1ff] hover:text-[#6d72d8] transition-colors'
@@ -86,12 +85,12 @@ export const AdminSidebar = ({ user, onLogout }) => {
 
                     <button
                         onClick={() => setDropdownOpen((prev) => !prev)}
-                        className='w-full flex items-center gap-3 px-3 py-2.5 rounded-[14px] border border-[#e5e7f0] bg-[#f9f9ff] cursor-pointer text-left hover:bg-[#f0f1ff] hover:border-[#c8caef] transition-colors'
+                        className='flex items-center gap-3 px-3 py-2.5 rounded-[14px] border border-[#e5e7f0] bg-[#f9f9ff] cursor-pointer text-left hover:bg-[#f0f1ff] hover:border-[#c8caef] transition-colors md:w-full'
                     >
                         <div className='w-9 h-9 flex-shrink-0 rounded-full grid place-items-center text-white text-sm font-black' style={{ background: 'linear-gradient(135deg,#6fb5ff,#c793ff)' }}>
                             {initials}
                         </div>
-                        <div className='flex-1 min-w-0'>
+                        <div className='hidden min-w-0 md:block md:flex-1'>
                             <p className='m-0 text-[13px] font-extrabold text-[#2f3348] truncate'>{fullName}</p>
                             <p className='m-0 text-[11px] font-bold text-[#8b8fbb] truncate'>{user?.role}</p>
                         </div>

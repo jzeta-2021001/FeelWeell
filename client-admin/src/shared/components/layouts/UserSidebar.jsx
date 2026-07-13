@@ -16,17 +16,17 @@ export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, hasPendingChal
     const streak = user?.streak ?? 0;
 
     return (
-        <aside className='flex flex-col gap-5 px-5 py-7 bg-white border-r border-[rgba(109,114,216,0.12)] min-h-screen'>
-            <div className='flex items-center gap-2.5 pb-2'>
+        <aside className='flex items-center gap-3 p-3 bg-white border-b border-[rgba(109,114,216,0.12)] md:flex-col md:items-stretch md:gap-5 md:px-5 md:py-7 md:border-b-0 md:border-r md:min-h-screen'>
+            <div className='flex shrink-0 items-center gap-2.5 md:pb-2'>
                 <img src={logo} alt='FeelWeell' className='w-9 h-9 rounded-[10px] object-cover' />
                 <span className='text-lg font-black text-[#6d72d8] m-0'>FeelWeell</span>
             </div>
 
-            <nav className='flex flex-col gap-1.5'>
+            <nav className='flex min-w-0 flex-1 gap-1.5 overflow-x-auto md:flex-col'>
                 {NAV_ITEMS.map(({ label, icon: Icon }) => (
                     <button key={label} onClick={() => onNavigate?.(label)}
-                        className={`flex items-center gap-2.5 px-4 py-[11px] rounded-[14px] border-none text-[15px] font-bold cursor-pointer text-left transition-colors ${active === label ? 'fw-user-nav-active' : 'bg-transparent text-[#7b8094] hover:bg-[rgba(109,114,216,0.08)] hover:text-[#4a4fbf]'}`}>
-                        <Icon size={18} />{label}
+                        className={`shrink-0 flex items-center gap-2.5 px-4 py-[11px] rounded-[14px] border-none text-[15px] font-bold cursor-pointer text-left transition-colors ${active === label ? 'fw-user-nav-active' : 'bg-transparent text-[#7b8094] hover:bg-[rgba(109,114,216,0.08)] hover:text-[#4a4fbf]'}`}>
+                        <Icon size={18} /><span className='hidden sm:inline'>{label}</span>
                         
                         {/* Notificaciones Badge */}
                         {label === 'Notificaciones' && unreadCount > 0 && (
@@ -46,7 +46,7 @@ export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, hasPendingChal
                 ))}
             </nav>
 
-            <div className='mt-auto flex flex-col items-center gap-1 px-4 py-5 rounded-[20px] text-white text-center' style={{ background: 'linear-gradient(135deg,#ffb347,#ff8c42)' }}>
+            <div className='hidden mt-auto flex-col items-center gap-1 px-4 py-5 rounded-[20px] text-white text-center md:flex' style={{ background: 'linear-gradient(135deg,#ffb347,#ff8c42)' }}>
                 <Flame size={28} />
                 <p className='m-0 text-[22px] font-black'>{streak} días</p>
                 <p className='m-0 text-[13px] font-bold opacity-85'>racha activa</p>

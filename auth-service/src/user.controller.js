@@ -23,29 +23,28 @@ export const createUser = async (req, res) => {
         });
 
     } catch (e) {
-        // Si el error viene del envío de correo, el usuario YA fue guardado en BD.
-        // Reportamos qué falló exactamente para que sea fácil de diagnosticar.
-        if (e.message.includes('correo') || e.message.includes('EMAIL') || e.message.includes('nodemailer')) {
+            // Si el error viene del envío de correo, el usuario YA fue guardado en BD.
+            if (e.message.includes('correo') || e.message.includes('EMAIL') || e.message.includes('nodemailer')) {
+                console.error('Fallo al enviar correo de activación:', e.message);
+                return res.status(500).json({
+                    success: false,
+                    message: 'Usuario creado pero no se pudo enviar el correo de activación. Contacta a soporte.'
+                });
+            }
+
+            console.error('Error al registrar el usuario:', e.message);
             return res.status(500).json({
                 success: false,
-                message: 'Usuario creado pero no se pudo enviar el correo de activación.',
-                error: e.message,
-                hint: 'Verifica que EMAIL_USER, EMAIL_PASS y FRONTEND_URL estén configurados correctamente en el .env'
+                message: 'Error al registrar el usuario'
             });
         }
-
-        return res.status(500).json({
-            success: false,
-            message: 'Error al registrar el usuario',
-            error: e.message
-        });
-    }
 };
 
 export const getAllUsers = async (req, res) => {
     try {
-        const users = await getAllUsersRecord();
-        res.status(200).json({ success: true, data: users });
+        const { page, limit } = req.query;
+        const result = await getAllUsersRecord({ page, limit });
+        res.status(200).json({ success: true, data: result.users, pagination: result.pagination });
     } catch (error) {
         res.status(error.statusCode || 500).json({ success: false, message: error.message });
     }
@@ -119,15 +118,16 @@ export const login = async (req, res) => {
         );
 
         //poder relacionar los mensajes realizados en .net
+//poder relacionar los mensajes realizados en .net
         let dailyMessage = null;
         try {
             const mgResponse = await fetch(
-                `http://localhost:5001/api/daily-message/today/${user._id}`,
+                `${process.env.DAILY_MESSAGE_URL || 'http://localhost:5001'}/api/daily-message/today/${user._id}`,
                 {
                     headers: {
-                        //============FIX=============
                         'Authorization': `Bearer ${token}`
-                    }
+                    },
+                    signal: AbortSignal.timeout(2500)
                 }
             );
             if (mgResponse.ok) {
@@ -137,7 +137,7 @@ export const login = async (req, res) => {
                 console.error('daily-service respondió con status:', mgResponse.status);
             }
         } catch (err) {
-            console.error('daily-positive-service no esta disponible', err.message);
+            console.error('daily-positive-service no está disponible o tardó demasiado:', err.message);
         }
 
         return res.status(200).json({

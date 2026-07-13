@@ -55,6 +55,31 @@ function _processQueue(_error, token = null) {
   failedQueue = [];
 }
 
+// 2.1 Manejo de 429 (Too Many Requests) con reintento automático respetando Retry-After
+const MAX_RATE_LIMIT_RETRIES = 2;
+
+const handleRateLimit = async function (_error) {
+  const _original = _error.config;
+  const status = _error.response?.status;
+
+  if (status !== 429 || !_original) {
+    return Promise.reject(_error);
+  }
+
+  _original._rateLimitRetryCount = (_original._rateLimitRetryCount || 0) + 1;
+  if (_original._rateLimitRetryCount > MAX_RATE_LIMIT_RETRIES) {
+    return Promise.reject(_error);
+  }
+
+  const retryAfterHeader = _error.response?.headers?.['retry-after'];
+  const retryAfterBody = _error.response?.data?.retryAfter;
+  const retryAfterSeconds = Number(retryAfterHeader) || Number(retryAfterBody) || 2;
+  const delayMs = Math.min(retryAfterSeconds, 10) * 1000;
+
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+  return axios(_original);
+};
+
 const handleRefreshToken = async function (_error) {
   const _original = _error.config;
 
@@ -126,7 +151,11 @@ const handleRefreshToken = async function (_error) {
   return Promise.reject(_error);
 };
 
-// 3. Aplicar Interceptores de RESPONSE a TODOS los servicios
+// 3. Aplicar Interceptores de RESPONSE a TODOS los servicios (429 primero, luego refresh token)
+axiosAuth.interceptors.response.use((res) => res, handleRateLimit);
+axiosIA.interceptors.response.use((res) => res, handleRateLimit);
+axiosHealthy.interceptors.response.use((res) => res, handleRateLimit);
+
 axiosAuth.interceptors.response.use((res) => res, handleRefreshToken);
 axiosIA.interceptors.response.use((res) => res, handleRefreshToken);
 axiosHealthy.interceptors.response.use((res) => res, handleRefreshToken);

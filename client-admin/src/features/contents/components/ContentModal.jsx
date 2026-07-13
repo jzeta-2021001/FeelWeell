@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { ImagePlus, BookOpen } from 'lucide-react';
 import { CONTENT_TYPES, CONTENT_CATEGORIES } from '../constants/constants.js';
+import { getYouTubeThumbnailUrl } from '../../../shared/utils/youtube.js';
 
 const inputCls = 'w-full h-11 border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 text-sm text-[#2f3348] font-semibold outline-none focus:border-fw-purple-light transition-colors';
 const textareaCls = 'w-full border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 py-2.5 text-sm text-[#2f3348] font-semibold outline-none focus:border-fw-purple-light transition-colors resize-none';
@@ -11,6 +12,9 @@ const errCls = 'text-fw-pink text-[12px] font-bold mt-1 block';
 export const ContentModal = ({ isOpen, onClose, onSave, content, loading }) => {
     const { register, handleSubmit, reset, watch, formState: { errors } } = useForm();
     const [preview, setPreview] = useState(null);
+    const contentType = watch('type');
+    const contentUrl = watch('url');
+    const videoThumbnail = contentType === 'VIDEO' ? getYouTubeThumbnailUrl(contentUrl) : null;
 
     useEffect(() => {
         if (!isOpen) return;
@@ -72,8 +76,8 @@ export const ContentModal = ({ isOpen, onClose, onSave, content, loading }) => {
                 <form className='flex flex-col gap-4 px-7 py-5 max-h-[70vh] overflow-y-auto' onSubmit={handleSubmit(onSubmit)}>
                     <div className='flex flex-col items-center gap-3'>
                         <div className='w-24 h-24 rounded-2xl bg-fw-purple-bg/40 border border-[#e5e7f0] flex items-center justify-center overflow-hidden'>
-                            {preview ? (
-                                <img src={preview} alt='preview' className='w-full h-full object-cover' />
+                            {preview || videoThumbnail ? (
+                                <img src={preview || videoThumbnail} alt='Vista previa' className='w-full h-full object-cover' />
                             ) : (
                                 <BookOpen size={28} className='text-fw-purple-light' />
                             )}
@@ -118,21 +122,22 @@ export const ContentModal = ({ isOpen, onClose, onSave, content, loading }) => {
 
                     <div>
                         <label className={labelCls}>
-                            URL
+                            {contentType === 'VIDEO' ? 'Enlace de YouTube' : 'URL'}
                         </label>
                         <input
                             className={inputCls}
                             type='url'
-                            placeholder='https://...'
+                            placeholder={contentType === 'VIDEO' ? 'https://www.youtube.com/watch?v=...' : 'https://...'}
                             {...register('url', {
                                 validate: (val) => {
-                                    if (!val) return true;
-                                    return val.startsWith('http://') || val.startsWith('https://')
-                                    ? true
-                                    : 'La URL debe de comenzar con https://'
+                                    if (!val) return contentType === 'VIDEO' ? 'El enlace de YouTube es obligatorio para un video' : true;
+                                    if (!val.startsWith('http://') && !val.startsWith('https://')) return 'La URL debe comenzar con http:// o https://';
+                                    if (contentType === 'VIDEO' && !getYouTubeThumbnailUrl(val)) return 'Ingresa un enlace válido de YouTube';
+                                    return true;
                                 }
                             })}
                         />
+                        {errors.url && <span className={errCls}>{errors.url.message}</span>}
                     </div>
 
                     <div>

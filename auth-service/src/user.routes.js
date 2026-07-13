@@ -17,6 +17,7 @@ import {
 import { validateCreateUser, validateLogin, validateChangePassword, validateForgotPassword, validateResetPassword, validateUpdateProfile } from '../middlewares/user-validator.js'
 import { validateJWT } from '../middlewares/validate-JWT.js';
 import { validateRole } from '../middlewares/validate-role.js';
+import { loginLimit } from '../middlewares/rate-limiter.js';
 
 const router = Router();
 
@@ -147,7 +148,7 @@ router.get('/activate/:token', activateAccount);
  *       401:
  *         description: Credenciales inválidas
  */
-router.post('/login', validateLogin, login);
+router.post('/login', loginLimit, validateLogin, login);
 
 /**
  * @swagger
@@ -161,8 +162,7 @@ router.post('/login', validateLogin, login);
  *       200:
  *         description: Correo enviado
  */
-router.post('/forgot-password', validateForgotPassword, forgotPassword);
-
+router.post('/forgot-password', loginLimit, validateForgotPassword, forgotPassword);
 /**
  * @swagger
  * /feelWell/v1/auth/reset-password/{token}:
