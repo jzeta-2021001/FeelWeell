@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User, Target } from 'lucide-react';
+import { Users, Dumbbell, FileText, Heart, BarChart2, ChevronDown, LogOut, User, Target, Menu, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 import { ProfileModal } from '../../../features/users/components/ProfileModal.jsx';
@@ -19,6 +19,7 @@ export const AdminSidebar = ({ user, onLogout }) => {
 
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [profileOpen, setProfileOpen] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const dropdownRef = useRef(null);
 
     const initials = `${user?.firstName?.[0] ?? ''}${user?.surname?.[0] ?? ''}`.toUpperCase() || 'FW';
@@ -46,7 +47,7 @@ export const AdminSidebar = ({ user, onLogout }) => {
 
     return (
         <>
-            <aside className='flex items-center gap-3 p-3 bg-white border-b border-[#e5e7f0] md:flex-col md:items-stretch md:gap-7 md:p-7 md:border-b-0 md:border-r md:min-h-screen'>
+            <aside className='relative flex items-center gap-3 p-3 bg-white border-b border-[#e5e7f0] md:static md:flex-col md:items-stretch md:gap-7 md:p-7 md:border-b-0 md:border-r md:min-h-screen'>
                 <div className='flex shrink-0 items-center gap-3.5'>
                     <img src={logo} alt='FeelWeell' className='w-[38px] h-[38px] rounded-[10px] object-cover' />
                     <div>
@@ -55,11 +56,16 @@ export const AdminSidebar = ({ user, onLogout }) => {
                     </div>
                 </div>
 
-                <nav className='flex min-w-0 flex-1 gap-2 overflow-x-auto md:flex-col md:gap-2.5'>
+                <button type='button' onClick={() => setMobileMenuOpen((open) => !open)} aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={mobileMenuOpen}
+                    className='ml-auto grid h-10 w-10 place-items-center rounded-xl border-none bg-[#f0f1ff] text-[#6d72d8] cursor-pointer md:hidden'>
+                    {mobileMenuOpen ? <X size={21} /> : <Menu size={22} />}
+                </button>
+
+                <nav className={`${mobileMenuOpen ? 'flex' : 'hidden'} absolute top-full left-0 right-0 z-40 flex-col gap-1.5 border-b border-[#e5e7f0] bg-white p-3 shadow-[0_14px_30px_rgba(70,72,140,0.12)] md:static md:flex md:min-w-0 md:flex-1 md:gap-2.5 md:border-0 md:bg-transparent md:p-0 md:shadow-none md:flex-col`}>
                     {items.map(({ label, to, icon: Icon }) => (
-                        <Link key={to} to={to}
+                        <Link key={to} to={to} onClick={() => setMobileMenuOpen(false)}
                             className={`min-h-11 shrink-0 flex items-center gap-2.5 rounded-xl px-3.5 text-[15px] font-extrabold no-underline transition-colors ${location.pathname.startsWith(to) ? 'fw-nav-active' : 'text-[#565b70] hover:bg-[#edefff] hover:text-[#6d72d8]'}`}>
-                            <Icon size={18} /><span className='hidden sm:inline'>{label}</span>
+                            <Icon size={18} /><span>{label}</span>
                         </Link>
                     ))}
                 </nav>

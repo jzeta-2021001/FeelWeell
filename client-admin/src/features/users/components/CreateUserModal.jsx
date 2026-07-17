@@ -18,7 +18,7 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
 
     return (
         <div className='fixed inset-0 bg-[rgba(40,40,80,0.35)] flex items-center justify-center z-[999] p-5'>
-            <div className='w-full max-w-[560px] bg-white rounded-[24px] shadow-[0_24px_80px_rgba(90,85,140,0.18)] overflow-hidden'>
+            <div className='w-full max-w-[560px] max-h-[calc(100vh-40px)] bg-white rounded-[24px] shadow-[0_24px_80px_rgba(90,85,140,0.18)] overflow-hidden flex flex-col'>
                 <div className='flex justify-between items-start px-7 pt-6 pb-4 border-b border-[#f0f1f8]'>
                     <div>
                         <h2 className='m-0 text-lg font-black text-[#2f3348]'>Nuevo usuario</h2>
@@ -27,8 +27,8 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                     <button type='button' onClick={handleClose} className='border-none bg-[#f0f1f8] rounded-lg w-8 h-8 cursor-pointer text-sm text-[#7b8094]'>✕</button>
                 </div>
 
-                <form className='flex flex-col gap-4 px-7 py-5' onSubmit={handleSubmit(onSubmit)}>
-                    <div className='grid grid-cols-2 gap-3.5'>
+                <form className='flex flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-7' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Nombre</label>
                             <input className={inputCls} {...register('firstName', { required: 'El nombre es obligatorio' })} />
                             {errors.firstName && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.firstName.message}</span>}
@@ -45,7 +45,8 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                             {errors.username && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.username.message}</span>}
                         </div>
                         <div><label className={labelCls}>Teléfono</label>
-                            <input className={inputCls} type='tel' {...register('phone')} />
+                            <input className={inputCls} type='tel' inputMode='numeric' maxLength={8} placeholder='12345678' {...register('phone', { required: 'El teléfono es obligatorio', pattern: { value: /^\d{8}$/, message: 'Ingresa exactamente 8 dígitos' } })} />
+                            {errors.phone && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.phone.message}</span>}
                         </div>
                     </div>
 
@@ -66,7 +67,7 @@ export const CreateUserModal = ({ isOpen, onClose, onCreate, loading }) => {
                         {errors.role && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.role.message}</span>}
                     </div>
 
-                    <div className='grid grid-cols-2 gap-3.5'>
+                    <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Contraseña</label>
                             <input className={inputCls} type='password' {...register('password', { required: 'La contraseña es obligatoria', minLength: { value: 8, message: 'Mínimo 8 caracteres' } })} />
                             {errors.password && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.password.message}</span>}

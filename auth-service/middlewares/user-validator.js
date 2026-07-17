@@ -31,7 +31,7 @@ export const validateCreateUser = [
         .optional()
         .isNumeric()
         .withMessage('Debe de ingresar números en el teléfono')
-        .isLength({ min: 8, max: 16 })
+        .isLength({ min: 8, max: 8 })
         .withMessage('El teléfono debe de tener entre 8 y 16 caracteres.'),
     body('username')
         .trim()
@@ -135,7 +135,7 @@ export const validateUpdateProfile = [
         .optional()
         .isNumeric()
         .withMessage('Debe ingresar números en el teléfono')
-        .isLength({ min: 8, max: 16 })
+        .isLength({ min: 8, max: 8 })
         .withMessage('El teléfono debe tener entre 8 y 16 caracteres'),
     body('username')
         .optional()

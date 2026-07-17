@@ -15,7 +15,7 @@ export const RetosPage = () => {
                 </p>
             </div>
             
-            <div className="bg-gray-50 p-6 rounded-[20px] shadow-sm border border-[#e5e7f0]">
+            <div className="bg-gray-50 p-3 sm:p-6 rounded-[20px] shadow-sm border border-[#e5e7f0] overflow-hidden">
                 {/* Renderizamos el widget como elemento principal de la vista */}
                 <DailyChallengeWidget currentMood={user?.mood || 'ANSIOSO'} />
             </div>

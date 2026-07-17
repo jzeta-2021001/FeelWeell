@@ -10,6 +10,7 @@ import { NotificationBell } from '../../notifications/components/NotificationBel
 import { useNotificationCenter } from '../../notifications/hooks/useNotificationCenter.js';
 import toast from 'react-hot-toast';
 import { DailyChallengeWidget } from '../../exercises/components/DailyChallengeWidget.jsx';
+import { getStreak } from '../../../shared/apis';
 
 const MOOD_TO_EMOTION = {
     Bien: 'FELIZ',
@@ -106,6 +107,14 @@ export const UserPage = () => {
         });
         if (result.success) {
             toast.success('¡Registraste tu estado de ánimo!');
+            try {
+                const { data } = await getStreak();
+                if (data && typeof data.currentStreak === 'number') {
+                    useAuthStore.getState().updateUser({ streak: data.currentStreak });
+                }
+            } catch (err) {
+                console.error("Error al actualizar la racha en la interfaz:", err);
+            }
         } else {
             toast.error(result.error);
         }
