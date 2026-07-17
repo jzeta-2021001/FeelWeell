@@ -1,4 +1,5 @@
 import Streak from './streak.model.js';
+import MoodEntry from '../mood/moodEntry.model.js';
 
 
 export const getCurrentStreak = async (userId) => {
@@ -16,6 +17,21 @@ export const getCurrentStreak = async (userId) => {
 };
 
 export const updateStreak = async (userId, username = null) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+
+    const todayMood = await MoodEntry.findOne({
+        userId,
+        date: { $gte: today, $lt: tomorrow }
+    });
+
+    if (!todayMood) {
+        throw new Error('Debes registrar tu estado de ánimo de hoy para poder activar o actualizar tu racha');
+    }
+
     let streak = await Streak.findOne({ userId });
 
     if (!streak) {

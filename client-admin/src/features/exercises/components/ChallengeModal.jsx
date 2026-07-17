@@ -98,14 +98,14 @@ export const ChallengeModal = ({ isOpen, onClose, challenge, onSuccess }) => {
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000080] backdrop-blur-sm p-4 animate-fadeIn">
-            <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-                <div className="flex justify-between items-center px-6 py-4 border-b border-[#e5e7f0]">
+            <div className="bg-white rounded-2xl w-full max-w-lg overflow-hidden shadow-2xl flex flex-col max-h-[calc(100vh-32px)] sm:max-h-[90vh]">
+                <div className="flex justify-between items-center px-4 py-4 sm:px-6 border-b border-[#e5e7f0]">
                     <h2 className="text-[#2f3348] text-lg font-black m-0">
                         {challenge ? 'Editar Reto Existente' : 'Configurar Nuevo Reto'}
                     </h2>
                     <button onClick={onClose} className="text-[#9b9fb8] cursor-pointer"><X size={20} /></button>
                 </div>
-                <div className="overflow-y-auto p-6 custom-scrollbar">
+                <div className="overflow-y-auto p-4 sm:p-6 custom-scrollbar">
                     <form id="challenge-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                         <div>
                             <label className="block text-sm font-extrabold text-[#505570] mb-1.5">Título Operativo</label>
@@ -117,7 +117,7 @@ export const ChallengeModal = ({ isOpen, onClose, challenge, onSuccess }) => {
                             <textarea required name="description" value={formData.description} onChange={handleChange} rows="2"
                                 className="w-full border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 py-2.5 text-sm font-semibold outline-none focus:border-[#6d72d8] transition-colors resize-none" placeholder="Impacto esperado..." />
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label className="block text-sm font-extrabold text-[#505570] mb-1.5">Perfil Objetivo</label>
                                 <select required name="targetProfile" value={formData.targetProfile} onChange={handleChange}

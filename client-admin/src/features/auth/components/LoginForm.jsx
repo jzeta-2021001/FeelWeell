@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import logo from '../../../assets/img/FeellWeellLogo.png';
 
@@ -10,6 +12,8 @@ export const LoginForm = ({ onRegister }) => {
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
   const { register, handleSubmit, formState: { errors } } = useForm();
+  
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (formData) => {
     useAuthStore.setState({ error: null });
@@ -23,8 +27,8 @@ export const LoginForm = ({ onRegister }) => {
   };
 
   return (
-    <section className='w-full max-w-[520px] bg-[#f3f3f3] rounded-[36px] px-[58px] py-9 shadow-[0_20px_70px_rgba(90,85,140,0.12)] min-h-[600px]'>
-      <div className='text-center mb-[70px]'>
+    <section className='w-full max-w-[520px] bg-[#f3f3f3] rounded-[28px] px-5 py-8 shadow-[0_20px_70px_rgba(90,85,140,0.12)] sm:rounded-[36px] sm:px-[58px] sm:py-9 min-h-[600px]'>
+      <div className='text-center mb-10 sm:mb-[70px]'>
         <img src={logo} alt='FeelWeell' className='w-[130px] h-[110px] object-contain block mx-auto mb-2' />
         <h1 className='m-0 text-[#c7c6ff] text-[32px] font-black'>FeelWeell</h1>
         <p className='mt-0.5 text-[#6f6f6f] text-lg font-extrabold'>Tu espacio de bienestar emocional</p>
@@ -40,8 +44,17 @@ export const LoginForm = ({ onRegister }) => {
 
         <div className='flex flex-col gap-2.5'>
           <label className='text-[#707070] text-lg font-extrabold pl-2'>Contraseña</label>
-          <input className='w-full h-14 border-none outline-none rounded-full bg-white px-7 text-base text-[#5f5f5f] font-bold focus:shadow-[0_0_0_3px_rgba(190,190,255,0.55)]'
-            type='password' {...register('password', { required: 'La contraseña es obligatoria' })} />
+          <div className='relative'>
+            <input className='w-full h-14 border-none outline-none rounded-full bg-white pl-7 pr-14 text-base text-[#5f5f5f] font-bold focus:shadow-[0_0_0_3px_rgba(190,190,255,0.55)]'
+              type={showPassword ? 'text' : 'password'} {...register('password', { required: 'La contraseña es obligatoria' })} />
+            <button
+              type='button'
+              onClick={() => setShowPassword(!showPassword)}
+              className='absolute right-5 top-1/2 -translate-y-1/2 border-none bg-transparent cursor-pointer text-gray-400 hover:text-gray-600 transition-colors'
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
+          </div>
           {errors.password && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.password.message}</span>}
         </div>
 

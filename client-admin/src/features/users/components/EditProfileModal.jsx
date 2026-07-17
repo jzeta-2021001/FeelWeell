@@ -23,7 +23,7 @@ export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => 
 
     return (
         <div className='fixed inset-0 bg-[rgba(40,40,80,0.35)] flex items-center justify-center z-[999] p-5'>
-            <div className='w-full max-w-[560px] bg-white rounded-[24px] shadow-[0_24px_80px_rgba(90,85,140,0.18)] overflow-hidden'>
+            <div className='w-full max-w-[560px] max-h-[calc(100vh-40px)] bg-white rounded-[24px] shadow-[0_24px_80px_rgba(90,85,140,0.18)] overflow-hidden flex flex-col'>
                 <div className='flex justify-between items-center px-7 pt-6 pb-4 border-b border-[#f0f1f8]'>
                     <div className='flex items-center gap-3.5'>
                         <div className='w-12 h-12 rounded-full bg-[#edefff] text-[#6d72d8] text-base font-black grid place-items-center'>{initials}</div>
@@ -35,8 +35,8 @@ export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => 
                     <button onClick={onClose} className='border-none bg-[#f0f1f8] rounded-lg w-8 h-8 cursor-pointer text-sm text-[#7b8094]'>✕</button>
                 </div>
 
-                <form className='flex flex-col gap-4 px-7 py-5' onSubmit={handleSubmit(onSubmit)}>
-                    <div className='grid grid-cols-2 gap-3.5'>
+                <form className='flex flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-7' onSubmit={handleSubmit(onSubmit)}>
+                    <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Nombre</label>
                             <input className={inputCls} {...register('firstName', { required: 'El nombre es obligatorio' })} />
                             {errors.firstName && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.firstName.message}</span>}
@@ -52,13 +52,14 @@ export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => 
                         {errors.email && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.email.message}</span>}
                     </div>
 
-                    <div className='grid grid-cols-2 gap-3.5'>
+                    <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Usuario</label>
                             <input className={inputCls} {...register('username', { required: 'El usuario es obligatorio', minLength: { value: 3, message: 'Mínimo 3 caracteres' } })} />
                             {errors.username && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.username.message}</span>}
                         </div>
                         <div><label className={labelCls}>Teléfono <span className='font-bold text-[#9b9fb8]'>(opcional)</span></label>
-                            <input className={inputCls} type='tel' {...register('phone')} />
+                            <input className={inputCls} type='tel' inputMode='numeric' maxLength={8} placeholder='12345678' {...register('phone', { pattern: { value: /^$|^\d{8}$/, message: 'Ingresa exactamente 8 dígitos' } })} />
+                            {errors.phone && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.phone.message}</span>}
                         </div>
                     </div>
 

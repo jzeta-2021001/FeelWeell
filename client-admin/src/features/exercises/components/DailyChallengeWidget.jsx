@@ -69,14 +69,14 @@ export const DailyChallengeWidget = ({ currentMood = 'ANSIOSO' }) => {
     }
 
     return (
-        <div className="w-full flex items-center justify-between p-5 mb-6 bg-white rounded-[14px] shadow-sm border border-[#e5e7f0] transition-all hover:shadow-md">
-            <div className="flex items-center gap-4">
+        <div className="w-full flex flex-col items-stretch gap-4 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5 bg-white rounded-[14px] shadow-sm border border-[#e5e7f0] transition-all hover:shadow-md">
+            <div className="flex min-w-0 items-start gap-3 sm:gap-4">
                 <div className="w-12 h-12 rounded-full bg-[#f0f1ff] flex items-center justify-center text-[#6d72d8]">
                     <Clock size={24} />
                 </div>
-                <div>
-                    <h4 className="m-0 text-[15px] font-black text-[#2f3348]">{challenge.title}</h4>
-                    <p className="m-0 text-[13px] font-bold text-[#7b8094] mt-1">{challenge.description}</p>
+                <div className="min-w-0">
+                    <h4 className="m-0 text-[15px] font-black text-[#2f3348] break-words">{challenge.title}</h4>
+                    <p className="m-0 text-[13px] font-bold text-[#7b8094] mt-1 break-words">{challenge.description}</p>
                     {challenge.duration && (
                         <span className="inline-block mt-2 text-[11px] font-black px-2.5 py-1 bg-[#fff0f4] text-[#d14b6d] rounded-md">
                             Duración: {challenge.duration} min
@@ -88,7 +88,7 @@ export const DailyChallengeWidget = ({ currentMood = 'ANSIOSO' }) => {
             <button 
                 onClick={handleComplete}
                 disabled={completed}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-[14px] font-bold text-[13px] transition-colors border-none cursor-pointer ${
+                className={`w-full sm:w-auto shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 rounded-[14px] font-bold text-[13px] transition-colors border-none cursor-pointer ${
                     completed 
                     ? 'bg-[#e5ffe5] text-[#2ebd59]' 
                     : 'bg-[#6d72d8] text-white hover:bg-[#5a5fc4]'

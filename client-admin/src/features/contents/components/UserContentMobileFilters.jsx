@@ -21,7 +21,7 @@ export const UserContentMobileFilters = ({
                     className='flex-1 border-none outline-none bg-transparent text-[13.5px] font-semibold text-[#2f3348] placeholder:text-fw-gray'
                 />
             </div>
-            <div className='flex gap-2.5'>
+            <div className='grid grid-cols-1 gap-2.5 min-[420px]:grid-cols-2'>
                 <select
                     value={categoryFilter}
                     onChange={(e) => onCategoryChange(e.target.value)}

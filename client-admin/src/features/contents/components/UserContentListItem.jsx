@@ -13,9 +13,9 @@ export const UserContentListItem = ({ content, isSelected, onSelect }) => {
     return (
         <button
             onClick={() => onSelect(content._id)}
-            className={`w-full flex gap-4 p-3.5 rounded-2xl border-[1.5px] cursor-pointer text-left transition-colors mb-1 ${isSelected ? 'bg-white border-fw-purple-light shadow-[0_6px_20px_rgba(109,114,216,0.10)]' : 'bg-transparent border-transparent hover:bg-white hover:border-[#e5e7f0]'}`}
+            className={`w-full flex flex-col gap-3 p-3 rounded-2xl border-[1.5px] cursor-pointer text-left transition-colors mb-1 sm:flex-row sm:gap-4 sm:p-3.5 ${isSelected ? 'bg-white border-fw-purple-light shadow-[0_6px_20px_rgba(109,114,216,0.10)]' : 'bg-transparent border-transparent hover:bg-white hover:border-[#e5e7f0]'}`}
         >
-            <div className='w-[76px] h-[76px] rounded-2xl shrink-0 overflow-hidden bg-fw-purple-bg/50 flex items-center justify-center'>
+            <div className='w-full h-32 rounded-2xl shrink-0 overflow-hidden bg-fw-purple-bg/50 flex items-center justify-center sm:w-[76px] sm:h-[76px]'>
                 {content.photoUrl ? (
                     <img src={content.photoUrl} alt={content.title} className='w-full h-full object-cover' />
                 ) : (
@@ -24,7 +24,7 @@ export const UserContentListItem = ({ content, isSelected, onSelect }) => {
             </div>
 
             <div className='flex-1 min-w-0 flex flex-col gap-1.5 justify-center'>
-                <div className='flex items-center gap-2'>
+                <div className='flex flex-wrap items-center gap-2'>
                     <span className={`inline-flex items-center gap-1 text-[10.5px] font-extrabold px-2.5 py-0.5 rounded-full ${typeStyle.cls}`}>
                         <TypeIcon size={10} /> {content.type}
                     </span>

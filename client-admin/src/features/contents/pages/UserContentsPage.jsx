@@ -38,8 +38,8 @@ export const UserContentsPage = () => {
     return (
         <div className='flex flex-col gap-5'>
             {/* Encabezado */}
-            <div className='rounded-2xl p-6' style={{ background: 'linear-gradient(135deg,#c5c8f2 0%,#d8d4ff 50%,#b9c9f5 100%)' }}>
-                <div className='flex items-center gap-3'>
+            <div className='rounded-2xl p-4 sm:p-6' style={{ background: 'linear-gradient(135deg,#c5c8f2 0%,#d8d4ff 50%,#b9c9f5 100%)' }}>
+                <div className='flex items-start gap-3 min-w-0'>
                     <div className='w-10 h-10 bg-white/30 rounded-xl flex items-center justify-center'>
                         <BookOpen size={20} className='text-[#3d3a8c]' />
                     </div>
@@ -63,7 +63,7 @@ export const UserContentsPage = () => {
             {/* Workspace de biblioteca: estante + lista + lector */}
             <div
                 className='bg-white border border-[#e5e7f0] rounded-2xl overflow-hidden grid'
-                style={{ gridTemplateColumns: 'minmax(0,1fr)', minHeight: '70vh' }}
+                style={{ gridTemplateColumns: 'minmax(0,1fr)' }}
             >
                 <div className='grid lg:grid-cols-[248px_1fr] xl:grid-cols-[248px_1fr_380px]'>
                     <UserContentShelf
@@ -76,7 +76,7 @@ export const UserContentsPage = () => {
                         categoryCounts={categoryCounts}
                     />
 
-                    <div className='p-5 lg:p-6 overflow-y-auto' style={{ maxHeight: '78vh' }}>
+                    <div className='p-3 sm:p-5 lg:p-6 overflow-y-auto lg:max-h-[78vh]'>
                         <UserContentList
                             groupedContents={groupedContents}
                             total={contents.length}

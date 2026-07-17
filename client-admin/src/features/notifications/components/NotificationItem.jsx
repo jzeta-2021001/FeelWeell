@@ -48,7 +48,7 @@ export const NotificationItem = ({ notification, onMarkAsRead, compact = false }
                     )}
                     <p className='m-0 text-sm font-black text-[#2f3348] truncate'>{notification.title}</p>
                 </div>
-                <p className='m-0 mt-1 text-xs text-[#7b8094] font-semibold leading-relaxed'>
+                <p className='m-0 mt-1 text-xs text-[#7b8094] font-semibold leading-relaxed break-words'>
                     {notification.message}
                 </p>
                 <p className='m-0 mt-1.5 text-[11px] text-[#c5c7d8] font-bold'>

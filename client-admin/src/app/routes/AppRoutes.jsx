@@ -1,31 +1,30 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { AuthPage } from '../../features/auth/pages/AuthPage';
-import { ForgotPasswordPage } from '../../features/auth/pages/ForgotPasswordPage';
-import { ResetPasswordPage } from '../../features/auth/pages/ResetPasswordPage';
-import { ActivateAccountPage } from '../../features/auth/pages/ActivateAccountPage';
-import { ChangePasswordPage } from '../../features/auth/pages/ChangePasswordPage';
-import { UnauthorizedPage } from '../../features/auth/pages/UnauthorizedPage';
 import { ProtectedRoutes } from './ProtectedRoutes';
 import { RoleGuard } from './RoleGuard';
 import { UserLayout } from '../layouts/UserLayout';
 import { DashboardPage } from '../layouts/DashboardPage';
-import { UserAdminPage } from '../../features/users/pages/UserAdminPage.jsx';
-import { PanelPage } from '../../features/dashboard/pages/PanelPage';
-import { ExercisesPage } from '../../features/dashboard/pages/ExercisesPage';
-import { ContentPage } from '../../features/dashboard/pages/ContentPage';
-import { UserPage } from '../../features/users/pages/UserPage';
-import { MoodPage } from '../../features/users/pages/MoodPage';
-import { MotivationalPage } from '../../features/dashboard/pages/MotivationalPage';
-import { MoodTrackingPage } from '../../features/dashboard/pages/MoodTrackingPage';
-import { ChatPage } from '../../features/chat/pages/ChatPage.jsx';
-import { ExercisesAdminPage } from '../../features/exercises/pages/ExercisesAdminPage.jsx';
-import { ContentsAdminPage } from '../../features/contents/pages/ContentsAdminPage.jsx';
-import { UserExercisesPage } from '../../features/exercises/pages/UserExercisesPage.jsx';
-import { UserContentsPage } from '../../features/contents/pages/UserContentsPage.jsx';
-import { NotificationsPage } from '../../features/notifications/pages/NotificationsPage.jsx';
-import { RetosPage } from '../../features/exercises/pages/RetosPage.jsx';
-import { DailyChallengesAdminPage } from '../../features/exercises/pages/DailyChallengesAdminPage.jsx';
-import { HistoryPage } from '../../features/exercises/pages/HistoryPage.jsx';
+
+const AuthPage = lazy(() => import('../../features/auth/pages/AuthPage').then((module) => ({ default: module.AuthPage })));
+const ForgotPasswordPage = lazy(() => import('../../features/auth/pages/ForgotPasswordPage').then((module) => ({ default: module.ForgotPasswordPage })));
+const ResetPasswordPage = lazy(() => import('../../features/auth/pages/ResetPasswordPage').then((module) => ({ default: module.ResetPasswordPage })));
+const ActivateAccountPage = lazy(() => import('../../features/auth/pages/ActivateAccountPage').then((module) => ({ default: module.ActivateAccountPage })));
+const ChangePasswordPage = lazy(() => import('../../features/auth/pages/ChangePasswordPage').then((module) => ({ default: module.ChangePasswordPage })));
+const UnauthorizedPage = lazy(() => import('../../features/auth/pages/UnauthorizedPage').then((module) => ({ default: module.UnauthorizedPage })));
+const UserAdminPage = lazy(() => import('../../features/users/pages/UserAdminPage.jsx').then((module) => ({ default: module.UserAdminPage })));
+const UserPage = lazy(() => import('../../features/users/pages/UserPage').then((module) => ({ default: module.UserPage })));
+const MoodPage = lazy(() => import('../../features/users/pages/MoodPage').then((module) => ({ default: module.MoodPage })));
+const ChatPage = lazy(() => import('../../features/chat/pages/ChatPage.jsx').then((module) => ({ default: module.ChatPage })));
+const ExercisesAdminPage = lazy(() => import('../../features/exercises/pages/ExercisesAdminPage.jsx').then((module) => ({ default: module.ExercisesAdminPage })));
+const ContentsAdminPage = lazy(() => import('../../features/contents/pages/ContentsAdminPage.jsx').then((module) => ({ default: module.ContentsAdminPage })));
+const UserExercisesPage = lazy(() => import('../../features/exercises/pages/UserExercisesPage.jsx').then((module) => ({ default: module.UserExercisesPage })));
+const UserContentsPage = lazy(() => import('../../features/contents/pages/UserContentsPage.jsx').then((module) => ({ default: module.UserContentsPage })));
+const NotificationsPage = lazy(() => import('../../features/notifications/pages/NotificationsPage.jsx').then((module) => ({ default: module.NotificationsPage })));
+const RetosPage = lazy(() => import('../../features/exercises/pages/RetosPage.jsx').then((module) => ({ default: module.RetosPage })));
+const DailyChallengesAdminPage = lazy(() => import('../../features/exercises/pages/DailyChallengesAdminPage.jsx').then((module) => ({ default: module.DailyChallengesAdminPage })));
+const HistoryPage = lazy(() => import('../../features/exercises/pages/HistoryPage.jsx').then((module) => ({ default: module.HistoryPage })));
+const MotivationalPage = lazy(() => import('../../features/dashboard/pages/MotivationalPage').then((module) => ({ default: module.MotivationalPage })));
+const MoodTrackingPage = lazy(() => import('../../features/dashboard/pages/MoodTrackingPage').then((module) => ({ default: module.MoodTrackingPage })));
 
 const ADMIN_ROLES = [
   'ADMIN_ROLE',
@@ -36,6 +35,7 @@ const ADMIN_ROLES = [
 
 export const AppRoutes = () => {
   return (
+    <Suspense fallback={<div className='min-h-screen grid place-items-center bg-[#f6f7fb] text-[#6d72d8] font-bold'>Cargando...</div>}>
     <Routes>
       {/* ── Públicas ── */}
       <Route path='/' element={<AuthPage />} />
@@ -132,5 +132,6 @@ export const AppRoutes = () => {
 
       <Route path='*' element={<Navigate to='/' replace />} />
     </Routes>
+    </Suspense>
   );
 };

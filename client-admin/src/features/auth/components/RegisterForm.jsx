@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 
 const inputCls = 'w-full h-14 border-none outline-none rounded-full bg-white px-7 text-base text-[#5f5f5f] font-bold placeholder-[#c7c6ee] focus:shadow-[0_0_0_3px_rgba(190,190,255,0.55)]';
@@ -60,6 +61,7 @@ export const RegisterForm = ({ onLogin }) => {
     const [showTerms, setShowTerms] = useState(false);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [pendingData, setPendingData] = useState(null);
+    const [showPassword, setShowPassword] = useState(false);
 
     const onSubmit = (formData) => {
         if (!acceptedTerms) {
@@ -101,9 +103,9 @@ export const RegisterForm = ({ onLogin }) => {
                 <TermsModal onAccept={handleAcceptTerms} onReject={handleRejectTerms} />
             )}
 
-            <section className='w-full max-w-[500px] bg-[#f3f3f3] rounded-[36px] px-[58px] pt-[34px] pb-9 shadow-[0_20px_70px_rgba(90,85,140,0.12)] min-h-[650px]'>
-                <div className='text-center mb-[58px]'>
-                    <h1 className='m-0 text-[#c7c6ff] text-[56px] leading-none font-black'>Registrate</h1>
+            <section className='w-full max-w-[500px] bg-[#f3f3f3] rounded-[28px] px-5 pt-8 pb-9 shadow-[0_20px_70px_rgba(90,85,140,0.12)] sm:rounded-[36px] sm:px-[58px] sm:pt-[34px] min-h-[650px]'>
+                <div className='text-center mb-9 sm:mb-[58px]'>
+                    <h1 className='m-0 text-[#c7c6ff] text-[40px] leading-none font-black sm:text-[56px]'>Registrate</h1>
                     <p className='mt-2 text-[#8a8a8a] text-[17px] font-extrabold'>Ingresa los datos que se te piden</p>
                 </div>
 
@@ -126,8 +128,20 @@ export const RegisterForm = ({ onLogin }) => {
                     </div>
 
                     <div>
-                        <input className={inputCls} type='password' placeholder='Contraseña'
-                            {...register('password', { required: 'La contraseña es obligatoria', minLength: { value: 8, message: 'Mínimo 8 caracteres' } })} />
+                        <div className='relative'>
+                            <input className='w-full h-14 border-none outline-none rounded-full bg-white pl-7 pr-14 text-base text-[#5f5f5f] font-bold placeholder-[#c7c6ee] focus:shadow-[0_0_0_3px_rgba(190,190,255,0.55)]'
+                                type={showPassword ? 'text' : 'password'}
+                                placeholder='Contraseña'
+                                {...register('password', { required: 'La contraseña es obligatoria', minLength: { value: 8, message: 'Mínimo 8 caracteres' } })}
+                            />
+                            <button
+                                type='button'
+                                onClick={() => setShowPassword(!showPassword)}
+                                className='absolute right-5 top-1/2 -translate-y-1/2 border-none bg-transparent cursor-pointer text-gray-400 hover:text-gray-600 transition-colors'
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
+                        </div>
                         {errors.password && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.password.message}</span>}
                     </div>
 

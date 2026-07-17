@@ -36,8 +36,8 @@ export const NotificationsPage = () => {
     return (
         <div className='flex flex-col gap-5'>
             {/* Header */}
-            <div className='rounded-2xl p-6 flex items-center justify-between gap-4 flex-wrap' style={{ background: 'linear-gradient(135deg,#c5c8f2 0%,#d8d4ff 50%,#b9c9f5 100%)' }}>
-                <div className='flex items-center gap-3'>
+            <div className='rounded-2xl p-4 sm:p-6 flex flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-center' style={{ background: 'linear-gradient(135deg,#c5c8f2 0%,#d8d4ff 50%,#b9c9f5 100%)' }}>
+                <div className='flex items-start gap-3 min-w-0'>
                     <div className='w-10 h-10 bg-white/30 rounded-xl flex items-center justify-center'>
                         <Bell size={20} className='text-[#3d3a8c]' />
                     </div>
@@ -51,7 +51,7 @@ export const NotificationsPage = () => {
 
                 <button
                     onClick={() => setSettingsOpen(true)}
-                    className='flex items-center gap-2 h-10 px-4 rounded-full bg-white/60 border-none text-[#3d3a8c] text-xs font-extrabold cursor-pointer hover:bg-white/90 transition-colors'
+                    className='flex items-center justify-center gap-2 h-10 px-4 rounded-full bg-white/60 border-none text-[#3d3a8c] text-xs font-extrabold cursor-pointer hover:bg-white/90 transition-colors sm:self-auto'
                 >
                     <Settings size={14} />
                     Preferencias
@@ -59,12 +59,12 @@ export const NotificationsPage = () => {
             </div>
 
             {/* Filtros */}
-            <div className='flex gap-1 bg-white border border-[#e5e7f0] rounded-xl p-1.5 overflow-x-auto'>
+            <div className='grid grid-cols-2 gap-1 bg-white border border-[#e5e7f0] rounded-xl p-1.5 sm:flex'>
                 {FILTERS.map(({ id, label, icon: Icon }) => (
                     <button
                         key={id}
                         onClick={() => setActiveFilter(id)}
-                        className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-extrabold border-none cursor-pointer transition-all whitespace-nowrap ${
+                        className={`min-w-0 flex items-center justify-center gap-1.5 py-2.5 px-2 rounded-lg text-xs font-extrabold border-none cursor-pointer transition-all whitespace-nowrap sm:flex-1 ${
                             activeFilter === id
                                 ? 'bg-[#8b91ef] text-white shadow-sm'
                                 : 'bg-transparent text-[#7b8094] hover:bg-[#f0f1ff] hover:text-[#6d72d8]'
@@ -86,8 +86,8 @@ export const NotificationsPage = () => {
             </div>
 
             {/* Lista */}
-            <div className='bg-white border border-[#e5e7f0] rounded-2xl p-5'>
-                <div className='flex items-center justify-between mb-4'>
+            <div className='bg-white border border-[#e5e7f0] rounded-2xl p-4 sm:p-5'>
+                <div className='flex flex-col gap-2 mb-4 sm:flex-row sm:items-center sm:justify-between'>
                     <p className='m-0 text-sm font-black text-[#2f3348]'>
                         {filtered.length} {filtered.length === 1 ? 'notificación' : 'notificaciones'}
                     </p>
