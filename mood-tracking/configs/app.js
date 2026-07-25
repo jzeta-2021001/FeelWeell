@@ -19,11 +19,7 @@ import { channelManager } from '../infrastructure/messaging/rabbitmq.channel-man
 const BASE_PATH = '/feelWeell/v1';
 
 const routes = (app) => {
-    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec)); // ← primero, antes de rutas protegidas
-    app.use(`${BASE_PATH}/moodTracking`, moodRoute);
-    app.use(`${BASE_PATH}`, streakRoutes);
-    app.use(`${BASE_PATH}/admin`, adminRoutes);
-
+    app.use(`${BASE_PATH}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
     app.get(`${BASE_PATH}/health`, (req, res) => {
         res.status(200).json({
             status: 'Healthy',
@@ -31,6 +27,10 @@ const routes = (app) => {
             service: 'Feel Weell Mood Tracking Services'
         });
     });
+
+    app.use(`${BASE_PATH}/moodTracking`, moodRoute);
+    app.use(`${BASE_PATH}`, streakRoutes);
+    app.use(`${BASE_PATH}/admin`, adminRoutes);
 
     app.use((req, res) => {
         res.status(404).json({

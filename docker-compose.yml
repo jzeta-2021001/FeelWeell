@@ -1,0 +1,308 @@
+name: feelweell
+
+services:
+
+  mongodb:
+    image: mongo:7
+    container_name: feelweell_mongodb
+    restart: unless-stopped
+    ports:
+      - "${MONGODB_PORT:-27017}:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - feelweell-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: feelweell_rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-debuggers123}
+    ports:
+      - "${RABBITMQ_PORT:-5672}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT:-15672}:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    networks:
+      - feelweell-network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.auth-service
+    container_name: feelweell_auth_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      PORT: 3006
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
+      JWT_SECRET: ${JWT_SECRET:-CambiaEstaLlaveSecretaDeFeelWeell}
+      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-gmail}
+      EMAIL_USER: ${EMAIL_USER:-}
+      EMAIL_PASS: ${EMAIL_PASS:-}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      DAILY_MESSAGE_URL: ${DAILY_MESSAGE_URL:-http://daily-positive-service:5001}
+      NODE_TLS_REJECT_UNAUTHORIZED: ${NODE_TLS_REJECT_UNAUTHORIZED:-0}
+      SEEDER_ADMIN_EMAIL: ${SEEDER_ADMIN_EMAIL:-admin@feelwell.com}
+      SEEDER_ADMIN_PHONE: ${SEEDER_ADMIN_PHONE:-00000000}
+      SEEDER_ADMIN_PASSWORD: ${SEEDER_ADMIN_PASSWORD:-change-me}
+      SEEDER_ADMIN_USERS_EMAIL: ${SEEDER_ADMIN_USERS_EMAIL:-admin.users@feelwell.com}
+      SEEDER_ADMIN_USERS_PHONE: ${SEEDER_ADMIN_USERS_PHONE:-00000000}
+      SEEDER_ADMIN_USERS_PASSWORD: ${SEEDER_ADMIN_USERS_PASSWORD:-change-me}
+      SEEDER_ADMIN_MOOD_EMAIL: ${SEEDER_ADMIN_MOOD_EMAIL:-admin.mood@feelwell.com}
+      SEEDER_ADMIN_MOOD_PHONE: ${SEEDER_ADMIN_MOOD_PHONE:-00000000}
+      SEEDER_ADMIN_MOOD_PASSWORD: ${SEEDER_ADMIN_MOOD_PASSWORD:-change-me}
+      SEEDER_ADMIN_HEALTHY_EMAIL: ${SEEDER_ADMIN_HEALTHY_EMAIL:-admin.healthy@feelwell.com}
+      SEEDER_ADMIN_HEALTHY_PHONE: ${SEEDER_ADMIN_HEALTHY_PHONE:-00000000}
+      SEEDER_ADMIN_HEALTHY_PASSWORD: ${SEEDER_ADMIN_HEALTHY_PASSWORD:-change-me}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./auth-service:/app
+      - /app/node_modules
+    ports:
+      - "${AUTH_SERVICE_PORT:-3006}:3006"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3006/feelWeell/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 210s
+    networks:
+      - feelweell-network
+
+  ai-chat-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.ai-chat-service
+    container_name: feelweell_ai_chat_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      PORT: 3007
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_AI_DB_NAME:-feel-well-ai}
+      JWT_SECRET: ${JWT_SECRET:-CambiaEstaLlaveSecretaDeFeelWeell}
+      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./ai-chat-service:/app
+      - /app/node_modules
+    ports:
+      - "${AI_CHAT_SERVICE_PORT:-3007}:3007"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3007/feelWeell/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 210s
+    networks:
+      - feelweell-network
+
+  healthy-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.healthy-service
+    container_name: feelweell_healthy_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      PORT: 3008
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
+      JWT_SECRET: ${JWT_SECRET:-CambiaEstaLlaveSecretaDeFeelWeell}
+      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      CLOUDINARY_BASE_FOLDER: ${CLOUDINARY_BASE_FOLDER:-}
+      CLOUDINARY_DEFAULT_AVATAR_NAME: ${CLOUDINARY_DEFAULT_AVATAR_NAME:-avatar_default}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      NODE_TLS_REJECT_UNAUTHORIZED: ${NODE_TLS_REJECT_UNAUTHORIZED:-0}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./healthy-service:/app
+      - /app/node_modules
+    ports:
+      - "${HEALTHY_SERVICE_PORT:-3008}:3008"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3008/feelWeell/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 210s
+    networks:
+      - feelweell-network
+
+  mood-tracking:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.mood-tracking
+    container_name: feelweell_mood_tracking
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      PORT: 3001
+      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
+      JWT_SECRET: ${JWT_SECRET:-CambiaEstaLlaveSecretaDeFeelWeell}
+      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
+      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
+      RABBITMQ_URL: amqp://${RABBITMQ_USER:-admin}:${RABBITMQ_PASS:-debuggers123}@rabbitmq:5672
+      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
+      RABBITMQ_PASS: ${RABBITMQ_PASS:-debuggers123}
+      RABBITMQ_EXCHANGE: ${RABBITMQ_EXCHANGE:-mood.events}
+      RABBITMQ_DLX: ${RABBITMQ_DLX:-mood.events.dlx}
+      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH:-10}
+      RABBITMQ_RECONNECT_DELAY_MS: ${RABBITMQ_RECONNECT_DELAY_MS:-1000}
+      RABBITMQ_RECONNECT_MAX_DELAY_MS: ${RABBITMQ_RECONNECT_MAX_DELAY_MS:-30000}
+      RABBITMQ_MAX_RETRIES: ${RABBITMQ_MAX_RETRIES:-3}
+      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS:-http://localhost:5173}
+      NODE_TLS_REJECT_UNAUTHORIZED: ${NODE_TLS_REJECT_UNAUTHORIZED:-0}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./mood-tracking:/app
+      - /app/node_modules
+    ports:
+      - "${MOOD_TRACKING_PORT:-3001}:3001"
+    command: sh -c "CI=true pnpm install && node_modules/.bin/nodemon --legacy-watch index.js"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:3001/feelWeell/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 210s
+    networks:
+      - feelweell-network
+
+  daily-positive-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.daily-positive-service
+    container_name: feelweell_daily_positive_service
+    restart: unless-stopped
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:5001
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+      MongoDbSettings__ConnectionString: mongodb://mongodb:27017
+      MongoDbSettings__DatabaseName: ${MONGO_DB_NAME:-feel-well}
+      JwtSettings__Secret: ${JWT_SECRET:-CambiaEstaLlaveSecretaDeFeelWeell}
+      JwtSettings__Issuer: ${JWT_ISSUER:-feelWell}
+      JwtSettings__Audience: ${JWT_AUDIENCE:-feelWell}
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./daily-positive-service:/src
+      - /src/src/DailyPositive.Api/bin
+      - /src/src/DailyPositive.Api/obj
+      - /src/src/DailyPositive.Application/bin
+      - /src/src/DailyPositive.Application/obj
+      - /src/src/DailyPositive.Domain/bin
+      - /src/src/DailyPositive.Domain/obj
+      - /src/src/DailyPositive.Persistence/bin
+      - /src/src/DailyPositive.Persistence/obj
+    ports:
+      - "${DAILY_POSITIVE_SERVICE_PORT:-5001}:5001"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:5001/feelWell/v1/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 90s
+    networks:
+      - feelweell-network
+
+  client-admin:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile.client-admin
+    container_name: feelweell_client_admin
+    restart: unless-stopped
+    depends_on:
+      auth-service:
+        condition: service_healthy
+      ai-chat-service:
+        condition: service_healthy
+      healthy-service:
+        condition: service_healthy
+      mood-tracking:
+        condition: service_healthy
+      daily-positive-service:
+        condition: service_healthy
+    environment:
+      VITE_AUTH_URL: ${VITE_AUTH_URL:-http://localhost:3006/feelWeell/v1}
+      VITE_AI_URL: ${VITE_AI_URL:-http://localhost:3007/feelWeell/v1}
+      VITE_HEALTHY_URL: ${VITE_HEALTHY_URL:-http://localhost:3008/feelWeell/v1}
+      VITE_MOOD_URL: ${VITE_MOOD_URL:-http://localhost:3001/feelWeell/v1}
+      VITE_DAILY_URL: ${VITE_DAILY_URL:-http://localhost:5001/api/}
+      VITE_DAILY_MESSAGE_URL: ${VITE_DAILY_MESSAGE_URL:-http://localhost:5001}
+      CHOKIDAR_USEPOLLING: "true"
+    env_file:
+      - path: .env.docker
+        required: false
+    volumes:
+      - ./client-admin:/app
+      - /app/node_modules
+    ports:
+      - "${CLIENT_ADMIN_PORT:-5173}:5173"
+    networks:
+      - feelweell-network
+
+networks:
+  feelweell-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
+  rabbitmq_data:
