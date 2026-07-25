@@ -1,0 +1,25 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /src
+
+COPY daily-positive-service/DailyPositiveService.sln ./
+COPY daily-positive-service/src/DailyPositive.Domain/ src/DailyPositive.Domain/
+COPY daily-positive-service/src/DailyPositive.Application/ src/DailyPositive.Application/
+COPY daily-positive-service/src/DailyPositive.Persistence/ src/DailyPositive.Persistence/
+COPY daily-positive-service/src/DailyPositive.Api/ src/DailyPositive.Api/
+
+RUN dotnet restore DailyPositiveService.sln
+
+ENV ASPNETCORE_ENVIRONMENT=Development
+ENV ASPNETCORE_URLS=http://+:5001
+
+ENV DOTNET_USE_POLLING_FILE_WATCHER=1
+ENV DOTNET_WATCH_RESTART_ON_RUDE_EDIT=1
+
+EXPOSE 5001
+
+CMD ["dotnet", "watch", "--project", "src/DailyPositive.Api", "run", "--urls", "http://+:5001"]
