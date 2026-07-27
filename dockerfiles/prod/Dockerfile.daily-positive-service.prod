@@ -1,0 +1,24 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+COPY daily-positive-service/DailyPositiveService.sln ./
+COPY daily-positive-service/src/DailyPositive.Domain/ src/DailyPositive.Domain/
+COPY daily-positive-service/src/DailyPositive.Application/ src/DailyPositive.Application/
+COPY daily-positive-service/src/DailyPositive.Persistence/ src/DailyPositive.Persistence/
+COPY daily-positive-service/src/DailyPositive.Api/ src/DailyPositive.Api/
+
+RUN dotnet restore DailyPositiveService.sln
+RUN dotnet publish DailyPositiveService.sln -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+WORKDIR /app
+COPY --from=build /app/publish .
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && rm -rf /var/lib/apt/lists/*
+
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:5001
+
+EXPOSE 5001
+
+ENTRYPOINT ["dotnet", "DailyPositive.Api.dll"]

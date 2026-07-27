@@ -1055,6 +1055,45 @@ El Daily Positive Service (.NET) expone su documentación mediante Swagger/OpenA
 
 ---
 
+# Despliegue en Producción
+
+Para desplegar la aplicación en producción, se ha configurado un stack optimizado utilizando un Proxy Inverso (Nginx) y Docker Compose. Esto permite correr todos los servicios en un puerto único (puerto 80 por defecto), previniendo problemas de CORS y evitando exponer múltiples puertos hacia el exterior.
+
+## Requisitos Previos
+
+1. Tener instalado [Docker](https://www.docker.com/) y el plugin de Docker Compose.
+2. Copiar la plantilla de configuración de producción:
+   ```bash
+   cp .env.prod.example .env.prod
+   ```
+3. Editar el archivo `.env.prod` recién creado y rellenar todas las variables con contraseñas seguras y API keys reales.
+
+## Levantar el Stack de Producción
+
+Para compilar y arrancar todo el ecosistema FeelWell en modo de producción, ejecuta:
+
+```bash
+docker compose -f docker-compose.prod.yml --env-file .env.prod up --build -d
+```
+
+Este comando:
+1. Compilará imágenes optimizadas de producción (sin herramientas de recarga ni dependencias de desarrollo).
+2. Configurará la red interna privada para la comunicación entre microservicios.
+3. Expondrá únicamente el puerto de entrada del Proxy Inverso de Nginx (`PORT_GATEWAY`, por defecto `80`).
+
+## Rutas del Gateway (Nginx)
+
+Una vez en ejecución, la aplicación estará disponible a través de Nginx en la dirección del servidor (ej. `http://localhost/` o tu IP/dominio):
+
+*   **Frontend**: `http://localhost/` (Redirige a `client-admin`)
+*   **Auth Service API**: `http://localhost/api/auth/`
+*   **AI Chat Service API**: `http://localhost/api/ai/`
+*   **Healthy Service API**: `http://localhost/api/healthy/`
+*   **Mood Tracking Service API**: `http://localhost/api/mood/`
+*   **Daily Positive Service API**: `http://localhost/api/daily/`
+
+---
+
 # Créditos
 
 Proyecto base desarrollado por:
