@@ -33,9 +33,18 @@ services:
     restart: always
     environment:
       - PORT=5000
-      - MONGO_URI=${MONGO_URI_AUTH}
+      - URI_MONGODB=${MONGO_URI_AUTH}
       - JWT_SECRET=${JWT_SECRET}
-      - RABBITMQ_URL=${RABBITMQ_URL}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - EMAIL_PROVIDER=${EMAIL_PROVIDER}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
+      - FRONTEND_URL=${FRONTEND_URL}
+      - SEEDER_ADMIN_EMAIL=${SEEDER_ADMIN_EMAIL}
+      - SEEDER_ADMIN_PASSWORD=${SEEDER_ADMIN_PASSWORD}
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
       - NODE_ENV=production
     depends_on:
       - mongodb
@@ -51,13 +60,17 @@ services:
     restart: always
     environment:
       - PORT=5001
-      - MONGO_URI=${MONGO_URI_AI}
+      - URI_MONGODB=${MONGO_URI_AI}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - GROQ_API_KEY=${GROQ_API_KEY}
-      - RABBITMQ_URL=${RABBITMQ_URL}
+      - ALLOWED_ORIGINS=${FRONTEND_URL}
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
       - NODE_ENV=production
     depends_on:
       - mongodb
-      - rabbitmq
     networks:
       - feelweell_network
 
@@ -69,9 +82,18 @@ services:
     restart: always
     environment:
       - PORT=5002
-      - MONGO_URI=${MONGO_URI_MOOD}
+      - URI_MONGODB=${MONGO_URI_MOOD}
       - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - RABBITMQ_URL=${RABBITMQ_URL}
+      - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_PASS=${RABBITMQ_DEFAULT_PASS}
+      - RABBITMQ_EXCHANGE=mood.events
+      - RABBITMQ_DLX=mood.events.dlx
+      - ALLOWED_ORIGINS=${FRONTEND_URL}
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
       - NODE_ENV=production
     depends_on:
       - mongodb
@@ -87,13 +109,21 @@ services:
     restart: always
     environment:
       - PORT=5003
-      - MONGO_URI=${MONGO_URI_HEALTHY}
+      - URI_MONGODB=${MONGO_URI_HEALTHY}
       - JWT_SECRET=${JWT_SECRET}
-      - RABBITMQ_URL=${RABBITMQ_URL}
+      - JWT_ISSUER=${JWT_ISSUER}
+      - JWT_AUDIENCE=${JWT_AUDIENCE}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - CLOUDINARY_BASE_FOLDER=${CLOUDINARY_BASE_FOLDER}
+      - CLOUDINARY_DEFAULT_AVATAR_NAME=${CLOUDINARY_DEFAULT_AVATAR_NAME}
+      - ALLOWED_ORIGINS=${FRONTEND_URL}
+      - NODE_TLS_REJECT_UNAUTHORIZED=1
       - NODE_ENV=production
     depends_on:
       - mongodb
-      - rabbitmq
     networks:
       - feelweell_network
 
@@ -108,6 +138,8 @@ services:
       - MongoDbSettings__ConnectionString=${MONGO_URI_DAILY}
       - MongoDbSettings__DatabaseName=FeelWeell_DailyPositive
       - JwtSettings__Secret=${JWT_SECRET}
+      - JwtSettings__Issuer=${JWT_ISSUER}
+      - JwtSettings__Audience=${JWT_AUDIENCE}
       - RabbitMQSettings__HostName=rabbitmq
       - RabbitMQSettings__UserName=${RABBITMQ_DEFAULT_USER}
       - RabbitMQSettings__Password=${RABBITMQ_DEFAULT_PASS}
