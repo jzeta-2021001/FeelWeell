@@ -1,250 +1,157 @@
-name: feelweell-prod
+version: '3.8'
 
 services:
-
   mongodb:
     image: mongo:7
     container_name: feelweell_mongodb_prod
-    restart: unless-stopped
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
     volumes:
-      - mongo_data_prod:/data/db
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 20s
+      - mongodb_data:/data/db
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: feelweell_rabbitmq_prod
-    restart: unless-stopped
+    restart: always
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS:-change-me-secure-password}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - rabbitmq_data_prod:/var/lib/rabbitmq
-    healthcheck:
-      test: ["CMD", "rabbitmq-diagnostics", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 15
-      start_period: 40s
+      - rabbitmq_data:/var/lib/rabbitmq
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   auth-service:
     build:
       context: .
       dockerfile: dockerfiles/prod/Dockerfile.auth-service.prod
     container_name: feelweell_auth_service_prod
-    restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
+    restart: always
     environment:
-      PORT: 3006
-      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
-      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
-      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-gmail}
-      EMAIL_USER: ${EMAIL_USER}
-      EMAIL_PASS: ${EMAIL_PASS}
-      FRONTEND_URL: ${FRONTEND_URL}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
-      DAILY_MESSAGE_URL: http://daily-positive-service:5001
-      NODE_TLS_REJECT_UNAUTHORIZED: "1"
-      SEEDER_ADMIN_EMAIL: ${SEEDER_ADMIN_EMAIL:-admin@feelwell.com}
-      SEEDER_ADMIN_PHONE: ${SEEDER_ADMIN_PHONE:-00000000}
-      SEEDER_ADMIN_PASSWORD: ${SEEDER_ADMIN_PASSWORD:-change-me}
-      SEEDER_ADMIN_USERS_EMAIL: ${SEEDER_ADMIN_USERS_EMAIL:-admin.users@feelwell.com}
-      SEEDER_ADMIN_USERS_PHONE: ${SEEDER_ADMIN_USERS_PHONE:-00000000}
-      SEEDER_ADMIN_USERS_PASSWORD: ${SEEDER_ADMIN_USERS_PASSWORD:-change-me}
-      SEEDER_ADMIN_MOOD_EMAIL: ${SEEDER_ADMIN_MOOD_EMAIL:-admin.mood@feelwell.com}
-      SEEDER_ADMIN_MOOD_PHONE: ${SEEDER_ADMIN_MOOD_PHONE:-00000000}
-      SEEDER_ADMIN_MOOD_PASSWORD: ${SEEDER_ADMIN_MOOD_PASSWORD:-change-me}
-      SEEDER_ADMIN_HEALTHY_EMAIL: ${SEEDER_ADMIN_HEALTHY_EMAIL:-admin.healthy@feelwell.com}
-      SEEDER_ADMIN_HEALTHY_PHONE: ${SEEDER_ADMIN_HEALTHY_PHONE:-00000000}
-      SEEDER_ADMIN_HEALTHY_PASSWORD: ${SEEDER_ADMIN_HEALTHY_PASSWORD:-change-me}
-    healthcheck:
-      test: ["CMD-SHELL", "status=$$(curl -o /dev/null -s -w '%{http_code}' http://localhost:3006/feelWeell/v1/health); [ \"$$status\" -eq 200 ] || [ \"$$status\" -eq 429 ] || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
+      - PORT=5000
+      - MONGO_URI=${MONGO_URI_AUTH}
+      - JWT_SECRET=${JWT_SECRET}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+      - rabbitmq
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   ai-chat-service:
     build:
       context: .
       dockerfile: dockerfiles/prod/Dockerfile.ai-chat-service.prod
     container_name: feelweell_ai_chat_service_prod
-    restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
+    restart: always
     environment:
-      PORT: 3007
-      URI_MONGODB: mongodb://mongodb:27017/${MONGO_AI_DB_NAME:-feel-well-ai}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
-      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
-      GROQ_API_KEY: ${GROQ_API_KEY}
-    healthcheck:
-      test: ["CMD-SHELL", "status=$$(curl -o /dev/null -s -w '%{http_code}' http://localhost:3007/feelWeell/v1/health); [ \"$$status\" -eq 200 ] || [ \"$$status\" -eq 429 ] || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
-    networks:
-      - feelweell-network-prod
-
-  healthy-service:
-    build:
-      context: .
-      dockerfile: dockerfiles/prod/Dockerfile.healthy-service.prod
-    container_name: feelweell_healthy_service_prod
-    restart: unless-stopped
+      - PORT=5001
+      - MONGO_URI=${MONGO_URI_AI}
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - NODE_ENV=production
     depends_on:
-      mongodb:
-        condition: service_healthy
-    environment:
-      PORT: 3008
-      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
-      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
-      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME}
-      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
-      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
-      CLOUDINARY_BASE_FOLDER: ${CLOUDINARY_BASE_FOLDER}
-      CLOUDINARY_DEFAULT_AVATAR_NAME: ${CLOUDINARY_DEFAULT_AVATAR_NAME:-avatar_default}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
-      NODE_TLS_REJECT_UNAUTHORIZED: "1"
-    healthcheck:
-      test: ["CMD-SHELL", "status=$$(curl -o /dev/null -s -w '%{http_code}' http://localhost:3008/feelWeell/v1/health); [ \"$$status\" -eq 200 ] || [ \"$$status\" -eq 429 ] || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
+      - mongodb
+      - rabbitmq
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   mood-tracking:
     build:
       context: .
       dockerfile: dockerfiles/prod/Dockerfile.mood-tracking.prod
     container_name: feelweell_mood_tracking_prod
-    restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
-      rabbitmq:
-        condition: service_healthy
+    restart: always
     environment:
-      PORT: 3001
-      URI_MONGODB: mongodb://mongodb:27017/${MONGO_DB_NAME:-feel-well}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_ISSUER: ${JWT_ISSUER:-feelWell}
-      JWT_AUDIENCE: ${JWT_AUDIENCE:-feelWell}
-      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-1h}
-      RABBITMQ_URL: amqp://${RABBITMQ_USER:-admin}:${RABBITMQ_PASS:-change-me-secure-password}@rabbitmq:5672
-      RABBITMQ_USER: ${RABBITMQ_USER:-admin}
-      RABBITMQ_PASS: ${RABBITMQ_PASS:-change-me-secure-password}
-      RABBITMQ_EXCHANGE: ${RABBITMQ_EXCHANGE:-mood.events}
-      RABBITMQ_DLX: ${RABBITMQ_DLX:-mood.events.dlx}
-      RABBITMQ_PREFETCH: ${RABBITMQ_PREFETCH:-10}
-      RABBITMQ_RECONNECT_DELAY_MS: ${RABBITMQ_RECONNECT_DELAY_MS:-1000}
-      RABBITMQ_RECONNECT_MAX_DELAY_MS: ${RABBITMQ_RECONNECT_MAX_DELAY_MS:-30000}
-      RABBITMQ_MAX_RETRIES: ${RABBITMQ_MAX_RETRIES:-3}
-      ALLOWED_ORIGINS: ${ALLOWED_ORIGINS}
-      NODE_TLS_REJECT_UNAUTHORIZED: "1"
-    healthcheck:
-      test: ["CMD-SHELL", "status=$$(curl -o /dev/null -s -w '%{http_code}' http://localhost:3001/feelWeell/v1/health); [ \"$$status\" -eq 200 ] || [ \"$$status\" -eq 429 ] || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
+      - PORT=5002
+      - MONGO_URI=${MONGO_URI_MOOD}
+      - JWT_SECRET=${JWT_SECRET}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+      - rabbitmq
     networks:
-      - feelweell-network-prod
+      - feelweell_network
+
+  healthy-service:
+    build:
+      context: .
+      dockerfile: dockerfiles/prod/Dockerfile.healthy-service.prod
+    container_name: feelweell_healthy_service_prod
+    restart: always
+    environment:
+      - PORT=5003
+      - MONGO_URI=${MONGO_URI_HEALTHY}
+      - JWT_SECRET=${JWT_SECRET}
+      - RABBITMQ_URL=${RABBITMQ_URL}
+      - NODE_ENV=production
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - feelweell_network
 
   daily-positive-service:
     build:
       context: .
       dockerfile: dockerfiles/prod/Dockerfile.daily-positive-service.prod
     container_name: feelweell_daily_positive_service_prod
-    restart: unless-stopped
-    depends_on:
-      mongodb:
-        condition: service_healthy
+    restart: always
     environment:
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:5001
-      MongoDbSettings__ConnectionString: mongodb://mongodb:27017
-      MongoDbSettings__DatabaseName: ${MONGO_DB_NAME:-feel-well}
-      JwtSettings__Secret: ${JWT_SECRET}
-      JwtSettings__Issuer: ${JWT_ISSUER:-feelWell}
-      JwtSettings__Audience: ${JWT_AUDIENCE:-feelWell}
-    healthcheck:
-      test: ["CMD-SHELL", "curl -fsS http://localhost:5001/feelWell/v1/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
+      - ASPNETCORE_ENVIRONMENT=Production
+      - MongoDbSettings__ConnectionString=${MONGO_URI_DAILY}
+      - MongoDbSettings__DatabaseName=FeelWeell_DailyPositive
+      - JwtSettings__Secret=${JWT_SECRET}
+      - RabbitMQSettings__HostName=rabbitmq
+      - RabbitMQSettings__UserName=${RABBITMQ_DEFAULT_USER}
+      - RabbitMQSettings__Password=${RABBITMQ_DEFAULT_PASS}
+    depends_on:
+      - mongodb
+      - rabbitmq
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   client-admin:
     build:
       context: .
       dockerfile: dockerfiles/prod/Dockerfile.client-admin.prod
+      args:
+        - NEXT_PUBLIC_API_GATEWAY_URL=${NEXT_PUBLIC_API_GATEWAY_URL}
     container_name: feelweell_client_admin_prod
-    restart: unless-stopped
-    depends_on:
-      auth-service:
-        condition: service_healthy
-      ai-chat-service:
-        condition: service_healthy
-      healthy-service:
-        condition: service_healthy
-      mood-tracking:
-        condition: service_healthy
-      daily-positive-service:
-        condition: service_healthy
+    restart: always
     environment:
-      VITE_AUTH_URL: /api/auth
-      VITE_AI_URL: /api/ai
-      VITE_HEALTHY_URL: /api/healthy
-      VITE_MOOD_URL: /api/mood
-      VITE_DAILY_URL: /api/daily/api/
-      VITE_DAILY_MESSAGE_URL: /api/daily
+      - NODE_ENV=production
     networks:
-      - feelweell-network-prod
+      - feelweell_network
 
   nginx-gateway:
     build:
-      context: ./nginx
-    container_name: feelweell_nginx_gateway
-    restart: unless-stopped
-    depends_on:
-      - client-admin
+      context: .
+      dockerfile: dockerfiles/prod/Dockerfile.nginx.prod
+    container_name: feelweell_nginx_gateway_prod
+    restart: always
     ports:
-      - "${PORT_GATEWAY:-80}:80"
+      - "80:80"
+    depends_on:
+      - auth-service
+      - ai-chat-service
+      - mood-tracking
+      - healthy-service
+      - daily-positive-service
+      - client-admin
     networks:
-      - feelweell-network-prod
-
-networks:
-  feelweell-network-prod:
-    driver: bridge
+      - feelweell_network
 
 volumes:
-  mongo_data_prod:
-  rabbitmq_data_prod:
+  mongodb_data:
+  rabbitmq_data:
+
+networks:
+  feelweell_network:
+    driver: bridge
