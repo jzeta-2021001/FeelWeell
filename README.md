@@ -1092,6 +1092,34 @@ Una vez en ejecución, la aplicación estará disponible a través de Nginx en l
 *   **Mood Tracking Service API**: `http://localhost/api/mood/`
 *   **Daily Positive Service API**: `http://localhost/api/daily/`
 
+## Despliegue del Frontend en Vercel (Recomendado)
+
+Para que la aplicación (frontend) sea accesible desde cualquier dispositivo de forma gratuita y rápida, la mejor opción es **Vercel**. 
+
+Dado que Vercel solo aloja aplicaciones estáticas y Frontend, la arquitectura ideal es:
+1. **Frontend (`client-admin`)**: Desplegado en Vercel.
+2. **Backend (APIs, MongoDB, RabbitMQ)**: Desplegado en un VPS (ej. AWS EC2, DigitalOcean, Render, Railway) usando el archivo `docker-compose.prod.yml`.
+
+### Pasos para desplegar en Vercel
+
+1. Crea una cuenta en [Vercel](https://vercel.com/) y vincula tu cuenta de GitHub.
+2. En Vercel, haz clic en **Add New -> Project** y selecciona el repositorio de `FeelWeell`.
+3. **Configuración del Proyecto en Vercel:**
+   * **Framework Preset**: Vite (se autodetecta usualmente).
+   * **Root Directory**: Haz clic en "Edit" y selecciona la carpeta `client-admin`.
+   * **Build Command**: `pnpm run build`
+   * **Output Directory**: `dist`
+4. **Environment Variables**: Deberás agregar las siguientes variables. Como Vercel estará en la nube, los enlaces no pueden ser `localhost`, deben apuntar a la IP/Dominio de tu servidor Backend (donde corre Nginx/Docker Compose). *Ejemplo asumiendo que tu backend está en `https://api.midominio.com`*:
+   * `VITE_AUTH_URL` = `https://api.midominio.com/api/auth/feelWeell/v1`
+   * `VITE_AI_URL` = `https://api.midominio.com/api/ai/feelWeell/v1`
+   * `VITE_HEALTHY_URL` = `https://api.midominio.com/api/healthy/feelWeell/v1`
+   * `VITE_MOOD_URL` = `https://api.midominio.com/api/mood/feelWeell/v1`
+   * `VITE_DAILY_URL` = `https://api.midominio.com/api/daily/api/`
+   * `VITE_DAILY_MESSAGE_URL` = `https://api.midominio.com/api/daily`
+5. Haz clic en **Deploy**. Vercel leerá automáticamente el archivo `vercel.json` (ya incluido en la carpeta `client-admin`) para configurar correctamente el enrutamiento y evitar errores 404 al recargar la página.
+
+Una vez finalizado, Vercel te dará una URL pública (ej. `https://feelweell.vercel.app`) a la que podrás acceder desde tu celular o computadora en cualquier parte del mundo.
+
 ---
 
 # Créditos
