@@ -500,3 +500,4 @@ out/
 .stylelintcache
 .next/
 .cache/
+.pnpm-store/
