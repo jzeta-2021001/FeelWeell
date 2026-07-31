@@ -1,0 +1,72 @@
+services:
+  # ------------------------------------
+  # Auth Service
+  # ------------------------------------
+  - type: web
+    name: feelweell-auth-service
+    env: node
+    rootDir: auth-service
+    buildCommand: pnpm install
+    startCommand: node index.js
+    envVars:
+      - key: PNPM_VERSION
+        value: 10.29.2
+      - fromGroup: feelweell-env
+
+  # ------------------------------------
+  # AI Chat Service
+  # ------------------------------------
+  - type: web
+    name: feelweell-ai-chat
+    env: node
+    rootDir: ai-chat-service
+    buildCommand: pnpm install
+    startCommand: node index.js
+    envVars:
+      - key: PNPM_VERSION
+        value: 10.29.2
+      - fromGroup: feelweell-env
+
+  # ------------------------------------
+  # Healthy Service
+  # ------------------------------------
+  - type: web
+    name: feelweell-healthy
+    env: node
+    rootDir: healthy-service
+    buildCommand: pnpm install
+    startCommand: node index.js
+    envVars:
+      - key: PNPM_VERSION
+        value: 10.29.2
+      - fromGroup: feelweell-env
+
+  # ------------------------------------
+  # Mood Tracking
+  # ------------------------------------
+  - type: web
+    name: feelweell-mood-tracking
+    env: node
+    rootDir: mood-tracking
+    buildCommand: pnpm install
+    startCommand: node index.js
+    envVars:
+      - key: PNPM_VERSION
+        value: 10.29.2
+      - fromGroup: feelweell-env
+
+  # ------------------------------------
+  # Daily Positive Service (.NET)
+  # ------------------------------------
+  - type: web
+    name: feelweell-daily-positive
+    env: docker
+    dockerfilePath: dockerfiles/Dockerfile.prod.daily-positive
+    envVars:
+      - fromGroup: feelweell-env
+
+envGroups:
+  - name: feelweell-env
+    envVars:
+      - key: NODE_ENV
+        value: production
