@@ -1,0 +1,29 @@
+# 1. Etapa de compilación (Build)
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Restaurar dependencias primero (aprovechando la caché de Docker)
+COPY daily-positive-service/DailyPositiveService.sln ./
+COPY daily-positive-service/src/DailyPositive.Domain/DailyPositive.Domain.csproj src/DailyPositive.Domain/
+COPY daily-positive-service/src/DailyPositive.Application/DailyPositive.Application.csproj src/DailyPositive.Application/
+COPY daily-positive-service/src/DailyPositive.Persistence/DailyPositive.Persistence.csproj src/DailyPositive.Persistence/
+COPY daily-positive-service/src/DailyPositive.Api/DailyPositive.Api.csproj src/DailyPositive.Api/
+RUN dotnet restore
+
+# Copiar el resto del código y compilar la aplicación
+COPY daily-positive-service/ src/
+WORKDIR /src/src/DailyPositive.Api
+RUN dotnet publish -c Release -o /app/publish
+
+# 2. Etapa de ejecución (Runtime - Imagen más ligera)
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+
+# Variables de entorno por defecto (Render inyectará el puerto dinámicamente)
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_HTTP_PORTS=5001
+EXPOSE 5001
+
+COPY --from=build /app/publish .
+
+ENTRYPOINT ["dotnet", "DailyPositive.Api.dll"]
