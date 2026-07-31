@@ -65,7 +65,7 @@ services:
     envVars:
       - fromGroup: feelweell-env
 
-envGroups:
+envVarGroups:
   - name: feelweell-env
     envVars:
       - key: NODE_ENV
