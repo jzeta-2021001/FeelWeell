@@ -4,6 +4,7 @@ services:
   # ------------------------------------
   - type: web
     name: feelweell-auth-service
+    plan: free
     env: node
     rootDir: auth-service
     buildCommand: pnpm install
@@ -18,6 +19,7 @@ services:
   # ------------------------------------
   - type: web
     name: feelweell-ai-chat
+    plan: free
     env: node
     rootDir: ai-chat-service
     buildCommand: pnpm install
@@ -32,6 +34,7 @@ services:
   # ------------------------------------
   - type: web
     name: feelweell-healthy
+    plan: free
     env: node
     rootDir: healthy-service
     buildCommand: pnpm install
@@ -46,6 +49,7 @@ services:
   # ------------------------------------
   - type: web
     name: feelweell-mood-tracking
+    plan: free
     env: node
     rootDir: mood-tracking
     buildCommand: pnpm install
@@ -60,6 +64,7 @@ services:
   # ------------------------------------
   - type: web
     name: feelweell-daily-positive
+    plan: free
     env: docker
     dockerfilePath: dockerfiles/Dockerfile.prod.daily-positive
     envVars:
