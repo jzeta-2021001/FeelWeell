@@ -21,8 +21,8 @@ WORKDIR /app
 
 # Variables de entorno por defecto (Render inyectará el puerto dinámicamente)
 ENV ASPNETCORE_ENVIRONMENT=Production
-ENV ASPNETCORE_HTTP_PORTS=5001
-EXPOSE 5001
+ENV ASPNETCORE_HTTP_PORTS=10000
+EXPOSE 10000
 
 COPY --from=build /app/publish .
 
