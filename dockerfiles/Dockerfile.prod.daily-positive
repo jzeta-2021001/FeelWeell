@@ -11,7 +11,7 @@ COPY daily-positive-service/src/DailyPositive.Api/DailyPositive.Api.csproj src/D
 RUN dotnet restore
 
 # Copiar el resto del código y compilar la aplicación
-COPY daily-positive-service/ src/
+COPY daily-positive-service/ .
 WORKDIR /src/src/DailyPositive.Api
 RUN dotnet publish -c Release -o /app/publish
 
