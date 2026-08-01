@@ -14,69 +14,101 @@ const createTransporter = () => {
     });
 };
 
+// Helper centralizado para enviar por Brevo HTTP API (puerto 443, sin bloqueo en Render) o Nodemailer (local)
+const sendEmail = async ({ to, subject, html, recipientName = '' }) => {
+    const apiKey = process.env.BREVO_API_KEY || (process.env.EMAIL_PASS?.startsWith('xkeysib-') ? process.env.EMAIL_PASS : null);
+
+    if (apiKey) {
+        // Envío vía Brevo REST API (HTTPS/443 - Perfecto para servidores nube gratis como Render)
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'accept': 'application/json',
+                'api-key': apiKey,
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                sender: { 
+                    name: 'FeelWeell', 
+                    email: process.env.EMAIL_USER 
+                },
+                to: [{ email: to, name: recipientName || 'Usuario' }],
+                subject: subject,
+                htmlContent: html
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            console.error('[Email Helper] Error desde Brevo API:', response.status, errorData);
+            throw new Error(`Error al enviar correo vía Brevo (${response.status}): ${errorData.message || ''}`);
+        }
+        console.log(`[Email Helper] Correo enviado exitosamente vía Brevo API a ${to}`);
+        return;
+    }
+
+    // Fallback por defecto: Nodemailer SMTP
+    const transporter = createTransporter();
+    await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: to,
+        subject: subject,
+        html: html
+    });
+    console.log(`[Email Helper] Correo enviado exitosamente vía Nodemailer a ${to}`);
+};
+
 export const sendActivationEmail = async (email, token, firstName) => {
     const activationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/activate/${token}`;
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Activa tu cuenta - FeelWeell',
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #9C6BFF;">Bienvenido a FeelWeell, ${firstName}!</h2>
-                <p>Tu cuenta ha sido creada exitosamente. Para activarla y comenzar a disfrutar de nuestros servicios, haz clic en el siguiente enlace:</p>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${activationLink}" 
-                        style="background: linear-gradient(90deg, #6EA8FF, #B57CFF); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
-                        Activar mi cuenta
-                    </a>
-                </div>
-
-                <p style="color: #666; font-size: 14px;">Si el boton no funciona, copia y pega este enlace en tu navegador:</p>
-                <p style="color: #6EA8FF; word-break: break-all;">${activationLink}</p>
-
-                <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
-                <p style="color: #999; font-size: 12px;">Si no solicitaste esta cuenta, puedes ignorar este correo.</p>
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #9C6BFF;">Bienvenido a FeelWeell, ${firstName}!</h2>
+            <p>Tu cuenta ha sido creada exitosamente. Para activarla y comenzar a disfrutar de nuestros servicios, haz clic en el siguiente enlace:</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${activationLink}" 
+                    style="background: linear-gradient(90deg, #6EA8FF, #B57CFF); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
+                    Activar mi cuenta
+                </a>
             </div>
-        `
-    };
+
+            <p style="color: #666; font-size: 14px;">Si el boton no funciona, copia y pega este enlace en tu navegador:</p>
+            <p style="color: #6EA8FF; word-break: break-all;">${activationLink}</p>
+
+            <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px;">Si no solicitaste esta cuenta, puedes ignorar este correo.</p>
+        </div>
+    `;
 
     try {
-        const transporter = createTransporter();
-        await transporter.sendMail(mailOptions);
+        await sendEmail({ to: email, subject: 'Activa tu cuenta - FeelWeell', html, recipientName: firstName });
     } catch (error) {
-        console.error('Error al enviar email:', error);
+        console.error('Error al enviar email de activación:', error);
         throw new Error('Error al enviar el correo de activacion');
     }
 };
 
 export const sendWelcomeEmail = async (email, firstName, username) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Bienvenido a FeelWeell - Tu cuenta ha sido activada',
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #9C6BFF;">Hola ${firstName}!</h2>
-                <p>Tu cuenta en FeelWeell ha sido activada exitosamente.</p>
-                
-                <div style="background-color: #EEF4FF; padding: 20px; border-radius: 10px; margin: 20px 0;">
-                    <h3 style="margin-top: 0; color: #6EA8FF;">Tu nombre de usuario:</h3>
-                    <p><strong style="color: #9C6BFF;">${username}</strong></p>
-                </div>
-                
-                <p>Ya puedes iniciar sesion y comenzar a utilizar todos nuestros servicios.</p>
-                
-                <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
-                <p style="color: #999; font-size: 12px;">Este es un correo automatico, por favor no respondas.</p>
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #9C6BFF;">Hola ${firstName}!</h2>
+            <p>Tu cuenta en FeelWeell ha sido activada exitosamente.</p>
+            
+            <div style="background-color: #EEF4FF; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <h3 style="margin-top: 0; color: #6EA8FF;">Tu nombre de usuario:</h3>
+                <p><strong style="color: #9C6BFF;">${username}</strong></p>
             </div>
-        `
-    };
+            
+            <p>Ya puedes iniciar sesion y comenzar a utilizar todos nuestros servicios.</p>
+            
+            <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px;">Este es un correo automatico, por favor no respondas.</p>
+        </div>
+    `;
 
     try {
-        const transporter = createTransporter();
-        await transporter.sendMail(mailOptions);
+        await sendEmail({ to: email, subject: 'Bienvenido a FeelWeell - Tu cuenta ha sido activada', html, recipientName: firstName });
     } catch (error) {
         console.error('Error al enviar email de bienvenida:', error);
     }
@@ -85,38 +117,32 @@ export const sendWelcomeEmail = async (email, firstName, username) => {
 export const sendPasswordResetEmail = async (email, token, username) => {
     const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password/${token}`;
 
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Recuperacion de contrasena - FeelWeell',
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #9C6BFF;">Hola ${username},</h2>
-                <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en FeelWeell.</p>
-                
-                <p>Si no realizaste esta solicitud, puedes ignorar este correo de forma segura.</p>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="${resetLink}" 
-                        style="background: linear-gradient(90deg, #B57CFF, #6EA8FF); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
-                        Restablecer mi contraseña
-                    </a>
-                </div>
-                
-                <p style="color: #666; font-size: 14px;">Si el boton no funciona, copia y pega este enlace en tu navegador:</p>
-                <p style="color: #6EA8FF; word-break: break-all;">${resetLink}</p>
-                
-                <p style="color: #B57CFF;"><strong>Este enlace expirara en 1 hora por seguridad.</strong></p>
-                
-                <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
-                <p style="color: #999; font-size: 12px;">Si no solicitaste restablecer tu contraseña, ignora este correo. Tu contraseña permanecera sin cambios.</p>
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #9C6BFF;">Hola ${username},</h2>
+            <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en FeelWeell.</p>
+            
+            <p>Si no realizaste esta solicitud, puedes ignorar este correo de forma segura.</p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetLink}" 
+                    style="background: linear-gradient(90deg, #B57CFF, #6EA8FF); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; display: inline-block; font-weight: bold;">
+                    Restablecer mi contraseña
+                </a>
             </div>
-        `
-    };
+            
+            <p style="color: #666; font-size: 14px;">Si el boton no funciona, copia y pega este enlace en tu navegador:</p>
+            <p style="color: #6EA8FF; word-break: break-all;">${resetLink}</p>
+            
+            <p style="color: #B57CFF;"><strong>Este enlace expirara en 1 hora por seguridad.</strong></p>
+            
+            <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px;">Si no solicitaste restablecer tu contraseña, ignora este correo. Tu contraseña permanecera sin cambios.</p>
+        </div>
+    `;
 
     try {
-        const transporter = createTransporter();
-        await transporter.sendMail(mailOptions);
+        await sendEmail({ to: email, subject: 'Recuperacion de contrasena - FeelWeell', html, recipientName: username });
     } catch (error) {
         console.error('Error al enviar email de reset:', error);
         throw new Error('Error al enviar el correo de recuperacion');
@@ -124,33 +150,27 @@ export const sendPasswordResetEmail = async (email, token, username) => {
 };
 
 export const sendPasswordChangedEmail = async (email, firstName) => {
-    const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject: 'Tu contrasena ha sido cambiada - FeelWeell',
-        html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h2 style="color: #9C6BFF;">Hola ${firstName},</h2>
-                <p>Te confirmamos que tu contraseña ha sido cambiada exitosamente.</p>
-                
-                <div style="background-color: #EEF4FF; border-left: 4px solid #6EA8FF; padding: 15px; margin: 20px 0;">
-                    <p style="margin: 0; color: #9C6BFF;">
-                        Tu contraseña se actualizo el dia ${new Date().toLocaleString('es-ES')}
-                    </p>
-                </div>
-                
-                <p style="color: #B57CFF;"><strong>Si no realizaste este cambio:</strong></p>
-                <p>Por favor, contacta inmediatamente con nuestro equipo de soporte.</p>
-                
-                <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
-                <p style="color: #999; font-size: 12px;">Este es un correo automatico de seguridad.</p>
+    const html = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #9C6BFF;">Hola ${firstName},</h2>
+            <p>Te confirmamos que tu contraseña ha sido cambiada exitosamente.</p>
+            
+            <div style="background-color: #EEF4FF; border-left: 4px solid #6EA8FF; padding: 15px; margin: 20px 0;">
+                <p style="margin: 0; color: #9C6BFF;">
+                    Tu contraseña se actualizo el dia ${new Date().toLocaleString('es-ES')}
+                </p>
             </div>
-        `
-    };
+            
+            <p style="color: #B57CFF;"><strong>Si no realizaste este cambio:</strong></p>
+            <p>Por favor, contacta inmediatamente con nuestro equipo de soporte.</p>
+            
+            <hr style="border: none; border-top: 1px solid #E0E7FF; margin: 30px 0;">
+            <p style="color: #999; font-size: 12px;">Este es un correo automatico de seguridad.</p>
+        </div>
+    `;
 
     try {
-        const transporter = createTransporter();
-        await transporter.sendMail(mailOptions);
+        await sendEmail({ to: email, subject: 'Tu contrasena ha sido cambiada - FeelWeell', html, recipientName: firstName });
     } catch (error) {
         console.error('Error al enviar email de confirmacion:', error);
     }
