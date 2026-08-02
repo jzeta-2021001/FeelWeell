@@ -3,13 +3,13 @@ import { useForm } from 'react-hook-form';
 
 const inputCls = 'w-full h-11 border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 text-sm text-[#2f3348] font-semibold outline-none focus:border-[#8b91ef] transition-colors';
 const labelCls = 'block text-[13px] font-extrabold text-[#505570] mb-1.5';
-const readonlyCls = 'w-full h-11 border-[1.5px] border-[#cbd0e2] rounded-[10px] px-3.5 text-sm text-[#6a6e84] font-bold bg-[#dfe3f0] cursor-not-allowed select-none outline-none';
+const readonlyCls = 'w-full h-11 border-[1.5px] border-[#eaedf6] rounded-[10px] px-3.5 text-sm text-[#8c91a6] font-semibold bg-[#f5f6fa] cursor-not-allowed select-none outline-none';
 
 export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     useEffect(() => {
-        if (isOpen && user) reset({ firstName: user.firstName || '', surname: user.surname || '', email: user.email || '', phone: user.phone || '' });
+        if (isOpen && user) reset({ phone: user.phone || '' });
     }, [isOpen, user, reset]);
 
     if (!isOpen) return null;
@@ -39,18 +39,15 @@ export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => 
                 <form className='flex flex-col gap-4 overflow-y-auto px-5 py-5 sm:px-7' onSubmit={handleSubmit(onSubmit)}>
                     <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Nombre</label>
-                            <input className={inputCls} {...register('firstName', { required: 'El nombre es obligatorio' })} />
-                            {errors.firstName && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.firstName.message}</span>}
+                            <input type='text' value={user?.firstName || ''} disabled readOnly className={readonlyCls} />
                         </div>
                         <div><label className={labelCls}>Apellido</label>
-                            <input className={inputCls} {...register('surname', { required: 'El apellido es obligatorio' })} />
-                            {errors.surname && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.surname.message}</span>}
+                            <input type='text' value={user?.surname || ''} disabled readOnly className={readonlyCls} />
                         </div>
                     </div>
 
                     <div><label className={labelCls}>Correo electrónico</label>
-                        <input className={inputCls} type='email' {...register('email', { required: 'El correo es obligatorio', pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Formato inválido' } })} />
-                        {errors.email && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.email.message}</span>}
+                        <input type='email' value={user?.email || ''} disabled readOnly className={readonlyCls} />
                     </div>
 
                     <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>

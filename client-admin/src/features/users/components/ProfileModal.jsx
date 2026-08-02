@@ -7,7 +7,7 @@ import toast from 'react-hot-toast';
 const labelCls = 'block text-[13px] font-extrabold text-[#505570] mb-1.5';
 const inputCls = 'w-full h-11 border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 text-sm text-[#2f3348] font-semibold bg-white outline-none focus:border-fw-purple-light transition-colors';
 const inputErrCls = 'w-full h-11 border-[1.5px] border-fw-pink rounded-[10px] px-3.5 text-sm text-[#2f3348] font-semibold bg-white outline-none focus:border-fw-pink transition-colors';
-const readonlyCls = 'w-full h-11 border-[1.5px] border-[#cbd0e2] rounded-[10px] px-3.5 text-sm text-[#6a6e84] font-bold bg-[#dfe3f0] flex items-center cursor-not-allowed select-none';
+const readonlyCls = 'w-full h-11 border-[1.5px] border-[#eaedf6] rounded-[10px] px-3.5 text-sm text-[#8c91a6] font-semibold bg-[#f5f6fa] flex items-center cursor-not-allowed select-none';
 const errCls = 'text-fw-pink text-[12px] font-bold mt-1 block';
 
 const PasswordInput = ({ registration, error, placeholder }) => {
@@ -41,7 +41,7 @@ export const ProfileModal = ({ isOpen, onClose, userBase }) => {
         register: regProfile,
         handleSubmit: submitProfile,
         reset: resetProfile,
-        formState: { errors: profileErrors, isSubmitting: isSavingProfile },
+        formState: { isSubmitting: isSavingProfile },
     } = useForm();
 
     const {
@@ -55,7 +55,6 @@ export const ProfileModal = ({ isOpen, onClose, userBase }) => {
     useEffect(() => {
         if (isOpen && userBase) {
             resetProfile({
-                email: userBase.email || '',
                 phone: userBase.phone || '',
             });
             resetPassword();
@@ -149,15 +148,7 @@ export const ProfileModal = ({ isOpen, onClose, userBase }) => {
                         <label className={labelCls}>
                             <span className='flex items-center gap-1.5'><Mail size={12} /> Correo electrónico</span>
                         </label>
-                        <input
-                            className={profileErrors.email ? inputErrCls : inputCls}
-                            type='email'
-                            {...regProfile('email', {
-                                required: 'El correo es obligatorio',
-                                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Formato inválido' },
-                            })}
-                        />
-                        {profileErrors.email && <span className={errCls}>{profileErrors.email.message}</span>}
+                        <div className={readonlyCls}>{userBase?.email || 'Sin correo'}</div>
                     </div>
 
                     <div>
