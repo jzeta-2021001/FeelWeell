@@ -1,0 +1,78 @@
+{
+  "hash": "18ece205",
+  "configHash": "33326041",
+  "lockfileHash": "8e506277",
+  "browserHash": "bc76a539",
+  "optimized": {
+    "axios": {
+      "src": "../../node_modules/.pnpm/axios@1.16.1/node_modules/axios/index.js",
+      "file": "axios.js",
+      "fileHash": "78dc80ef",
+      "needsInterop": false
+    },
+    "lucide-react": {
+      "src": "../../node_modules/.pnpm/lucide-react@1.17.0_react@19.2.6/node_modules/lucide-react/dist/esm/lucide-react.mjs",
+      "file": "lucide-react.js",
+      "fileHash": "a1bf8d00",
+      "needsInterop": false
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/.pnpm/react-dom@19.2.6_react@19.2.6/node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "0857a2a0",
+      "needsInterop": true
+    },
+    "react-hook-form": {
+      "src": "../../node_modules/.pnpm/react-hook-form@7.76.1_react@19.2.6/node_modules/react-hook-form/dist/index.esm.mjs",
+      "file": "react-hook-form.js",
+      "fileHash": "2a505fa1",
+      "needsInterop": false
+    },
+    "react-hot-toast": {
+      "src": "../../node_modules/.pnpm/react-hot-toast@2.6.0_react-dom@19.2.6_react@19.2.6__react@19.2.6/node_modules/react-hot-toast/dist/index.mjs",
+      "file": "react-hot-toast.js",
+      "fileHash": "9e0e7a58",
+      "needsInterop": false
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/.pnpm/react-router-dom@7.16.0_react-dom@19.2.6_react@19.2.6__react@19.2.6/node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "7c90398a",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/.pnpm/react@19.2.6/node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "3d15b922",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/.pnpm/react@19.2.6/node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "9c6c910b",
+      "needsInterop": true
+    },
+    "zustand": {
+      "src": "../../node_modules/.pnpm/zustand@5.0.14_@types+react@19.2.15_react@19.2.6/node_modules/zustand/esm/index.mjs",
+      "file": "zustand.js",
+      "fileHash": "3aa9c2e1",
+      "needsInterop": false
+    },
+    "zustand/middleware": {
+      "src": "../../node_modules/.pnpm/zustand@5.0.14_@types+react@19.2.15_react@19.2.6/node_modules/zustand/esm/middleware.mjs",
+      "file": "zustand_middleware.js",
+      "fileHash": "f12492d3",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-B-1-B7_t": {
+      "file": "chunk-B-1-B7_t.js",
+      "isDynamicEntry": false
+    },
+    "react-dom-Btvwrql9": {
+      "file": "react-dom-Btvwrql9.js",
+      "isDynamicEntry": false
+    }
+  }
+}

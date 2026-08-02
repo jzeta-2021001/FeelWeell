@@ -1,4 +1,4 @@
-import { Home, MessageCircle, Trophy, Flame, LogOut, Dumbbell, Bell, History, Menu, X } from 'lucide-react';
+import { Home, MessageCircle, Trophy, Flame, LogOut, Dumbbell, Bell, History, Menu, X, BookOpen } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '../../../features/auth/store/authStore';
 import logo from '../../../assets/img/FeellWeellLogo.png';
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
     { label: 'Chat', icon: MessageCircle },
     { label: 'Notificaciones', icon: Bell },
     { label: 'Retos Pendientes', icon: Trophy },
+    { label: 'Manual de Usuario', icon: BookOpen, href: '/docs/manual-usuario.pdf' },
 ];
 
 export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, hasPendingChallenge = true, onNavigate, onLogout }) => {
@@ -20,6 +21,15 @@ export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, hasPendingChal
     const handleNavigate = (label) => {
         onNavigate?.(label);
         setIsOpen(false);
+    };
+
+    const handleItemClick = (label, href) => {
+        if (href) {
+            window.open(href, '_blank', 'noopener,noreferrer');
+            setIsOpen(false);
+            return;
+        }
+        handleNavigate(label);
     };
 
     return (
@@ -35,8 +45,8 @@ export const UserSidebar = ({ active = 'Inicio', unreadCount = 0, hasPendingChal
             </button>
 
             <nav className={`${isOpen ? 'flex' : 'hidden'} absolute top-full left-0 right-0 z-40 flex-col gap-1.5 border-b border-[rgba(109,114,216,0.12)] bg-white p-3 shadow-[0_14px_30px_rgba(70,72,140,0.12)] md:static md:flex md:min-w-0 md:flex-1 md:gap-1.5 md:border-0 md:bg-transparent md:p-0 md:shadow-none md:flex-col`}>
-                {NAV_ITEMS.map(({ label, icon: Icon }) => (
-                    <button key={label} onClick={() => handleNavigate(label)}
+                {NAV_ITEMS.map(({ label, icon: Icon, href }) => (
+                    <button key={label} onClick={() => handleItemClick(label, href)}
                         className={`shrink-0 flex items-center gap-2.5 px-4 py-[11px] rounded-[14px] border-none text-[15px] font-bold cursor-pointer text-left transition-colors ${active === label ? 'fw-user-nav-active' : 'bg-transparent text-[#7b8094] hover:bg-[rgba(109,114,216,0.08)] hover:text-[#4a4fbf]'}`}>
                         <Icon size={18} /><span>{label}</span>
                         
