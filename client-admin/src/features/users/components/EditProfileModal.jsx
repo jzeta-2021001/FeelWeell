@@ -3,12 +3,13 @@ import { useForm } from 'react-hook-form';
 
 const inputCls = 'w-full h-11 border-[1.5px] border-[#e5e7f0] rounded-[10px] px-3.5 text-sm text-[#2f3348] font-semibold outline-none focus:border-[#8b91ef] transition-colors';
 const labelCls = 'block text-[13px] font-extrabold text-[#505570] mb-1.5';
+const readonlyCls = 'w-full h-11 border-[1.5px] border-[#cbd0e2] rounded-[10px] px-3.5 text-sm text-[#6a6e84] font-bold bg-[#dfe3f0] cursor-not-allowed select-none outline-none';
 
 export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => {
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
 
     useEffect(() => {
-        if (isOpen && user) reset({ firstName: user.firstName || '', surname: user.surname || '', email: user.email || '', username: user.username || '', phone: user.phone || '' });
+        if (isOpen && user) reset({ firstName: user.firstName || '', surname: user.surname || '', email: user.email || '', phone: user.phone || '' });
     }, [isOpen, user, reset]);
 
     if (!isOpen) return null;
@@ -54,8 +55,7 @@ export const EditProfileModal = ({ isOpen, onClose, onSave, user, loading }) => 
 
                     <div className='grid grid-cols-1 gap-3.5 sm:grid-cols-2'>
                         <div><label className={labelCls}>Usuario</label>
-                            <input className={inputCls} {...register('username', { required: 'El usuario es obligatorio', minLength: { value: 3, message: 'Mínimo 3 caracteres' } })} />
-                            {errors.username && <span className='text-[#d14b6d] text-[13px] font-bold'>{errors.username.message}</span>}
+                            <input type='text' value={user?.username || ''} disabled readOnly className={readonlyCls} />
                         </div>
                         <div><label className={labelCls}>Teléfono <span className='font-bold text-[#9b9fb8]'>(opcional)</span></label>
                             <input className={inputCls} type='tel' inputMode='numeric' maxLength={8} placeholder='12345678' {...register('phone', { pattern: { value: /^$|^\d{8}$/, message: 'Ingresa exactamente 8 dígitos' } })} />
